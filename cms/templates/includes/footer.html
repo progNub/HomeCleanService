@@ -1,0 +1,47 @@
+{% load i18n %}
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-info">
+                <a href="/" class="logo">HomeService</a>
+                <p>{% trans "Professional services for your home care. We value quality and your time." %}</p>
+            </div>
+            <div class="footer-contacts">
+                <h4>{% trans "Contacts" %}</h4>
+                {% if settings.cms.ContactSettings.phone_number %}
+                    <p><a href="tel:{{ settings.cms.ContactSettings.phone_number }}">{{ settings.cms.ContactSettings.phone_number }}</a></p>
+                {% endif %}
+                {% if settings.cms.ContactSettings.email %}
+                    <p><a href="mailto:{{ settings.cms.ContactSettings.email }}">{{ settings.cms.ContactSettings.email }}</a></p>
+                {% endif %}
+                {% if settings.cms.ContactSettings.address %}
+                    <p>{{ settings.cms.ContactSettings.address }}</p>
+                {% endif %}
+            </div>
+            <div class="footer-social">
+                <h4>{% trans "Follow Us" %}</h4>
+                <div class="social-links">
+                    {% if settings.cms.SocialMediaSettings.facebook %}
+                        <a href="{{ settings.cms.SocialMediaSettings.facebook }}" target="_blank" rel="noopener">Facebook</a>
+                    {% endif %}
+                    {% if settings.cms.SocialMediaSettings.instagram %}
+                        <a href="{{ settings.cms.SocialMediaSettings.instagram }}" target="_blank" rel="noopener">Instagram</a>
+                    {% endif %}
+                    {% if settings.cms.SocialMediaSettings.telegram %}
+                        <a href="{{ settings.cms.SocialMediaSettings.telegram }}" target="_blank" rel="noopener">Telegram</a>
+                    {% endif %}
+                    {% if settings.cms.SocialMediaSettings.youtube %}
+                        <a href="{{ settings.cms.SocialMediaSettings.youtube }}" target="_blank" rel="noopener">YouTube</a>
+                    {% endif %}
+                    {% if settings.cms.SocialMediaSettings.whatsapp %}
+                        <a href="{{ settings.cms.SocialMediaSettings.whatsapp }}" target="_blank" rel="noopener">WhatsApp</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} HomeService. {% trans "All rights reserved." %}</p>
+        </div>
+    </div>
+</footer>

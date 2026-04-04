@@ -12,9 +12,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from pathlib import Path
-
-PROJECT_DIR = Path(__file__).resolve().parent.parent
-BASE_DIR = PROJECT_DIR.parent
+import os
+BASE_DIR = Path(__file__).resolve().parent.parent
+PROJECT_DIR = BASE_DIR / "cms"
 
 
 # Quick-start development settings - unsuitable for production
@@ -22,12 +22,21 @@ BASE_DIR = PROJECT_DIR.parent
 
 
 # Application definition
+# 1. Default Django apps
+DJANGO_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+]
 
-INSTALLED_APPS = [
-    "home",
-    "search",
+# 2.  Wagtail apps
+WAGTAIL_APPS = [
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
+    "wagtail.contrib.settings",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -37,16 +46,42 @@ INSTALLED_APPS = [
     "wagtail.search",
     "wagtail.admin",
     "wagtail",
+    # localization Wagtail
+    "wagtail_localize",
+    "wagtail_localize.locales",
+]
+
+# 3. Local apps
+INTERNAL_APPS = [
+    "cms",
+    "home",
+    "search",
+]
+
+# 4. Other apps
+THIRD_PARTY_APPS = [
     "modelcluster",
     "taggit",
     "django_filters",
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
 ]
+
+INSTALLED_APPS = DJANGO_APPS + WAGTAIL_APPS + INTERNAL_APPS + THIRD_PARTY_APPS
+
+# ==============================================================================
+# LOCALIZATION SETTINGS (I18N & L10N)
+# ==============================================================================
+
+USE_I18N = True
+WAGTAIL_I18N_ENABLED = True
+
+LANGUAGES = [
+    ('ru', 'Russian'),
+    ('en', 'English'),
+]
+
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES
+
+# ==============================================================================
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -55,6 +90,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
@@ -74,6 +110,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "wagtail.contrib.settings.context_processors.settings",
             ],
         },
     },

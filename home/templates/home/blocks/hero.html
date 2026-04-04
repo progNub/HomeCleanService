@@ -1,0 +1,10 @@
+{% load wagtailimages_tags i18n %}
+<section class="hero-section" {% if value.image %}{% image value.image original as hero_img %}style="background-image: url('{{ hero_img.url }}');"{% endif %}>
+    <div class="container">
+        <h1>{{ value.title }}</h1>
+        <p>{{ value.subtitle }}</p>
+        {% if value.cta_text %}
+            <a href="/admin/pages/add/home/homepage/3/" class="btn btn-primary">{{ value.cta_text }}</a>
+        {% endif %}
+    </div>
+</section>

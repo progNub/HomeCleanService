@@ -1,0 +1,23 @@
+{% load wagtailimages_tags i18n %}
+<section class="services-section">
+    <div class="container">
+        <h2>{{ value.title }}</h2>
+        <div class="services-grid">
+            {% for item in value.items %}
+                <div class="service-card">
+                    {% if item.image %}
+                        {% image item.image fill-600x400 class="service-img" %}
+                    {% else %}
+                        <div style="height: 200px; background: #ddd; display: flex; align-items: center; justify-content: center; color: #999;">
+                            {% trans "No photo" %}
+                        </div>
+                    {% endif %}
+                    <div class="service-content">
+                        <h3>{{ item.name }}</h3>
+                        <p>{{ item.description }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
