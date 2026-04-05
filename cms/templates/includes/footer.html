@@ -1,47 +1,56 @@
 {% load i18n %}
-<footer class="site-footer">
+<footer class="bg-dark text-light py-5 mt-5 mt-lg-auto">
     <div class="container">
-        <div class="footer-grid">
-            <div class="footer-info">
-                <a href="/" class="logo">HomeService</a>
-                <p>{% trans "Профессиональные услуги по уходу за вашим домом. Мы ценим качество и ваше время." %}</p>
+        <div class="row g-4 mb-4">
+            <div class="col-lg-5">
+                <a href="/" class="text-decoration-none"><h3 class="fw-bold text-primary mb-3">HomeService</h3></a>
+                <p class="text-secondary pe-lg-5">{% trans "Профессиональные услуги по уходу за вашим домом. Мы ценим качество и ваше время." %}</p>
             </div>
-            <div class="footer-contacts">
-                <h4>{% trans "Контакты" %}</h4>
-                {% if settings.cms.ContactSettings.phone_number %}
-                    <p><a href="tel:{{ settings.cms.ContactSettings.phone_number }}">{{ settings.cms.ContactSettings.phone_number }}</a></p>
-                {% endif %}
-                {% if settings.cms.ContactSettings.email %}
-                    <p><a href="mailto:{{ settings.cms.ContactSettings.email }}">{{ settings.cms.ContactSettings.email }}</a></p>
-                {% endif %}
-                {% if settings.cms.ContactSettings.address %}
-                    <p>{{ settings.cms.ContactSettings.address }}</p>
-                {% endif %}
+            <div class="col-sm-6 col-lg-3">
+                <h5 class="fw-bold mb-3 text-white">{% trans "Контакты" %}</h5>
+                <ul class="list-unstyled">
+                    {% if settings.cms.ContactSettings.phone_number %}
+                        <li class="mb-2">
+                            <a href="tel:{{ settings.cms.ContactSettings.phone_number }}" class="text-secondary text-decoration-none">
+                                <i class="bi bi-telephone me-2"></i>{{ settings.cms.ContactSettings.phone_number }}
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if settings.cms.ContactSettings.email %}
+                        <li class="mb-2">
+                            <a href="mailto:{{ settings.cms.ContactSettings.email }}" class="text-secondary text-decoration-none">
+                                <i class="bi bi-envelope me-2"></i>{{ settings.cms.ContactSettings.email }}
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if settings.cms.ContactSettings.address %}
+                        <li class="text-secondary">
+                            <i class="bi bi-geo-alt me-2"></i>{{ settings.cms.ContactSettings.address }}
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
-            <div class="footer-social">
-                <h4>{% trans "Мы в соцсетях" %}</h4>
-                <div class="social-links">
+            <div class="col-sm-6 col-lg-4 text-lg-end">
+                <h5 class="fw-bold mb-3 text-white">{% trans "Мы в соцсетях" %}</h5>
+                <div class="d-flex gap-2 justify-content-lg-end flex-wrap">
                     {% if settings.cms.SocialMediaSettings.facebook %}
-                        <a href="{{ settings.cms.SocialMediaSettings.facebook }}" target="_blank" rel="noopener">Facebook</a>
+                        <a href="{{ settings.cms.SocialMediaSettings.facebook }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3" target="_blank">Facebook</a>
                     {% endif %}
                     {% if settings.cms.SocialMediaSettings.instagram %}
-                        <a href="{{ settings.cms.SocialMediaSettings.instagram }}" target="_blank" rel="noopener">Instagram</a>
+                        <a href="{{ settings.cms.SocialMediaSettings.instagram }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3" target="_blank">Instagram</a>
                     {% endif %}
                     {% if settings.cms.SocialMediaSettings.telegram %}
-                        <a href="{{ settings.cms.SocialMediaSettings.telegram }}" target="_blank" rel="noopener">Telegram</a>
-                    {% endif %}
-                    {% if settings.cms.SocialMediaSettings.youtube %}
-                        <a href="{{ settings.cms.SocialMediaSettings.youtube }}" target="_blank" rel="noopener">YouTube</a>
+                        <a href="{{ settings.cms.SocialMediaSettings.telegram }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3" target="_blank">Telegram</a>
                     {% endif %}
                     {% if settings.cms.SocialMediaSettings.whatsapp %}
-                        <a href="{{ settings.cms.SocialMediaSettings.whatsapp }}" target="_blank" rel="noopener">WhatsApp</a>
+                        <a href="{{ settings.cms.SocialMediaSettings.whatsapp }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3" target="_blank">WhatsApp</a>
                     {% endif %}
                 </div>
             </div>
         </div>
-        <hr>
-        <div class="footer-bottom">
-            <p>&copy; {% now "Y" %} HomeService. {% trans "Все права защищены." %}</p>
+        <hr class="border-secondary opacity-25">
+        <div class="text-center text-secondary small pt-3">
+            <p class="mb-0">&copy; {% now "Y" %} HomeService. {% trans "Все права защищены." %}</p>
         </div>
     </div>
 </footer>

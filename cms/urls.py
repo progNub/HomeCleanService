@@ -8,14 +8,17 @@ from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
 from search import views as search_views
+from contacts.views import contact_request_view
 
-urlpatterns = [
+urlpatterns = i18n_patterns(
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("search/", search_views.search, name="search"),
+    path("contact-request/", contact_request_view, name="contact_request"),
     path('i18n/', include('django.conf.urls.i18n')),
-]
+    prefix_default_language=False,
+)
 
 
 if settings.DEBUG:
@@ -27,9 +30,6 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = urlpatterns + i18n_patterns(
-    # For anything not caught by a more specific rule above, hand over to
-    # Wagtail's page serving mechanism. This should be the last pattern in
-    # the list:
     path("", include(wagtail_urls)),
     prefix_default_language=False,
 )

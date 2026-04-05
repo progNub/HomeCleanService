@@ -71,7 +71,7 @@ class Command(BaseCommand):
         social_settings = SocialMediaSettings.load()
         if not any([social_settings.facebook, social_settings.instagram, social_settings.telegram]):
             social_settings.telegram = "https://t.me/homeservice"
-            social_settings.whatsapp = "https://wa.me/79001234567"
+            social_settings.whatsapp = "https://wa.me/375296023356"
             social_settings.instagram = "https://instagram.com/homeservice"
             social_settings.save()
             self.stdout.write(self.style.SUCCESS("Social media settings created."))
@@ -81,13 +81,20 @@ class Command(BaseCommand):
         # Contact Settings
         contact_settings = ContactSettings.load()
         if not contact_settings.phone_number:
-            contact_settings.phone_number = "+7 (900) 123-45-67"
-            contact_settings.email = "info@homeservice.ru"
-            contact_settings.address = "г. Москва, ул. Примерная, д. 1"
+            contact_settings.phone_number = "+375296023356"
+            contact_settings.email = "info@homeservice.by"
+            contact_settings.address = "Беларусь"
             contact_settings.save()
             self.stdout.write(self.style.SUCCESS("Contact settings created."))
         else:
-            self.stdout.write(self.style.WARNING("Contact settings already exist."))
+            # Let's update it if it's the old default
+            if contact_settings.phone_number == "+7 (900) 123-45-67":
+                contact_settings.phone_number = "+375296023356"
+                contact_settings.email = "info@homeservice.by"
+                contact_settings.save()
+                self.stdout.write(self.style.SUCCESS("Contact settings updated with new phone number."))
+            else:
+                self.stdout.write(self.style.WARNING("Contact settings already exist and differ from old default."))
 
     def init_content(self):
         # 1. Site configuration from env
@@ -119,37 +126,49 @@ class Command(BaseCommand):
         else:
             self.stdout.write(self.style.WARNING("HomePage already exists."))
 
-        # 3. Fill with demo content if body is empty
+        # 3. Fill with demo content if body is empty or we want to overwrite/extend
         if not homepage.body:
             self.stdout.write("Filling HomePage with demo content...")
             homepage.body = [
                 ('hero', {
-                    'title': 'Профессиональная отмывка и покраска домов',
-                    'subtitle': 'Вернем вашему дому первозданный вид за 2 дня. Чистка крыш, фасадов и мощение.',
-                    'cta_text': 'Рассчитать стоимость',
+                    'title': 'Мойка и покраска крыш, домов, заборов',
+                    'subtitle': 'Моем всё! Профессиональная очистка и обновление вашего имущества. Работаем по всей Беларуси.',
+                    'cta_text': 'Оставить заявку',
                 }),
                 ('services', {
-                    'title': 'Наши основные услуги',
+                    'title': 'Что мы предлагаем',
                     'items': [
                         {
-                            'name': 'Мойка высокого давления',
-                            'description': 'Бережная очистка любых поверхностей от мха, грязи и высолов.'
+                            'name': 'Мойка крыш',
+                            'description': 'Удаление мха, лишайника и грязи. Возвращаем крыше первоначальный цвет.'
                         },
                         {
-                            'name': 'Покраска фасадов',
-                            'description': 'Профессиональное окрашивание с гарантией на материалы и работу.'
+                            'name': 'Покраска крыш и фасадов',
+                            'description': 'Качественная покраска специальными составами для долговечной защиты.'
                         },
                         {
-                            'name': 'Чистка крыш',
-                            'description': 'Удаление мха и лишайника, обработка защитными составами.'
+                            'name': 'Мойка заборов и мощения',
+                            'description': 'Очистка тротуарной плитки и любых видов заборов от загрязнений.'
                         }
                     ]
-                })
+                }),
+                ('features', {
+                    'title': 'Почему выбирают нас',
+                    'items': [
+                        {'title': 'Опыт и качество', 'text': 'Используем только проверенные материалы и профессиональное оборудование.'},
+                        {'title': 'Скорость работы', 'text': 'Выполняем большинство заказов в течение 1-2 дней.'},
+                        {'title': 'Гарантия', 'text': 'Предоставляем гарантию на все виды выполненных работ.'},
+                    ]
+                }),
+                ('contact_form', {
+                    'title': 'Свяжитесь с нами',
+                    'subtitle': 'Оставьте свои контакты, и мы перезвоним вам в течение 30 минут для консультации.'
+                }),
             ]
             homepage.save_revision().publish()
             self.stdout.write(self.style.SUCCESS("Demo content added to HomePage."))
         else:
-            self.stdout.write(self.style.WARNING("HomePage body is not empty, skipping demo content."))
+            self.stdout.write(self.style.WARNING("HomePage body is not empty. If you want to update content, use Wagtail admin."))
 
         # 4. Configure Site object
         site = Site.objects.filter(is_default_site=True).first() or Site.objects.first()

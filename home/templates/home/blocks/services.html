@@ -1,20 +1,23 @@
 {% load wagtailimages_tags i18n %}
-<section class="services-section">
-    <div class="container">
-        <h2>{{ value.title }}</h2>
-        <div class="services-grid">
+<section class="bg-light py-5">
+    <div class="container py-4">
+        <h2 class="text-center fw-bold mb-5 fs-1">{{ value.title }}</h2>
+        <div class="row g-4">
             {% for item in value.items %}
-                <div class="service-card">
-                    {% if item.image %}
-                        {% image item.image fill-600x400 class="service-img" %}
-                    {% else %}
-                        <div style="height: 200px; background: #ddd; display: flex; align-items: center; justify-content: center; color: #999;">
-                            {% trans "Нет фото" %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm transition-hover">
+                        {% if item.image %}
+                            {% image item.image fill-600x400 class="card-img-top" %}
+                        {% else %}
+                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center text-light opacity-50" style="height: 200px;">
+                                <i class="bi bi-image fs-1"></i>
+                                <span class="ms-2">{% trans "Нет фото" %}</span>
+                            </div>
+                        {% endif %}
+                        <div class="card-body p-4">
+                            <h3 class="card-title h5 fw-bold mb-3">{{ item.name }}</h3>
+                            <p class="card-text text-muted">{{ item.description }}</p>
                         </div>
-                    {% endif %}
-                    <div class="service-content">
-                        <h3>{{ item.name }}</h3>
-                        <p>{{ item.description }}</p>
                     </div>
                 </div>
             {% endfor %}

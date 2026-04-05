@@ -29,6 +29,19 @@ class HomePage(Page, TranslatableMixin):
                 ('image', ImageChooserBlock(required=False, label=_("Изображение"))),
             ]), label=_("Список услуг"))),
         ], label=_("Блок услуг"), template='home/blocks/services.html')),
+
+        ('features', blocks.StructBlock([
+            ('title', blocks.CharBlock(required=True, label=_("Заголовок"))),
+            ('items', blocks.ListBlock(blocks.StructBlock([
+                ('title', blocks.CharBlock(required=True, label=_("Заголовок преимущества"))),
+                ('text', blocks.TextBlock(required=True, label=_("Текст преимущества"))),
+            ]), label=_("Преимущества"))),
+        ], label=_("Преимущества"), template='home/blocks/features.html')),
+
+        ('contact_form', blocks.StructBlock([
+            ('title', blocks.CharBlock(required=True, label=_("Заголовок формы"), default=_("Оставьте заявку"))),
+            ('subtitle', blocks.TextBlock(required=False, label=_("Подзаголовок формы"), default=_("Мы свяжемся с вами для уточнения деталей"))),
+        ], label=_("Форма обратной связи"), template='home/blocks/contact_form.html')),
         
         ('content', blocks.RichTextBlock(label=_("Основной текст"), template='home/blocks/rich_text.html')),
     ], use_json_field=True, blank=True, null=True, verbose_name=_("Контент страницы"))

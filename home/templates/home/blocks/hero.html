@@ -1,10 +1,20 @@
 {% load wagtailimages_tags i18n %}
-<section class="hero-section" {% if value.image %}{% image value.image original as hero_img %}style="background-image: url('{{ hero_img.url }}');"{% endif %}>
-    <div class="container">
-        <h1>{{ value.title }}</h1>
-        <p>{{ value.subtitle }}</p>
-        {% if value.cta_text %}
-            <a href="/admin/pages/add/home/homepage/3/" class="btn btn-primary">{{ value.cta_text }}</a>
-        {% endif %}
+<section class="position-relative overflow-hidden bg-dark text-white py-5" style="min-height: 60vh; display: flex; align-items: center;">
+    {% if value.image %}
+        {% image value.image original as hero_img %}
+        <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image: url('{{ hero_img.url }}'); background-size: cover; background-position: center; opacity: 0.4;"></div>
+    {% endif %}
+    <div class="container position-relative text-center z-1">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-3 fw-bold mb-4">{{ value.title }}</h1>
+                <p class="lead mb-5 opacity-75">{{ value.subtitle }}</p>
+                {% if value.cta_text %}
+                    <a href="#order-form" class="btn btn-primary btn-lg px-5 py-3 fw-bold rounded-pill">
+                        {{ value.cta_text }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </section>

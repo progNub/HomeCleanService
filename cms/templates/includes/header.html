@@ -1,13 +1,26 @@
 {% load i18n %}
-<header>
-    <div class="container nav-container">
-        <a href="/" class="logo">HomeService</a>
-        <nav>
-            <a href="/" class="nav-link">{% trans "Главная" %}</a>
-            {% if settings.cms.ContactSettings.phone_number %}
-                <a href="tel:{{ settings.cms.ContactSettings.phone_number }}" class="nav-phone">{{ settings.cms.ContactSettings.phone_number }}</a>
-            {% endif %}
-            <a href="/admin/" class="btn btn-sm">{% trans "Войти" %}</a>
-        </nav>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm py-3">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-primary fs-3" href="/">HomeService</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold" href="/">{% trans "Главная" %}</a>
+                </li>
+                {% if settings.cms.ContactSettings.phone_number %}
+                <li class="nav-item">
+                    <a class="nav-link fw-bold text-primary mx-lg-3" href="tel:{{ settings.cms.ContactSettings.phone_number }}">
+                        {{ settings.cms.ContactSettings.phone_number }}
+                    </a>
+                </li>
+                {% endif %}
+                <li class="nav-item mt-2 mt-lg-0">
+                    <a href="/admin/" class="btn btn-outline-primary btn-sm px-4">{% trans "Войти" %}</a>
+                </li>
+            </ul>
+        </div>
     </div>
-</header>
+</nav>

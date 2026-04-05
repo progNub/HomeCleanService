@@ -56,6 +56,7 @@ INTERNAL_APPS = [
     "cms",
     "home",
     "search",
+    "contacts",
 ]
 
 # 4. Other apps

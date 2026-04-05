@@ -1,0 +1,48 @@
+{% load i18n %}
+<section class="py-5 bg-light" id="order-form">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                    <div class="row g-0">
+                        <div class="col-md-12 p-4 p-lg-5 bg-white">
+                            <div class="text-center mb-5">
+                                <h2 class="fw-bold display-6 mb-3 text-primary">{{ value.title }}</h2>
+                                {% if value.subtitle %}
+                                    <p class="text-muted lead">{{ value.subtitle }}</p>
+                                {% endif %}
+                            </div>
+
+                            <form action="{% url 'contact_request' %}" method="POST" class="needs-validation">
+                                {% csrf_token %}
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold text-uppercase">{% trans 'Ваше имя' %}</label>
+                                        <input type="text" name="name" placeholder="{% trans 'Ваше имя' %}" required class="form-control form-control-lg bg-light border-0" autocomplete="name">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold text-uppercase">{% trans 'Номер телефона' %}</label>
+                                        <input type="tel" name="phone" placeholder="+375..." required class="form-control form-control-lg bg-light border-0" autocomplete="tel">
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold text-uppercase">{% trans 'Ваш Email (необязательно)' %}</label>
+                                    <input type="email" name="email" placeholder="example@mail.com" class="form-control form-control-lg bg-light border-0" autocomplete="email">
+                                </div>
+                                <div class="mb-5">
+                                    <label class="form-label small fw-bold text-uppercase">{% trans 'Дополнительный комментарий' %}</label>
+                                    <textarea name="comment" placeholder="{% trans 'Опишите вашу задачу...' %}" class="form-control form-control-lg bg-light border-0" rows="4"></textarea>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold rounded-pill shadow-sm">
+                                        {% trans "Отправить заявку" %}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-05 11:50+0000\n"
+"POT-Creation-Date: 2026-04-05 12:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
 #: cms/models.py:8
 msgid "Facebook"
 msgstr ""
@@ -67,7 +68,7 @@ msgstr ""
 msgid "Настройки соцсетей"
 msgstr ""
 
-#: cms/models.py:30
+#: cms/models.py:30 contacts/models.py:15
 msgid "Номер телефона"
 msgstr ""
 
@@ -75,7 +76,7 @@ msgstr ""
 msgid "Основной номер телефона"
 msgstr ""
 
-#: cms/models.py:31
+#: cms/models.py:31 contacts/models.py:18
 msgid "Email"
 msgstr ""
 
@@ -141,7 +142,72 @@ msgstr ""
 msgid "Войти"
 msgstr ""
 
-#: home/models.py:14 home/models.py:25
+#: contacts/forms.py:10 home/templates/home/blocks/contact_form.html:13
+msgid "Ваше имя"
+msgstr ""
+
+#: contacts/forms.py:11 home/templates/home/blocks/contact_form.html:16
+msgid "Номер телефона (например, +375...)"
+msgstr ""
+
+#: contacts/forms.py:12 home/templates/home/blocks/contact_form.html:19
+msgid "Ваш Email (необязательно)"
+msgstr ""
+
+#: contacts/forms.py:13 home/templates/home/blocks/contact_form.html:22
+msgid "Дополнительный комментарий"
+msgstr ""
+
+#: contacts/models.py:7
+msgid "Имя"
+msgstr ""
+
+#: contacts/models.py:10
+msgid ""
+"Номер телефона должен быть в формате: '+999999999'. Допускается до 15 цифр."
+msgstr ""
+
+#: contacts/models.py:16
+msgid "Укажите номер с кодом страны (например, +375...)"
+msgstr ""
+
+#: contacts/models.py:18
+msgid "Ваш контактный email"
+msgstr ""
+
+#: contacts/models.py:19
+msgid "Комментарий"
+msgstr ""
+
+#: contacts/models.py:20
+msgid "Дата создания"
+msgstr ""
+
+#: contacts/models.py:28
+msgid "Информация о заявке"
+msgstr ""
+
+#: contacts/models.py:32
+msgid "Заявка на связь"
+msgstr ""
+
+#: contacts/models.py:33
+msgid "Заявки на связь"
+msgstr ""
+
+#: contacts/views.py:14
+msgid "Спасибо! Ваша заявка принята, мы свяжемся с вами."
+msgstr ""
+
+#: contacts/views.py:16
+msgid "Пожалуйста, исправьте ошибки в форме."
+msgstr ""
+
+#: contacts/wagtail_hooks.py:9
+msgid "Заявки"
+msgstr ""
+
+#: home/models.py:14 home/models.py:25 home/models.py:34
 msgid "Заголовок"
 msgstr ""
 
@@ -193,16 +259,52 @@ msgstr ""
 msgid "Блок услуг"
 msgstr ""
 
-#: home/models.py:33
+#: home/models.py:36
+msgid "Заголовок преимущества"
+msgstr ""
+
+#: home/models.py:37
+msgid "Текст преимущества"
+msgstr ""
+
+#: home/models.py:38 home/models.py:39
+msgid "Преимущества"
+msgstr ""
+
+#: home/models.py:42
+msgid "Заголовок формы"
+msgstr ""
+
+#: home/models.py:42
+msgid "Оставьте заявку"
+msgstr ""
+
+#: home/models.py:43
+msgid "Подзаголовок формы"
+msgstr ""
+
+#: home/models.py:43
+msgid "Мы свяжемся с вами для уточнения деталей"
+msgstr ""
+
+#: home/models.py:44
+msgid "Форма обратной связи"
+msgstr ""
+
+#: home/models.py:46
 msgid "Основной текст"
 msgstr ""
 
-#: home/models.py:34
+#: home/models.py:47
 msgid "Контент страницы"
 msgstr ""
 
-#: home/models.py:41
+#: home/models.py:54
 msgid "Главная страница"
+msgstr ""
+
+#: home/templates/home/blocks/contact_form.html:24
+msgid "Отправить заявку"
 msgstr ""
 
 #: home/templates/home/blocks/services.html:12
