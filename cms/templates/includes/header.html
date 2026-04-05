@@ -3,11 +3,11 @@
     <div class="container nav-container">
         <a href="/" class="logo">HomeService</a>
         <nav>
-            <a href="/" class="nav-link">{% trans "Home" %}</a>
+            <a href="/" class="nav-link">{% trans "Главная" %}</a>
             {% if settings.cms.ContactSettings.phone_number %}
                 <a href="tel:{{ settings.cms.ContactSettings.phone_number }}" class="nav-phone">{{ settings.cms.ContactSettings.phone_number }}</a>
             {% endif %}
-            <a href="/admin/" class="btn btn-sm">{% trans "Login" %}</a>
+            <a href="/admin/" class="btn btn-sm">{% trans "Войти" %}</a>
         </nav>
     </div>
 </header>

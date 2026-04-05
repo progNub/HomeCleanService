@@ -4,10 +4,10 @@
         <div class="footer-grid">
             <div class="footer-info">
                 <a href="/" class="logo">HomeService</a>
-                <p>{% trans "Professional services for your home care. We value quality and your time." %}</p>
+                <p>{% trans "Профессиональные услуги по уходу за вашим домом. Мы ценим качество и ваше время." %}</p>
             </div>
             <div class="footer-contacts">
-                <h4>{% trans "Contacts" %}</h4>
+                <h4>{% trans "Контакты" %}</h4>
                 {% if settings.cms.ContactSettings.phone_number %}
                     <p><a href="tel:{{ settings.cms.ContactSettings.phone_number }}">{{ settings.cms.ContactSettings.phone_number }}</a></p>
                 {% endif %}
@@ -19,7 +19,7 @@
                 {% endif %}
             </div>
             <div class="footer-social">
-                <h4>{% trans "Follow Us" %}</h4>
+                <h4>{% trans "Мы в соцсетях" %}</h4>
                 <div class="social-links">
                     {% if settings.cms.SocialMediaSettings.facebook %}
                         <a href="{{ settings.cms.SocialMediaSettings.facebook }}" target="_blank" rel="noopener">Facebook</a>
@@ -41,7 +41,7 @@
         </div>
         <hr>
         <div class="footer-bottom">
-            <p>&copy; {% now "Y" %} HomeService. {% trans "All rights reserved." %}</p>
+            <p>&copy; {% now "Y" %} HomeService. {% trans "Все права защищены." %}</p>
         </div>
     </div>
 </footer>

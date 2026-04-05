@@ -1,13 +1,14 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ru" dir="ltr">
     <head>
         <meta charset="utf-8" />
-        <title>Internal server error</title>
+        <title>{% trans "Внутренняя ошибка сервера" %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
     </head>
     <body>
-        <h1>Internal server error</h1>
+        <h1>{% trans "Внутренняя ошибка сервера" %}</h1>
 
-        <h2>Sorry, there seems to be an error. Please try again soon.</h2>
+        <h2>{% trans "Извините, произошла ошибка. Пожалуйста, попробуйте еще раз позже." %}</h2>
     </body>
 </html>

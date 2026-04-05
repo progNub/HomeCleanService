@@ -71,6 +71,13 @@ INSTALLED_APPS = DJANGO_APPS + WAGTAIL_APPS + INTERNAL_APPS + THIRD_PARTY_APPS
 # LOCALIZATION SETTINGS (I18N & L10N)
 # ==============================================================================
 
+
+# Internationalization
+# https://docs.djangoproject.com/en/6.0/topics/i18n/
+
+LANGUAGE_CODE = "ru-ru"
+TIME_ZONE = "UTC"
+USE_TZ = True
 USE_I18N = True
 WAGTAIL_I18N_ENABLED = True
 
@@ -149,16 +156,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
-
-USE_I18N = True
-
-USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)

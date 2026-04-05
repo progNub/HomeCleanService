@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Page not found{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Страница не найдена" %}{% endblock %}
 
 {% block body_class %}template-404{% endblock %}
 
 {% block content %}
-<h1>Page not found</h1>
+<h1>{% trans "Страница не найдена" %}</h1>
 
-<h2>Sorry, this page could not be found.</h2>
+<h2>{% trans "К сожалению, мы не смогли найти эту страницу." %}</h2>
 {% endblock %}
