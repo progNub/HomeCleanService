@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-05 13:03+0000\n"
+"POT-Creation-Date: 2026-04-05 13:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -327,6 +327,14 @@ msgstr ""
 
 #: home/models.py:64
 msgid "Главная страница"
+msgstr ""
+
+#: home/templates/home/blocks/contact_form.html:25
+msgid "+375..."
+msgstr ""
+
+#: home/templates/home/blocks/contact_form.html:30
+msgid "example@mail.com"
 msgstr ""
 
 #: home/templates/home/blocks/contact_form.html:34

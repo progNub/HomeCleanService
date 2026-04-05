@@ -3,12 +3,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-05 13:03+0000\n"
+"POT-Creation-Date: 2026-04-05 13:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -304,19 +304,19 @@ msgstr "Contact form"
 
 #: home/models.py:48
 msgid "Содержимое"
-msgstr ""
+msgstr "Content"
 
 #: home/models.py:51
 msgid "Значение (напр. 10+)"
-msgstr ""
+msgstr "Value (e.g. 10+)"
 
 #: home/models.py:52
 msgid "Подпись (напр. лет опыта)"
-msgstr ""
+msgstr "Label (e.g. years of experience)"
 
 #: home/models.py:53
 msgid "Показатели/Статистика"
-msgstr ""
+msgstr "Stats/Metrics"
 
 #: home/models.py:56
 msgid "Основной текст"
@@ -330,9 +330,17 @@ msgstr "Page content"
 msgid "Главная страница"
 msgstr "Home page"
 
+#: home/templates/home/blocks/contact_form.html:25
+msgid "+375..."
+msgstr "+375..."
+
+#: home/templates/home/blocks/contact_form.html:30
+msgid "example@mail.com"
+msgstr "example@mail.com"
+
 #: home/templates/home/blocks/contact_form.html:34
 msgid "Опишите вашу задачу..."
-msgstr ""
+msgstr "Describe your task..."
 
 #: home/templates/home/blocks/contact_form.html:38
 msgid "Отправить заявку"

@@ -22,12 +22,12 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label small fw-bold text-uppercase">{% trans 'Номер телефона' %}</label>
-                                        <input type="tel" name="phone" placeholder="+375..." required class="form-control form-control-lg bg-light border-0" autocomplete="tel">
+                                        <input type="tel" name="phone" placeholder="{% trans '+375...' %}" required class="form-control form-control-lg bg-light border-0" autocomplete="tel">
                                     </div>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label small fw-bold text-uppercase">{% trans 'Ваш Email (необязательно)' %}</label>
-                                    <input type="email" name="email" placeholder="example@mail.com" class="form-control form-control-lg bg-light border-0" autocomplete="email">
+                                    <input type="email" name="email" placeholder="{% trans 'example@mail.com' %}" class="form-control form-control-lg bg-light border-0" autocomplete="email">
                                 </div>
                                 <div class="mb-5">
                                     <label class="form-label small fw-bold text-uppercase">{% trans 'Дополнительный комментарий' %}</label>
