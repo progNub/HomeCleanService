@@ -1,0 +1,254 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-05 11:50+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: cms/models.py:8
+msgid "Facebook"
+msgstr "Facebook"
+
+#: cms/models.py:8
+msgid "Ссылка на Facebook"
+msgstr "Facebook link"
+
+#: cms/models.py:9
+msgid "Instagram"
+msgstr "Instagram"
+
+#: cms/models.py:9
+msgid "Ссылка на Instagram"
+msgstr "Instagram link"
+
+#: cms/models.py:10
+msgid "YouTube"
+msgstr "YouTube"
+
+#: cms/models.py:10
+msgid "Ссылка на YouTube"
+msgstr "YouTube link"
+
+#: cms/models.py:11
+msgid "Telegram"
+msgstr "Telegram"
+
+#: cms/models.py:11
+msgid "Ссылка на Telegram"
+msgstr "Telegram link"
+
+#: cms/models.py:12
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#: cms/models.py:12
+msgid "Ссылка на WhatsApp"
+msgstr "WhatsApp link"
+
+#: cms/models.py:21
+msgid "Социальные сети"
+msgstr "Social Media"
+
+#: cms/models.py:25
+msgid "Настройки соцсетей"
+msgstr "Social Media Settings"
+
+#: cms/models.py:30
+msgid "Номер телефона"
+msgstr "Phone number"
+
+#: cms/models.py:30
+msgid "Основной номер телефона"
+msgstr "Main phone number"
+
+#: cms/models.py:31
+msgid "Email"
+msgstr "Email"
+
+#: cms/models.py:31
+msgid "Контактный email"
+msgstr "Contact email"
+
+#: cms/models.py:32
+msgid "Адрес"
+msgstr "Address"
+
+#: cms/models.py:32
+msgid "Адрес офиса"
+msgstr "Office address"
+
+#: cms/models.py:39
+msgid "Контактная информация"
+msgstr "Contact Information"
+
+#: cms/models.py:43
+msgid "Контактные данные"
+msgstr "Contact Details"
+
+#: cms/templates/404.html:4 cms/templates/404.html:9
+msgid "Страница не найдена"
+msgstr "Page not found"
+
+#: cms/templates/404.html:11
+msgid "К сожалению, мы не смогли найти эту страницу."
+msgstr "Unfortunately, we could not find this page."
+
+#: cms/templates/500.html:6 cms/templates/500.html:10
+msgid "Внутренняя ошибка сервера"
+msgstr "Internal server error"
+
+#: cms/templates/500.html:12
+msgid "Извините, произошла ошибка. Пожалуйста, попробуйте еще раз позже."
+msgstr "Sorry, an error occurred. Please try again later."
+
+#: cms/templates/includes/footer.html:7
+msgid ""
+"Профессиональные услуги по уходу за вашим домом. Мы ценим качество и ваше "
+"время."
+msgstr ""
+"Professional services for your home care. We value quality and your time."
+
+#: cms/templates/includes/footer.html:10
+msgid "Контакты"
+msgstr "Contacts"
+
+#: cms/templates/includes/footer.html:22
+msgid "Мы в соцсетях"
+msgstr "Social media"
+
+#: cms/templates/includes/footer.html:44
+msgid "Все права защищены."
+msgstr "All rights reserved."
+
+#: cms/templates/includes/header.html:6
+msgid "Главная"
+msgstr "Home"
+
+#: cms/templates/includes/header.html:10
+msgid "Войти"
+msgstr "Login"
+
+#: home/models.py:14 home/models.py:25
+msgid "Заголовок"
+msgstr "Title"
+
+#: home/models.py:14
+msgid "Заголовок баннера"
+msgstr "Banner title"
+
+#: home/models.py:15
+msgid "Подзаголовок"
+msgstr "Subtitle"
+
+#: home/models.py:16 home/models.py:29
+msgid "Изображение"
+msgstr "Image"
+
+#: home/models.py:16
+msgid "Фоновое изображение"
+msgstr "Background image"
+
+#: home/models.py:19
+msgid "Текст кнопки"
+msgstr "Button text"
+
+#: home/models.py:20
+msgid "Рассчитать стоимость"
+msgstr "Calculate cost"
+
+#: home/models.py:22
+msgid "Главный баннер"
+msgstr "Hero banner"
+
+#: home/models.py:25
+msgid "Наши услуги"
+msgstr "Our services"
+
+#: home/models.py:27
+msgid "Название услуги"
+msgstr "Service name"
+
+#: home/models.py:28
+msgid "Описание"
+msgstr "Description"
+
+#: home/models.py:30
+msgid "Список услуг"
+msgstr "Services list"
+
+#: home/models.py:31
+msgid "Блок услуг"
+msgstr "Services block"
+
+#: home/models.py:33
+msgid "Основной текст"
+msgstr "Rich text"
+
+#: home/models.py:34
+msgid "Контент страницы"
+msgstr "Page content"
+
+#: home/models.py:41
+msgid "Главная страница"
+msgstr "Home page"
+
+#: home/templates/home/blocks/services.html:12
+msgid "Нет фото"
+msgstr "No photo"
+
+#: home/templates/home/welcome_page.html:6
+msgid "Visit the Wagtail website"
+msgstr ""
+
+#: home/templates/home/welcome_page.html:15
+msgid "Посмотреть заметки о релизе"
+msgstr "View release notes"
+
+#: home/templates/home/welcome_page.html:27
+msgid "Добро пожаловать на ваш новый сайт Wagtail!"
+msgstr "Welcome to your new Wagtail site!"
+
+#: home/templates/home/welcome_page.html:28
+msgid ""
+"Пожалуйста, присоединяйтесь к нашему <a href=\"https://github.com/wagtail/"
+"wagtail/wiki/Slack\">сообществу в Slack</a>, или начните с одной из ссылок "
+"ниже."
+msgstr ""
+"Please join our <a href=\"https://github.com/wagtail/wagtail/wiki/Slack\">Slack community</a>, "
+"or start with one of the links below."
+
+#: home/templates/home/welcome_page.html:35
+msgid "Документация Wagtail"
+msgstr "Wagtail documentation"
+
+#: home/templates/home/welcome_page.html:36
+msgid "Темы, ссылки и руководства"
+msgstr "Topics, references and how-to guides"
+
+#: home/templates/home/welcome_page.html:42
+msgid "Обучающее руководство"
+msgstr "Tutorial"
+
+#: home/templates/home/welcome_page.html:43
+msgid "Создайте свой первый сайт на Wagtail"
+msgstr "Create your first Wagtail site"
+
+#: home/templates/home/welcome_page.html:49
+msgid "Панель управления"
+msgstr "Editor interface"
+
+#: home/templates/home/welcome_page.html:50
+msgid "Сначала создайте суперпользователя!"
+msgstr "Create a superuser first!"
