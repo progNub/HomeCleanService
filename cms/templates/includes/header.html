@@ -10,15 +10,14 @@
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="/">{% trans "Главная" %}</a>
                 </li>
-                {% if settings.cms.ContactSettings.phone_number %}
                 <li class="nav-item">
-                    <a class="nav-link fw-bold text-primary mx-lg-3" href="tel:{{ settings.cms.ContactSettings.phone_number }}">
-                        {{ settings.cms.ContactSettings.phone_number }}
-                    </a>
+                    <a class="nav-link fw-semibold" href="/#about-us">{% trans "О нас" %}</a>
                 </li>
-                {% endif %}
-                <li class="nav-item mt-2 mt-lg-0">
-                    <a href="/admin/" class="btn btn-outline-primary btn-sm px-4">{% trans "Войти" %}</a>
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold" href="/#services">{% trans "Услуги" %}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold" href="/#order-form">{% trans "Заказать" %}</a>
                 </li>
             </ul>
         </div>

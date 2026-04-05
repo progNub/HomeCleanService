@@ -31,8 +31,16 @@
         <link rel="stylesheet" type="text/css" href="{% static 'css/cms.css' %}">
 
         {% block extra_css %}
-        {# Override this in templates to add extra stylesheets #}
         {% endblock %}
+        <style>
+            /* Скорректируем отступ для якорей из-за фиксированной или высокой шапки */
+            section[id] {
+                scroll-margin-top: 100px;
+            }
+            html {
+                scroll-behavior: smooth;
+            }
+        </style>
     </head>
 
     <body class="{% block body_class %}{% endblock %}">

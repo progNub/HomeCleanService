@@ -42,6 +42,16 @@ class HomePage(Page, TranslatableMixin):
             ('title', blocks.CharBlock(required=True, label=_("Заголовок формы"), default=_("Оставьте заявку"))),
             ('subtitle', blocks.TextBlock(required=False, label=_("Подзаголовок формы"), default=_("Мы свяжемся с вами для уточнения деталей"))),
         ], label=_("Форма обратной связи"), template='home/blocks/contact_form.html')),
+
+        ('about', blocks.StructBlock([
+            ('title', blocks.CharBlock(required=True, label=_("Заголовок"))),
+            ('content', blocks.RichTextBlock(required=True, label=_("Содержимое"))),
+            ('image', ImageChooserBlock(required=False, label=_("Изображение"))),
+            ('stats', blocks.ListBlock(blocks.StructBlock([
+                ('value', blocks.CharBlock(required=True, label=_("Значение (напр. 10+)"))),
+                ('label', blocks.CharBlock(required=True, label=_("Подпись (напр. лет опыта)"))),
+            ]), label=_("Показатели/Статистика"), required=False)),
+        ], label=_("О нас"), template='home/blocks/about.html')),
         
         ('content', blocks.RichTextBlock(label=_("Основной текст"), template='home/blocks/rich_text.html')),
     ], use_json_field=True, blank=True, null=True, verbose_name=_("Контент страницы"))

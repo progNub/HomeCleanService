@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-05 12:32+0000\n"
+"POT-Creation-Date: 2026-04-05 13:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,6 +67,7 @@ msgid "Настройки соцсетей"
 msgstr "Social Media Settings"
 
 #: cms/models.py:30 contacts/models.py:15
+#: home/templates/home/blocks/contact_form.html:24
 msgid "Номер телефона"
 msgstr "Phone number"
 
@@ -125,35 +126,44 @@ msgstr ""
 msgid "Контакты"
 msgstr "Contacts"
 
-#: cms/templates/includes/footer.html:22
+#: cms/templates/includes/footer.html:34
 msgid "Мы в соцсетях"
 msgstr "Social media"
 
-#: cms/templates/includes/footer.html:44
+#: cms/templates/includes/footer.html:53
 msgid "Все права защищены."
 msgstr "All rights reserved."
 
-#: cms/templates/includes/header.html:6
+#: cms/templates/includes/header.html:11
 msgid "Главная"
 msgstr "Home"
 
-#: cms/templates/includes/header.html:10
-msgid "Войти"
-msgstr "Login"
+#: cms/templates/includes/header.html:14 home/models.py:54
+msgid "О нас"
+msgstr "About Us"
 
-#: contacts/forms.py:10 home/templates/home/blocks/contact_form.html:13
+#: cms/templates/includes/header.html:17
+msgid "Услуги"
+msgstr "Services"
+
+#: cms/templates/includes/header.html:20
+msgid "Заказать"
+msgstr "Order"
+
+#: contacts/forms.py:10 home/templates/home/blocks/contact_form.html:20
+#: home/templates/home/blocks/contact_form.html:21
 msgid "Ваше имя"
 msgstr "Your name"
 
-#: contacts/forms.py:11 home/templates/home/blocks/contact_form.html:16
+#: contacts/forms.py:11
 msgid "Номер телефона (например, +375...)"
 msgstr "Phone number (e.g. +375...)"
 
-#: contacts/forms.py:12 home/templates/home/blocks/contact_form.html:19
+#: contacts/forms.py:12 home/templates/home/blocks/contact_form.html:29
 msgid "Ваш Email (необязательно)"
 msgstr "Your Email (optional)"
 
-#: contacts/forms.py:13 home/templates/home/blocks/contact_form.html:22
+#: contacts/forms.py:13 home/templates/home/blocks/contact_form.html:33
 msgid "Дополнительный комментарий"
 msgstr "Additional comment"
 
@@ -208,7 +218,7 @@ msgstr "Please correct the errors in the form."
 msgid "Заявки"
 msgstr "Requests"
 
-#: home/models.py:14 home/models.py:25 home/models.py:34
+#: home/models.py:14 home/models.py:25 home/models.py:34 home/models.py:47
 msgid "Заголовок"
 msgstr "Title"
 
@@ -220,7 +230,7 @@ msgstr "Banner title"
 msgid "Подзаголовок"
 msgstr "Subtitle"
 
-#: home/models.py:16 home/models.py:29
+#: home/models.py:16 home/models.py:29 home/models.py:49
 msgid "Изображение"
 msgstr "Image"
 
@@ -292,23 +302,43 @@ msgstr "We will contact you for details"
 msgid "Форма обратной связи"
 msgstr "Contact form"
 
-#: home/models.py:46
+#: home/models.py:48
+msgid "Содержимое"
+msgstr ""
+
+#: home/models.py:51
+msgid "Значение (напр. 10+)"
+msgstr ""
+
+#: home/models.py:52
+msgid "Подпись (напр. лет опыта)"
+msgstr ""
+
+#: home/models.py:53
+msgid "Показатели/Статистика"
+msgstr ""
+
+#: home/models.py:56
 msgid "Основной текст"
 msgstr "Rich text"
 
-#: home/models.py:47
+#: home/models.py:57
 msgid "Контент страницы"
 msgstr "Page content"
 
-#: home/models.py:54
+#: home/models.py:64
 msgid "Главная страница"
 msgstr "Home page"
 
-#: home/templates/home/blocks/contact_form.html:24
+#: home/templates/home/blocks/contact_form.html:34
+msgid "Опишите вашу задачу..."
+msgstr ""
+
+#: home/templates/home/blocks/contact_form.html:38
 msgid "Отправить заявку"
 msgstr "Send request"
 
-#: home/templates/home/blocks/services.html:12
+#: home/templates/home/blocks/services.html:14
 msgid "Нет фото"
 msgstr "No photo"
 
@@ -357,8 +387,8 @@ msgstr "Editor interface"
 msgid "Сначала создайте суперпользователя!"
 msgstr "Create a superuser first!"
 
+#~ msgid "Войти"
+#~ msgstr "Login"
+
 #~ msgid "Какая услуга вас интересует?"
 #~ msgstr "Which service are you interested in?"
-
-#~ msgid "Услуга"
-#~ msgstr "Service"
