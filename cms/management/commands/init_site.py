@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from wagtail.models import Site, Page
 from cms.models import HomePage
 from cms.models import SocialMediaSettings, ContactSettings
-import json
+
 import os
 from urllib.parse import urlparse
 from dotenv import load_dotenv
@@ -118,13 +118,27 @@ class Command(BaseCommand):
             homepage = HomePage(
                 title="Главная",
                 slug='home',
+                seo_title="Мойка и покраска крыш в Беларуси - HomeService",
+                search_description="Профессиональная мойка и покраска крыш, фасадов и заборов. Работаем по всей Беларуси. Качество, гарантия, доступные цены.",
                 live=True,
             )
             root_page.add_child(instance=homepage)
             homepage.save_revision().publish()
-            self.stdout.write(self.style.SUCCESS("HomePage created."))
+            self.stdout.write(self.style.SUCCESS("HomePage created with SEO tags."))
         else:
             self.stdout.write(self.style.WARNING("HomePage already exists."))
+            # Update SEO if empty
+            updated = False
+            if not homepage.seo_title:
+                homepage.seo_title = "Мойка и покраска крыш в Беларуси - HomeService"
+                updated = True
+            if not homepage.search_description:
+                homepage.search_description = "Профессиональная мойка и покраска крыш, фасадов и заборов. Работаем по всей Беларуси. Качество, гарантия, доступные цены."
+                updated = True
+            
+            if updated:
+                homepage.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("HomePage SEO tags updated."))
 
         # 3. Fill with demo content if body is empty or we want to overwrite/extend
         if not homepage.body:
@@ -162,16 +176,16 @@ class Command(BaseCommand):
                 }),
                 ('about', {
                     'title': 'О нашей компании',
-                    'content': '<p>Мы — команда профессионалов, которая занимается комплексным уходом за частными домами и прилегающими территориями уже более 7 лет. Наша миссия — возвращать эстетичный вид вашему имуществу и продлевать срок его службы.</p><p>Мы используем специализированное оборудование высокого давления и экологически безопасные составы для очистки и покраски.</p>',
+                    'content': '<p>Мы — команда профессионалов, которая занимается комплексным уходом за частными домами и прилегающими территориями уже более 5 лет. Наша миссия — возвращать эстетичный вид вашему имуществу и продлевать срок его службы.</p><p>Мы используем специализированное оборудование высокого давления и экологически безопасные составы для очистки и покраски.</p>',
                     'stats': [
-                        {'value': '7+', 'label': 'лет работы'},
-                        {'value': '500+', 'label': 'объектов'},
+                        {'value': '5+', 'label': 'лет работы'},
+                        {'value': '100+', 'label': 'объектов'},
                         {'value': '100%', 'label': 'гарантия'},
                     ]
                 }),
                 ('contact_form', {
                     'title': 'Свяжитесь с нами',
-                    'subtitle': 'Оставьте свои контакты, и мы перезвоним вам в течение 30 минут для консультации.'
+                    'subtitle': 'Оставьте свои контакты, и мы перезвоним вам для консультации.'
                 }),
             ]
             homepage.save_revision().publish()

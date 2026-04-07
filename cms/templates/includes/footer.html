@@ -5,12 +5,12 @@
             <div class="col-lg-5">
                 <a href="/" class="text-decoration-none d-flex align-items-center mb-3">
                     <img src="{% static 'cms/images/logo/logo_64x64.png' %}" alt="Logo" class="me-2" style="width: 48px; height: 48px;">
-                    <h3 class="fw-bold text-primary mb-0">HomeService</h3>
+                    <div class="h3 fw-bold text-primary mb-0">HomeService</div>
                 </a>
                 <p class="text-secondary pe-lg-5">{% trans "Профессиональные услуги по уходу за вашим домом. Мы ценим качество и ваше время." %}</p>
             </div>
             <div class="col-sm-6 col-lg-3">
-                <h5 class="fw-bold mb-3 text-white">{% trans "Контакты" %}</h5>
+                <h3 class="h5 fw-bold mb-3 text-white">{% trans "Контакты" %}</h3>
                 <ul class="list-unstyled">
                     {% if settings.cms.ContactSettings.phone_number %}
                         <li class="mb-2">
@@ -34,7 +34,7 @@
                 </ul>
             </div>
             <div class="col-sm-6 col-lg-4 text-lg-end">
-                <h5 class="fw-bold mb-3 text-white">{% trans "Мы в соцсетях" %}</h5>
+                <h3 class="h5 fw-bold mb-3 text-white">{% trans "Мы в соцсетях" %}</h3>
                 <div class="d-flex gap-2 justify-content-lg-end flex-wrap">
                     {% if settings.cms.SocialMediaSettings.facebook %}
                         <a href="{{ settings.cms.SocialMediaSettings.facebook }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3" target="_blank">Facebook</a>
