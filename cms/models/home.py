@@ -75,7 +75,12 @@ class HomePage(Page):
         if request.method == 'POST':
             form = ContactForm(request.POST)
             if form.is_valid():
-                form.save()
+                # Проверяем, не является ли заявка дубликатом (установлено в clean_phone)
+                is_duplicate = getattr(form, 'is_duplicate', False)
+
+                if not is_duplicate:
+                    form.save()
+                
                 form_success = True
                 form_message = _("Заявка успешно принята!")
                 # Очищаем форму после успеха
