@@ -1,14 +1,19 @@
-from django.db import models
-from django.utils.translation import gettext_lazy as _ # Импорт для переводов
+from django.contrib import messages
+from django.template.response import TemplateResponse
+from django.utils.translation import gettext_lazy as _
+from django.middleware.csrf import get_token
+from django.shortcuts import redirect
 
 from wagtail.models import Page, TranslatableMixin
-
 from wagtail.fields import StreamField
 from wagtail import blocks
 from wagtail.admin.panels import FieldPanel
 from wagtail.images.blocks import ImageChooserBlock
 
-class HomePage(Page, TranslatableMixin):
+from contacts.forms import ContactForm
+
+
+class HomePage(Page):
     body = StreamField([
         ('hero', blocks.StructBlock([
             ('title', blocks.CharBlock(required=True, label=_("Заголовок"), help_text=_("Заголовок баннера"))),
@@ -20,7 +25,7 @@ class HomePage(Page, TranslatableMixin):
                 default=_("Рассчитать стоимость")
             )),
         ], label=_("Главный баннер"), template='home/blocks/hero.html')),
-        
+
         ('services', blocks.StructBlock([
             ('title', blocks.CharBlock(required=True, label=_("Заголовок"), default=_("Наши услуги"))),
             ('items', blocks.ListBlock(blocks.StructBlock([
@@ -40,7 +45,8 @@ class HomePage(Page, TranslatableMixin):
 
         ('contact_form', blocks.StructBlock([
             ('title', blocks.CharBlock(required=True, label=_("Заголовок формы"), default=_("Оставьте заявку"))),
-            ('subtitle', blocks.TextBlock(required=False, label=_("Подзаголовок формы"), default=_("Мы свяжемся с вами для уточнения деталей"))),
+            ('subtitle', blocks.TextBlock(required=False, label=_("Подзаголовок формы"),
+                                          default=_("Мы свяжемся с вами для уточнения деталей"))),
         ], label=_("Форма обратной связи"), template='home/blocks/contact_form.html')),
 
         ('about', blocks.StructBlock([
@@ -52,7 +58,7 @@ class HomePage(Page, TranslatableMixin):
                 ('label', blocks.CharBlock(required=True, label=_("Подпись (напр. лет опыта)"))),
             ]), label=_("Показатели/Статистика"), required=False)),
         ], label=_("О нас"), template='home/blocks/about.html')),
-        
+
         ('content', blocks.RichTextBlock(label=_("Основной текст"), template='home/blocks/rich_text.html')),
     ], use_json_field=True, blank=True, null=True, verbose_name=_("Контент страницы"))
 
@@ -62,3 +68,31 @@ class HomePage(Page, TranslatableMixin):
 
     class Meta:
         verbose_name = _("Главная страница")
+
+    def serve(self, request, *args, **kwargs):
+        context = self.get_context(request, *args, **kwargs)
+        form_success = None
+        form_message = None
+
+        if request.method == 'POST':
+            form = ContactForm(request.POST)
+            if form.is_valid():
+                form.save()
+                form_success = True
+                form_message = _("Заявка успешно принята!")
+                # Очищаем форму после успеха
+                form = ContactForm()
+            else:
+                form_success = False
+                form_message = _("Исправьте ошибки в форме.")
+        else:
+            form = ContactForm()
+
+        # Передаем всё в контекст
+        context.update({
+            "contact_form": form,
+            "form_success": form_success,
+            "form_message": form_message
+        })
+
+        return TemplateResponse(request, self.get_template(request, *args, **kwargs), context)
