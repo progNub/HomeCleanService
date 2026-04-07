@@ -1,10 +1,6 @@
-from django.contrib import messages
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
-from django.middleware.csrf import get_token
-from django.shortcuts import redirect
-
-from wagtail.models import Page, TranslatableMixin
+from wagtail.models import Page
 from wagtail.fields import StreamField
 from wagtail import blocks
 from wagtail.admin.panels import FieldPanel
@@ -14,6 +10,8 @@ from contacts.forms import ContactForm
 
 
 class HomePage(Page):
+    template = 'cms/home/home_page.html'
+
     body = StreamField([
         ('hero', blocks.StructBlock([
             ('title', blocks.CharBlock(required=True, label=_("Заголовок"), help_text=_("Заголовок баннера"))),
@@ -24,7 +22,7 @@ class HomePage(Page):
                 label=_("Текст кнопки"),
                 default=_("Рассчитать стоимость")
             )),
-        ], label=_("Главный баннер"), template='home/blocks/hero.html')),
+        ], label=_("Главный баннер"), template='cms/home/blocks/hero.html')),
 
         ('services', blocks.StructBlock([
             ('title', blocks.CharBlock(required=True, label=_("Заголовок"), default=_("Наши услуги"))),
@@ -33,7 +31,7 @@ class HomePage(Page):
                 ('description', blocks.TextBlock(required=True, label=_("Описание"))),
                 ('image', ImageChooserBlock(required=False, label=_("Изображение"))),
             ]), label=_("Список услуг"))),
-        ], label=_("Блок услуг"), template='home/blocks/services.html')),
+        ], label=_("Блок услуг"), template='cms/home/blocks/services.html')),
 
         ('features', blocks.StructBlock([
             ('title', blocks.CharBlock(required=True, label=_("Заголовок"))),
@@ -41,13 +39,13 @@ class HomePage(Page):
                 ('title', blocks.CharBlock(required=True, label=_("Заголовок преимущества"))),
                 ('text', blocks.TextBlock(required=True, label=_("Текст преимущества"))),
             ]), label=_("Преимущества"))),
-        ], label=_("Преимущества"), template='home/blocks/features.html')),
+        ], label=_("Преимущества"), template='cms/home/blocks/features.html')),
 
         ('contact_form', blocks.StructBlock([
             ('title', blocks.CharBlock(required=True, label=_("Заголовок формы"), default=_("Оставьте заявку"))),
             ('subtitle', blocks.TextBlock(required=False, label=_("Подзаголовок формы"),
                                           default=_("Мы свяжемся с вами для уточнения деталей"))),
-        ], label=_("Форма обратной связи"), template='home/blocks/contact_form.html')),
+        ], label=_("Форма обратной связи"), template='cms/home/blocks/contact_form.html')),
 
         ('about', blocks.StructBlock([
             ('title', blocks.CharBlock(required=True, label=_("Заголовок"))),
@@ -57,9 +55,9 @@ class HomePage(Page):
                 ('value', blocks.CharBlock(required=True, label=_("Значение (напр. 10+)"))),
                 ('label', blocks.CharBlock(required=True, label=_("Подпись (напр. лет опыта)"))),
             ]), label=_("Показатели/Статистика"), required=False)),
-        ], label=_("О нас"), template='home/blocks/about.html')),
+        ], label=_("О нас"), template='cms/home/blocks/about.html')),
 
-        ('content', blocks.RichTextBlock(label=_("Основной текст"), template='home/blocks/rich_text.html')),
+        ('content', blocks.RichTextBlock(label=_("Основной текст"), template='cms/home/blocks/rich_text.html')),
     ], use_json_field=True, blank=True, null=True, verbose_name=_("Контент страницы"))
 
     content_panels = Page.content_panels + [

@@ -54,7 +54,6 @@ WAGTAIL_APPS = [
 # 3. Local apps
 INTERNAL_APPS = [
     "cms",
-    "home",
     "search",
     "contacts",
 ]
@@ -172,7 +171,7 @@ STATICFILES_FINDERS = [
 ]
 
 STATICFILES_DIRS = [
-    PROJECT_DIR / "static",
+    # BASE_DIR / "static", # Это STATIC_ROOT, его не должно быть в DIRS
 ]
 
 STATIC_ROOT = BASE_DIR / "static"

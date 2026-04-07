@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from wagtail.models import Site, Page
-from home.models import HomePage
+from cms.models import HomePage
 from cms.models import SocialMediaSettings, ContactSettings
 import json
 import os

@@ -1,4 +1,4 @@
-from home.models import HomePage
+from cms.models import HomePage
 
 from wagtail.models import Page, Site
 from wagtail.test.utils import WagtailPageTestCase
@@ -39,4 +39,4 @@ class HomeTests(WagtailPageTestCase):
 
     def test_homepage_template_used(self):
         response = self.client.get(self.homepage.url)
-        self.assertTemplateUsed(response, "home/home_page.html")
+        self.assertTemplateUsed(response, "cms/home/home_page.html")
