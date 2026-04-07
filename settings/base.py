@@ -84,7 +84,6 @@ WAGTAIL_I18N_ENABLED = True
 
 LANGUAGES = [
     ('ru', 'Russian'),
-    ('en', 'English'),
 ]
 
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES
