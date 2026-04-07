@@ -1,9 +1,12 @@
-{% load i18n %}
+{% load i18n static %}
 <footer class="bg-dark text-light py-5 mt-5 mt-lg-auto">
     <div class="container">
         <div class="row g-4 mb-4">
             <div class="col-lg-5">
-                <a href="/" class="text-decoration-none"><h3 class="fw-bold text-primary mb-3">HomeService</h3></a>
+                <a href="/" class="text-decoration-none d-flex align-items-center mb-3">
+                    <img src="{% static 'images/logo/logo_64x64.png' %}" alt="Logo" class="me-2" style="width: 48px; height: 48px;">
+                    <h3 class="fw-bold text-primary mb-0">HomeService</h3>
+                </a>
                 <p class="text-secondary pe-lg-5">{% trans "Профессиональные услуги по уходу за вашим домом. Мы ценим качество и ваше время." %}</p>
             </div>
             <div class="col-sm-6 col-lg-3">
