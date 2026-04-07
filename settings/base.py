@@ -63,6 +63,7 @@ THIRD_PARTY_APPS = [
     "modelcluster",
     "taggit",
     "django_filters",
+    "django_browser_reload",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + WAGTAIL_APPS + INTERNAL_APPS + THIRD_PARTY_APPS
@@ -102,6 +103,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
@@ -199,6 +201,11 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 # Wagtail settings
 
 WAGTAIL_SITE_NAME = "cms"
+
+# Django-browser-reload
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 # Search
 # https://docs.wagtail.org/en/stable/topics/search/backends.html

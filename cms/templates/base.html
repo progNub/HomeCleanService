@@ -75,5 +75,9 @@
         {% block extra_js %}
         {# Override this in templates to add extra javascript #}
         {% endblock %}
+
+        {% if debug %}
+            <script src="{% static 'django_browser_reload/reload-listener.js' %}"></script>
+        {% endif %}
     </body>
 </html>
