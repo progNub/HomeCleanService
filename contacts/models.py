@@ -25,6 +25,7 @@ class ContactRequest(models.Model):
             FieldPanel("phone"),
             FieldPanel("email"),
             FieldPanel("comment"),
+            FieldPanel("created_at", read_only=True),
         ], heading=_("Информация о заявке")),
     ]
 

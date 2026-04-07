@@ -70,9 +70,9 @@ class Command(BaseCommand):
         # Social Media Settings
         social_settings = SocialMediaSettings.load()
         if not any([social_settings.facebook, social_settings.instagram, social_settings.telegram]):
-            social_settings.telegram = "https://t.me/homeservice"
+            # social_settings.telegram = "https://t.me/homeservice"
             social_settings.whatsapp = "https://wa.me/375296023356"
-            social_settings.instagram = "https://instagram.com/homeservice"
+            # social_settings.instagram = "https://instagram.com/homeservice"
             social_settings.save()
             self.stdout.write(self.style.SUCCESS("Social media settings created."))
         else:
@@ -82,7 +82,7 @@ class Command(BaseCommand):
         contact_settings = ContactSettings.load()
         if not contact_settings.phone_number:
             contact_settings.phone_number = "+375296023356"
-            contact_settings.email = "info@homeservice.by"
+            # contact_settings.email = "info@homeservice.by"
             contact_settings.address = "Беларусь"
             contact_settings.save()
             self.stdout.write(self.style.SUCCESS("Contact settings created."))
