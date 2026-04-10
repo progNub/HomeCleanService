@@ -15,7 +15,7 @@
                 {% if settings.cms.NavigationSettings.menu_items.all %}
                     {% for item in settings.cms.NavigationSettings.menu_items.all %}
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold {% if request.path == item.link %}active{% endif %}" href="{{ item.link }}">{{ item.label }}</a>
+                            <a class="nav-link fw-semibold {% if request.path == item.link or request.path|add:item.link_url == item.link %}active{% endif %}" href="{{ item.link }}">{{ item.label }}</a>
                         </li>
                     {% endfor %}
                 {% else %}

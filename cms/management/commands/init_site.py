@@ -428,6 +428,8 @@ class Command(BaseCommand):
             contact_page = FormPage(
                 title="Контакты",
                 slug="contact-us",
+                seo_title="Связаться с нами - HomeService",
+                search_description="Оставьте заявку на мойку или покраску крыши. Мы перезвоним вам в ближайшее время для уточнения деталей.",
                 intro="<p>Пожалуйста, заполните форму ниже, и мы свяжемся с вами в ближайшее время.</p>",
                 thank_you_text="<p>Спасибо за ваше сообщение! Мы свяжемся с вами скоро.</p>",
                 to_address="info@homeservice.by",  # Значение по умолчанию
@@ -472,6 +474,22 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Contact Form Page created."))
         else:
             self.stdout.write(self.style.WARNING("Contact Form Page already exists."))
+
+            # Update SEO if empty
+            updated = False
+            if not contact_page.seo_title:
+                contact_page.seo_title = "Связаться с нами - HomeService"
+                updated = True
+            if not contact_page.search_description:
+                contact_page.search_description = "Оставьте заявку на мойку или покраску крыши. Мы перезвоним вам в ближайшее время для уточнения деталей."
+                updated = True
+
+            if updated:
+                contact_page.save_revision().publish()
+                self.stdout.write(
+                    self.style.SUCCESS("Contact Form Page SEO tags updated.")
+                )
+
             if not contact_page.show_in_menus:
                 contact_page.show_in_menus = True
                 contact_page.save_revision().publish()

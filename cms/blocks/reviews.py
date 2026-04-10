@@ -14,6 +14,13 @@ class ReviewsBlock(BaseStructBlock):
         help_text=_("Выберите отзывы для отображения"),
     )
 
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        from cms.forms import ReviewForm
+
+        context["review_form"] = ReviewForm()
+        return context
+
     class Meta:
         label = _("Блок отзывов")
         template = "cms/home/blocks/reviews.html"
