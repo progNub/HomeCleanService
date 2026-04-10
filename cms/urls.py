@@ -14,7 +14,7 @@ urlpatterns = i18n_patterns(
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("search/", search_views.search, name="search"),
-    path('i18n/', include('django.conf.urls.i18n')),
+    path("i18n/", include("django.conf.urls.i18n")),
     prefix_default_language=False,
 )
 

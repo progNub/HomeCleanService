@@ -3,6 +3,7 @@ from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
 from .models import ContactRequest
 
+
 class ContactRequestViewSet(SnippetViewSet):
     model = ContactRequest
     icon = "mail"
@@ -12,5 +13,6 @@ class ContactRequestViewSet(SnippetViewSet):
     add_to_admin_menu = True
     list_display = ("name", "phone", "email", "created_at")
     search_fields = ("name", "phone", "email", "comment")
+
 
 register_snippet(ContactRequestViewSet)
