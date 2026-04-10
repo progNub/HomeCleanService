@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags django_bootstrap5 i18n static   %}
+
+{% block body_class %}template-formpage{% endblock %}
+
+{% block content %}
+    <section class="py-5">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                        <div class="card-body p-4 p-lg-5 bg-white">
+                            <div class="text-center mb-5">
+                                <h1 class="fw-bold display-6 mb-3 text-primary">{{ page.title }}</h1>
+                                {% if page.intro %}
+                                    <div class="text-muted lead">{{ page.intro|richtext }}</div>
+                                {% endif %}
+                            </div>
+
+                            <form action="{% pageurl page %}" method="POST">
+                                {% csrf_token %}
+
+                                {% bootstrap_form form %}
+
+                                <div class="d-grid mt-5">
+                                    {% trans "Отправить" as submit_text %}
+                                    {% bootstrap_button content=submit_text button_type="submit" button_class="btn-primary btn-lg py-3 fw-bold rounded-pill shadow-sm" %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}
