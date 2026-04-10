@@ -49,6 +49,10 @@
 
         {% include "includes/header.html" %}
 
+        {% if self %}
+            {% include "includes/breadcrumbs.html" %}
+        {% endif %}
+
         {% if messages %}
             <div class="container mt-3">
                 <div class="messages">
