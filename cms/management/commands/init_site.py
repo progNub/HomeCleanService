@@ -7,6 +7,7 @@ from cms.models import (
     ContactSettings,
     NavigationSettings,
     MenuItem,
+    Review,
 )
 
 import os
@@ -48,6 +49,7 @@ class Command(BaseCommand):
             self.init_superuser()
 
         if run_all or content_only:
+            self.init_reviews()
             self.init_content()
 
         if run_all or settings_only:
@@ -157,6 +159,18 @@ class Command(BaseCommand):
                     label="О нас",
                     link_url="#about-us",
                     sort_order=3,
+                )
+                MenuItem.objects.create(
+                    setting=nav_settings,
+                    label="Отзывы",
+                    link_url="#reviews",
+                    sort_order=4,
+                )
+                MenuItem.objects.create(
+                    setting=nav_settings,
+                    label="FAQ",
+                    link_url="#faq",
+                    sort_order=5,
                 )
 
             if contact_page:
@@ -299,6 +313,35 @@ class Command(BaseCommand):
                         ],
                     },
                 ),
+                (
+                    "reviews",
+                    {
+                        "title": "Отзывы наших клиентов",
+                        "anchor": "reviews",
+                        "reviews": list(Review.objects.all()[:3]),
+                    },
+                ),
+                (
+                    "faq",
+                    {
+                        "title": "Часто задаваемые вопросы",
+                        "anchor": "faq",
+                        "items": [
+                            {
+                                "question": "Сколько времени занимает мойка крыши?",
+                                "answer": "<p>В среднем мойка стандартной крыши занимает от 4 до 8 часов, в зависимости от степени загрязнения и площади.</p>",
+                            },
+                            {
+                                "question": "Безопасна ли покраска для растений вокруг дома?",
+                                "answer": "<p>Да, мы используем экологичные составы и при необходимости укрываем растения защитной пленкой.</p>",
+                            },
+                            {
+                                "question": "Как долго держится краска на крыше?",
+                                "answer": "<p>При соблюдении технологии нанесения и использовании качественных материалов, покрытие служит от 7 до 12 лет.</p>",
+                            },
+                        ],
+                    },
+                ),
             ]
             homepage.save_revision().publish()
             self.stdout.write(self.style.SUCCESS("Demo content added to HomePage."))
@@ -345,6 +388,31 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Site object created."))
 
         return homepage
+
+    def init_reviews(self):
+        self.stdout.write("Checking for demo reviews...")
+        if not Review.objects.exists():
+            Review.objects.create(
+                author="Александр Е.",
+                text="Заказывал мойку и покраску крыши. Ребята приехали вовремя, сделали всё очень аккуратно. Крыша выглядит как новая! Рекомендую.",
+                rating=5,
+                is_approved=True,
+            )
+            Review.objects.create(
+                author="Мария С.",
+                text="Очень довольна результатом очистки фасада. Все пятна ушли, дом преобразился. Спасибо за профессионализм!",
+                rating=5,
+                is_approved=True,
+            )
+            Review.objects.create(
+                author="Иван Петрович",
+                text="Хорошая работа. Быстро, четко и по адекватной цене. Буду обращаться еще.",
+                rating=4,
+                is_approved=True,
+            )
+            self.stdout.write(self.style.SUCCESS("Demo reviews created."))
+        else:
+            self.stdout.write(self.style.WARNING("Reviews already exist."))
 
     def init_contact_form_page(self, homepage):
         """

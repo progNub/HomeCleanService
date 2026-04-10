@@ -7,3 +7,4 @@ from .settings import (
 )
 from .home import HomePage
 from .forms import FormPage, FormField
+from .reviews import Review

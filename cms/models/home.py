@@ -7,6 +7,8 @@ from cms.blocks.hero import HeroBlock
 from cms.blocks.services import ServicesBlock
 from cms.blocks.features import FeaturesBlock
 from cms.blocks.about import AboutBlock
+from cms.blocks.reviews import ReviewsBlock
+from cms.blocks.faq import FAQBlock
 from cms.blocks.content import RichTextBlock
 
 
@@ -19,6 +21,8 @@ class HomePage(Page):
             ("services", ServicesBlock()),
             ("features", FeaturesBlock()),
             ("about", AboutBlock()),
+            ("reviews", ReviewsBlock()),
+            ("faq", FAQBlock()),
             ("content", RichTextBlock()),
         ],
         use_json_field=True,

@@ -1,0 +1,38 @@
+{% load wagtailimages_tags i18n %}
+
+<section class="py-5 bg-light" id="{{ value.anchor|default:'reviews' }}">
+    <div class="container py-4">
+        <h2 class="text-center fw-bold mb-5 fs-1">{{ value.title }}</h2>
+        <div class="row g-4">
+            {% for review in value.reviews %}
+                {% if review.is_approved %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm p-4 rounded-4">
+                            <div class="d-flex align-items-center mb-3">
+                                {% if review.image %}
+                                    {% image review.image fill-50x50 class="rounded-circle me-3" %}
+                                {% else %}
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                        <i class="bi bi-person-fill fs-4"></i>
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <h4 class="h6 fw-bold mb-0">{{ review.author }}</h4>
+                                    <div class="text-warning small">
+                                        {% for i in "12345" %}
+                                            <i class="bi {% if forloop.counter <= review.rating %}bi-star-fill{% else %}bi-star{% endif %}"></i>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-muted mb-0 italic">"{{ review.text }}"</p>
+                            <div class="text-end mt-3 small text-muted opacity-75">
+                                {{ review.date|date:"d.m.Y" }}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
