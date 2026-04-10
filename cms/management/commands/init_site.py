@@ -318,7 +318,7 @@ class Command(BaseCommand):
                     {
                         "title": "Отзывы наших клиентов",
                         "anchor": "reviews",
-                        "reviews": list(Review.objects.all()[:3]),
+                        "reviews": [],
                     },
                 ),
                 (

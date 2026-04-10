@@ -3,36 +3,48 @@
 <section class="py-5 bg-light" id="{{ value.anchor|default:'reviews' }}">
     <div class="container py-4">
         <h2 class="text-center fw-bold mb-5 fs-1">{{ value.title }}</h2>
-        <div class="row g-4">
-            {% for review in value.reviews %}
-                {% if review.is_approved %}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm p-4 rounded-4">
-                            <div class="d-flex align-items-center mb-3">
-                                {% if review.image %}
-                                    {% image review.image fill-50x50 class="rounded-circle me-3" %}
-                                {% else %}
-                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
-                                        <i class="bi bi-person-fill fs-4"></i>
-                                    </div>
-                                {% endif %}
-                                <div>
-                                    <h4 class="h6 fw-bold mb-0">{{ review.author }}</h4>
-                                    <div class="text-warning small">
-                                        {% for i in "12345" %}
-                                            <i class="bi {% if forloop.counter <= review.rating %}bi-star-fill{% else %}bi-star{% endif %}"></i>
-                                        {% endfor %}
+        <div class="reviews-slider-container position-relative mb-5">
+            <div class="reviews-slider d-flex overflow-x-auto pb-4 px-2" style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: thin;">
+                {% for review in reviews_list %}
+                    {% if review.is_approved %}
+                        <div class="review-slide flex-shrink-0 col-11 col-md-5 col-lg-4 px-2" style="scroll-snap-align: start;">
+                            <div class="card h-100 border-0 shadow-sm p-4 rounded-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    {% if review.image %}
+                                        {% image review.image fill-50x50 class="rounded-circle me-3" %}
+                                    {% else %}
+                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                            <i class="bi bi-person-fill fs-4"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <h4 class="h6 fw-bold mb-0">{{ review.author }}</h4>
+                                        <div class="text-warning small">
+                                            {% for i in "12345" %}
+                                                <i class="bi {% if forloop.counter <= review.rating %}bi-star-fill{% else %}bi-star{% endif %}"></i>
+                                            {% endfor %}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <p class="text-muted mb-0 italic">"{{ review.text }}"</p>
-                            <div class="text-end mt-3 small text-muted opacity-75">
-                                {{ review.date|date:"d.m.Y" }}
+                                <p class="text-muted mb-0 italic">"{{ review.text }}"</p>
+                                <div class="text-end mt-3 small text-muted opacity-75">
+                                    {{ review.date|date:"d.m.Y" }}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endif %}
-            {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            {# Кнопки навигации (опционально, для десктопа) #}
+            <div class="d-none d-md-flex justify-content-center gap-3 mt-3">
+                <button class="btn btn-outline-primary rounded-circle p-2 lh-1" onclick="document.querySelector('.reviews-slider').scrollBy({left: -300, behavior: 'smooth'})">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="btn btn-outline-primary rounded-circle p-2 lh-1" onclick="document.querySelector('.reviews-slider').scrollBy({left: 300, behavior: 'smooth'})">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
         </div>
 
         {# Форма добавления отзыва #}
