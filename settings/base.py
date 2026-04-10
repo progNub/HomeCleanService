@@ -56,7 +56,6 @@ WAGTAIL_APPS = [
 INTERNAL_APPS = [
     "cms",
     "search",
-    "contacts",
 ]
 
 # 4. Other apps

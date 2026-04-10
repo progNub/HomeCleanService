@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from wagtail.models import Site, Page
-from cms.models import HomePage
+from cms.models import HomePage, FormPage, FormField
 from cms.models import SocialMediaSettings, ContactSettings
 
 import os
@@ -46,7 +46,9 @@ class Command(BaseCommand):
             self.init_global_settings()
 
         if run_all or content_only:
-            self.init_content()
+            homepage = self.init_content()
+            if homepage:
+                self.init_contact_form_page(homepage)
 
         self.stdout.write(self.style.SUCCESS("Site initialization finished!"))
 
@@ -176,7 +178,7 @@ class Command(BaseCommand):
                     {
                         "title": "Мойка и покраска крыш, домов, заборов",
                         "subtitle": "Моем всё! Профессиональная очистка и обновление вашего имущества. Работаем по всей Беларуси.",
-                        "cta_text": "Оставить заявку",
+                        "cta_text": "Связаться с нами",
                     },
                 ),
                 (
@@ -231,13 +233,6 @@ class Command(BaseCommand):
                         ],
                     },
                 ),
-                (
-                    "contact_form",
-                    {
-                        "title": "Свяжитесь с нами",
-                        "subtitle": "Оставьте свои контакты, и мы перезвоним вам для консультации.",
-                    },
-                ),
             ]
             homepage.save_revision().publish()
             self.stdout.write(self.style.SUCCESS("Demo content added to HomePage."))
@@ -282,3 +277,63 @@ class Command(BaseCommand):
                 site_name="HomeService",
             )
             self.stdout.write(self.style.SUCCESS("Site object created."))
+
+        return homepage
+
+    def init_contact_form_page(self, homepage):
+        """
+        Creates a contact form page using Wagtail's AbstractEmailForm
+        """
+        self.stdout.write("Checking for Contact Form Page...")
+        contact_page = (
+            FormPage.objects.descendant_of(homepage).filter(slug="contact-us").first()
+        )
+
+        if not contact_page:
+            self.stdout.write("Creating Contact Form Page...")
+            contact_page = FormPage(
+                title="Контакты",
+                slug="contact-us",
+                intro="<p>Пожалуйста, заполните форму ниже, и мы свяжемся с вами в ближайшее время.</p>",
+                thank_you_text="<p>Спасибо за ваше сообщение! Мы свяжемся с вами скоро.</p>",
+                to_address="info@homeservice.by",  # Значение по умолчанию
+                from_address="noreply@homeservice.by",
+                subject="Новое сообщение с сайта",
+            )
+            homepage.add_child(instance=contact_page)
+            contact_page.save_revision().publish()
+
+            # Add form fields
+            FormField.objects.create(
+                page=contact_page,
+                label="Ваше имя",
+                field_type="singleline",
+                required=True,
+                sort_order=0,
+            )
+            FormField.objects.create(
+                page=contact_page,
+                label="Телефон",
+                field_type="singleline",
+                required=True,
+                sort_order=1,
+            )
+            FormField.objects.create(
+                page=contact_page,
+                label="Email",
+                field_type="email",
+                required=False,
+                sort_order=2,
+            )
+            FormField.objects.create(
+                page=contact_page,
+                label="Ваш комментарий",
+                field_type="multiline",
+                required=False,
+                sort_order=3,
+            )
+
+            contact_page.save_revision().publish()
+            self.stdout.write(self.style.SUCCESS("Contact Form Page created."))
+        else:
+            self.stdout.write(self.style.WARNING("Contact Form Page already exists."))

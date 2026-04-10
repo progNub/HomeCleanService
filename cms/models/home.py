@@ -1,12 +1,9 @@
-from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from wagtail.models import Page
 from wagtail.fields import StreamField
 from wagtail import blocks
 from wagtail.admin.panels import FieldPanel
 from wagtail.images.blocks import ImageChooserBlock
-
-from contacts.forms import ContactForm
 
 
 class HomePage(Page):
@@ -139,31 +136,6 @@ class HomePage(Page):
                 ),
             ),
             (
-                "contact_form",
-                blocks.StructBlock(
-                    [
-                        (
-                            "title",
-                            blocks.CharBlock(
-                                required=True,
-                                label=_("Заголовок формы"),
-                                default=_("Оставьте заявку"),
-                            ),
-                        ),
-                        (
-                            "subtitle",
-                            blocks.TextBlock(
-                                required=False,
-                                label=_("Подзаголовок формы"),
-                                default=_("Мы свяжемся с вами для уточнения деталей"),
-                            ),
-                        ),
-                    ],
-                    label=_("Форма обратной связи"),
-                    template="cms/home/blocks/contact_form.html",
-                ),
-            ),
-            (
                 "about",
                 blocks.StructBlock(
                     [
@@ -228,40 +200,3 @@ class HomePage(Page):
 
     class Meta:
         verbose_name = _("Главная страница")
-
-    def serve(self, request, *args, **kwargs):
-        context = self.get_context(request, *args, **kwargs)
-        form_success = None
-        form_message = None
-
-        if request.method == "POST":
-            form = ContactForm(request.POST)
-            if form.is_valid():
-                # Проверяем, не является ли заявка дубликатом (установлено в clean_phone)
-                is_duplicate = getattr(form, "is_duplicate", False)
-
-                if not is_duplicate:
-                    form.save()
-
-                form_success = True
-                form_message = _("Заявка успешно принята!")
-                # Очищаем форму после успеха
-                form = ContactForm()
-            else:
-                form_success = False
-                form_message = _("Исправьте ошибки в форме.")
-        else:
-            form = ContactForm()
-
-        # Передаем всё в контекст
-        context.update(
-            {
-                "contact_form": form,
-                "form_success": form_success,
-                "form_message": form_message,
-            }
-        )
-
-        return TemplateResponse(
-            request, self.get_template(request, *args, **kwargs), context
-        )
