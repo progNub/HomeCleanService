@@ -157,6 +157,18 @@ wheels = [
 ]
 
 [[package]]
+name = "django-bootstrap5"
+version = "26.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f8/31/bd9e6acdf959d5e19757026c206a6bdfceec3001ee85bb1f9799ce304f87/django_bootstrap5-26.2.tar.gz", hash = "sha256:12331059c8230ba372ffaad990a706151e1ad8f721a870aa2e862cf6746f0d33", size = 51468, upload-time = "2026-02-08T11:47:19.067Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7a/79/d4b547849a86f450b1f1fb77f306da5d7844aba45f4aa10450d375fc26f5/django_bootstrap5-26.2-py3-none-any.whl", hash = "sha256:179af37c59f4e9b1070fc650f30961c5d903c2c0ad60280ad5b63ed394f68658", size = 26851, upload-time = "2026-02-08T11:47:20.198Z" },
+]
+
+[[package]]
 name = "django-browser-reload"
 version = "1.21.0"
 source = { registry = "https://pypi.org/simple" }
@@ -309,6 +321,7 @@ name = "homeservice"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "django-bootstrap5" },
     { name = "django-browser-reload" },
     { name = "python-dotenv" },
     { name = "wagtail" },
@@ -323,6 +336,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "django-bootstrap5", specifier = ">=26.2" },
     { name = "django-browser-reload", specifier = "==1.21.0" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
     { name = "wagtail", specifier = ">=7.3.1" },

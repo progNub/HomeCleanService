@@ -8,6 +8,7 @@ dependencies = [
     "wagtail>=7.3.1",
     "wagtail-localize>=1.13",
     "django-browser-reload==1.21.0",
+    "django-bootstrap5>=26.2",
 ]
 
 [dependency-groups]
