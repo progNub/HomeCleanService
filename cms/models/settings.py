@@ -12,54 +12,12 @@ from wagtail.contrib.settings.models import BaseGenericSetting, register_setting
 from wagtail.models import Orderable, PreviewableMixin
 
 
-@register_setting
-class SocialMediaSettings(PreviewableMixin, BaseGenericSetting):
-    facebook = models.URLField(
-        blank=True,
-        null=True,
-        verbose_name=_("Facebook"),
-        help_text=_("Ссылка на Facebook"),
-    )
-    instagram = models.URLField(
-        blank=True,
-        null=True,
-        verbose_name=_("Instagram"),
-        help_text=_("Ссылка на Instagram"),
-    )
-    youtube = models.URLField(
-        blank=True,
-        null=True,
-        verbose_name=_("YouTube"),
-        help_text=_("Ссылка на YouTube"),
-    )
-    telegram = models.URLField(
-        blank=True,
-        null=True,
-        verbose_name=_("Telegram"),
-        help_text=_("Ссылка на Telegram"),
-    )
-    whatsapp = models.URLField(
-        blank=True,
-        null=True,
-        verbose_name=_("WhatsApp"),
-        help_text=_("Ссылка на WhatsApp"),
-    )
-
-    panels = [
-        MultiFieldPanel(
-            [
-                FieldPanel("facebook"),
-                FieldPanel("instagram"),
-                FieldPanel("youtube"),
-                FieldPanel("telegram"),
-                FieldPanel("whatsapp"),
-            ],
-            heading=_("Социальные сети"),
-        )
-    ]
-
-    class Meta:
-        verbose_name = _("Настройки соцсетей")
+class SettingsPreviewMixin:
+    """
+    Mixin to provide common preview logic for settings models.
+    It injects the current (unsaved) settings instance into the context
+    under the key used by Wagtail's {% get_settings %} tag.
+    """
 
     def get_preview_template(self, request, mode_name):
         return "cms/home/home_page.html"
@@ -68,17 +26,68 @@ class SocialMediaSettings(PreviewableMixin, BaseGenericSetting):
         from cms.models import HomePage
 
         homepage = HomePage.objects.first()
-        context = homepage.get_context(request)
+        context = homepage.get_context(request) if homepage else {"request": request}
+
+        # Wagtail settings are usually accessed in templates as
+        # {{ settings.app_label.ModelName }} after {% get_settings %}
         if "settings" not in context:
             context["settings"] = {}
         if "cms" not in context["settings"]:
             context["settings"]["cms"] = {}
-        context["settings"]["cms"]["SocialMediaSettings"] = self
+
+        # self is the current instance being previewed (including unsaved changes)
+        context["settings"]["cms"][self.__class__.__name__] = self
         return context
 
 
 @register_setting
-class ContactSettings(PreviewableMixin, BaseGenericSetting):
+class SocialMediaSettings(
+    SettingsPreviewMixin, PreviewableMixin, ClusterableModel, BaseGenericSetting
+):
+    panels = [
+        InlinePanel(
+            "social_media_links",
+            label=_("Ссылки на соцсети"),
+            help_text=_("Добавьте ссылки на ваши профили в социальных сетях"),
+        )
+    ]
+
+    class Meta:
+        verbose_name = _("Настройки соцсетей")
+
+
+class SocialMediaLink(Orderable):
+    PLATFORM_CHOICES = [
+        ("facebook", "Facebook"),
+        ("instagram", "Instagram"),
+        ("youtube", "YouTube"),
+        ("telegram", "Telegram"),
+        ("whatsapp", "WhatsApp"),
+        ("vk", "VK"),
+        ("viber", "Viber"),
+        ("tiktok", "TikTok"),
+    ]
+
+    setting = ParentalKey(
+        SocialMediaSettings, related_name="social_media_links", on_delete=models.CASCADE
+    )
+    platform = models.CharField(
+        max_length=20, choices=PLATFORM_CHOICES, verbose_name=_("Платформа")
+    )
+    url = models.URLField(verbose_name=_("Ссылка"))
+
+    panels = [
+        FieldPanel("platform"),
+        FieldPanel("url"),
+    ]
+
+    class Meta(Orderable.Meta):
+        verbose_name = _("Ссылка на соцсеть")
+        verbose_name_plural = _("Ссылки на соцсети")
+
+
+@register_setting
+class ContactSettings(SettingsPreviewMixin, PreviewableMixin, BaseGenericSetting):
     phone_number = models.CharField(
         max_length=20,
         blank=True,
@@ -107,24 +116,11 @@ class ContactSettings(PreviewableMixin, BaseGenericSetting):
     class Meta:
         verbose_name = _("Контактные данные")
 
-    def get_preview_template(self, request, mode_name):
-        return "cms/home/home_page.html"
-
-    def get_preview_context(self, request, mode_name):
-        from cms.models import HomePage
-
-        homepage = HomePage.objects.first()
-        context = homepage.get_context(request)
-        if "settings" not in context:
-            context["settings"] = {}
-        if "cms" not in context["settings"]:
-            context["settings"]["cms"] = {}
-        context["settings"]["cms"]["ContactSettings"] = self
-        return context
-
 
 @register_setting
-class NavigationSettings(PreviewableMixin, ClusterableModel, BaseGenericSetting):
+class NavigationSettings(
+    SettingsPreviewMixin, PreviewableMixin, ClusterableModel, BaseGenericSetting
+):
     panels = [
         InlinePanel(
             "menu_items",
@@ -135,24 +131,6 @@ class NavigationSettings(PreviewableMixin, ClusterableModel, BaseGenericSetting)
 
     class Meta:
         verbose_name = _("Настройки навигации")
-
-    def get_preview_template(self, request, mode_name):
-        return "cms/home/home_page.html"
-
-    def get_preview_context(self, request, mode_name):
-        from cms.models import HomePage
-
-        homepage = HomePage.objects.first()
-        context = homepage.get_context(request)
-        # Мы заменяем настройки в контексте на текущие (несохраненные)
-        # В шаблоне header.html используется {% get_settings %} и settings.cms.NavigationSettings
-        # Wagtail settings обычно доступны через settings.app_label.ModelName
-        if "settings" not in context:
-            context["settings"] = {}
-        if "cms" not in context["settings"]:
-            context["settings"]["cms"] = {}
-        context["settings"]["cms"]["NavigationSettings"] = self
-        return context
 
 
 class MenuItem(Orderable):

@@ -36,18 +36,9 @@
             <div class="col-sm-6 col-lg-4 text-lg-end">
                 <h3 class="h5 fw-bold mb-3 text-white">{% trans "Мы в соцсетях" %}</h3>
                 <div class="d-flex gap-2 justify-content-lg-end flex-wrap">
-                    {% if settings.cms.SocialMediaSettings.facebook %}
-                        <a href="{{ settings.cms.SocialMediaSettings.facebook }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3" target="_blank">Facebook</a>
-                    {% endif %}
-                    {% if settings.cms.SocialMediaSettings.instagram %}
-                        <a href="{{ settings.cms.SocialMediaSettings.instagram }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3" target="_blank">Instagram</a>
-                    {% endif %}
-                    {% if settings.cms.SocialMediaSettings.telegram %}
-                        <a href="{{ settings.cms.SocialMediaSettings.telegram }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3" target="_blank">Telegram</a>
-                    {% endif %}
-                    {% if settings.cms.SocialMediaSettings.whatsapp %}
-                        <a href="{{ settings.cms.SocialMediaSettings.whatsapp }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3" target="_blank">WhatsApp</a>
-                    {% endif %}
+                    {% for item in settings.cms.SocialMediaSettings.social_media_links.all %}
+                        <a href="{{ item.url }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3" target="_blank">{{ item.get_platform_display }}</a>
+                    {% endfor %}
                 </div>
             </div>
         </div>

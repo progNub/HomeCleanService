@@ -84,17 +84,16 @@ class Command(BaseCommand):
 
         # Social Media Settings
         social_settings = SocialMediaSettings.load()
-        if not any(
-            [
-                social_settings.facebook,
-                social_settings.instagram,
-                social_settings.telegram,
-            ]
-        ):
-            # social_settings.telegram = "https://t.me/homeservice"
-            social_settings.whatsapp = "https://wa.me/375296023356"
-            # social_settings.instagram = "https://instagram.com/homeservice"
-            social_settings.save()
+        if not social_settings.social_media_links.exists():
+            MenuItem.objects.filter()  # Just to have it in scope if needed, but not really
+            from cms.models import SocialMediaLink
+
+            SocialMediaLink.objects.create(
+                setting=social_settings,
+                platform="whatsapp",
+                url="https://wa.me/375296023356",
+                sort_order=0,
+            )
             self.stdout.write(self.style.SUCCESS("Social media settings created."))
         else:
             self.stdout.write(
