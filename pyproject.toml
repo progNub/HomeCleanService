@@ -9,3 +9,32 @@ dependencies = [
     "wagtail-localize>=1.13",
     "django-browser-reload==1.21.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.5.1",
+    "ruff>=0.15.10",
+]
+
+[tool.ruff]
+# Ruff documentation: https://docs.astral.sh/ruff/
+# Configuration: https://docs.astral.sh/ruff/configuration/
+# Rules: https://docs.astral.sh/ruff/rules/
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    "**/migrations/*.py",
+    ".git",
+    ".venv",
+    "media",
+    "static",
+    ".idea",
+]
+
+[tool.ruff.lint]
+# Allow star imports in settings files
+extend-safe-fixes = ["F403", "F405"]
+fixable = ["ALL"]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"settings/*.py" = ["F403", "F405"]
+"**/__init__.py" = ["F401"]
