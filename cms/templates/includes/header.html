@@ -1,5 +1,5 @@
-{% load static %}
-{% load i18n %}
+{% load static wagtailcore_tags wagtailsettings_tags i18n  %}
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm py-3">
     <div class="container">
         <a class="navbar-brand fw-bold text-primary fs-3 d-flex align-items-center" href="/">
@@ -11,18 +11,25 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-lg-center">
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="/">{% trans "Главная" %}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="/#about-us">{% trans "О нас" %}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="/#services">{% trans "Услуги" %}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="/contact-us/">{% trans "Связаться с нами" %}</a>
-                </li>
+                {% get_settings %}
+                {% if settings.cms.NavigationSettings.menu_items.all %}
+                    {% for item in settings.cms.NavigationSettings.menu_items.all %}
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold {% if request.path == item.link %}active{% endif %}" href="{{ item.link }}">{{ item.label }}</a>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    {# Fallback if menu is not configured #}
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold {% if request.path == "/" %}active{% endif %}" href="/">{% trans "Главная" %}</a>
+                    </li>
+                    {% wagtail_site as current_site %}
+                    {% for menuitem in current_site.root_page.get_children.live.in_menu %}
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold {% if request.path == menuitem.url %}active{% endif %}" href="{% pageurl menuitem %}">{{ menuitem.title }}</a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
             </ul>
         </div>
     </div>

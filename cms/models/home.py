@@ -1,9 +1,13 @@
 from django.utils.translation import gettext_lazy as _
 from wagtail.models import Page
 from wagtail.fields import StreamField
-from wagtail import blocks
 from wagtail.admin.panels import FieldPanel
-from wagtail.images.blocks import ImageChooserBlock
+
+from cms.blocks.hero import HeroBlock
+from cms.blocks.services import ServicesBlock
+from cms.blocks.features import FeaturesBlock
+from cms.blocks.about import AboutBlock
+from cms.blocks.content import RichTextBlock
 
 
 class HomePage(Page):
@@ -11,182 +15,11 @@ class HomePage(Page):
 
     body = StreamField(
         [
-            (
-                "hero",
-                blocks.StructBlock(
-                    [
-                        (
-                            "title",
-                            blocks.CharBlock(
-                                required=True,
-                                label=_("Заголовок"),
-                                help_text=_("Заголовок баннера"),
-                            ),
-                        ),
-                        (
-                            "subtitle",
-                            blocks.TextBlock(
-                                required=False,
-                                label=_("Подзаголовок"),
-                                help_text=_("Подзаголовок"),
-                            ),
-                        ),
-                        (
-                            "image",
-                            ImageChooserBlock(
-                                required=False,
-                                label=_("Изображение"),
-                                help_text=_("Фоновое изображение"),
-                            ),
-                        ),
-                        (
-                            "cta_text",
-                            blocks.CharBlock(
-                                required=False,
-                                label=_("Текст кнопки"),
-                                default=_("Рассчитать стоимость"),
-                            ),
-                        ),
-                    ],
-                    label=_("Главный баннер"),
-                    template="cms/home/blocks/hero.html",
-                ),
-            ),
-            (
-                "services",
-                blocks.StructBlock(
-                    [
-                        (
-                            "title",
-                            blocks.CharBlock(
-                                required=True,
-                                label=_("Заголовок"),
-                                default=_("Наши услуги"),
-                            ),
-                        ),
-                        (
-                            "items",
-                            blocks.ListBlock(
-                                blocks.StructBlock(
-                                    [
-                                        (
-                                            "name",
-                                            blocks.CharBlock(
-                                                required=True,
-                                                label=_("Название услуги"),
-                                            ),
-                                        ),
-                                        (
-                                            "description",
-                                            blocks.TextBlock(
-                                                required=True, label=_("Описание")
-                                            ),
-                                        ),
-                                        (
-                                            "image",
-                                            ImageChooserBlock(
-                                                required=False, label=_("Изображение")
-                                            ),
-                                        ),
-                                    ]
-                                ),
-                                label=_("Список услуг"),
-                            ),
-                        ),
-                    ],
-                    label=_("Блок услуг"),
-                    template="cms/home/blocks/services.html",
-                ),
-            ),
-            (
-                "features",
-                blocks.StructBlock(
-                    [
-                        (
-                            "title",
-                            blocks.CharBlock(required=True, label=_("Заголовок")),
-                        ),
-                        (
-                            "items",
-                            blocks.ListBlock(
-                                blocks.StructBlock(
-                                    [
-                                        (
-                                            "title",
-                                            blocks.CharBlock(
-                                                required=True,
-                                                label=_("Заголовок преимущества"),
-                                            ),
-                                        ),
-                                        (
-                                            "text",
-                                            blocks.TextBlock(
-                                                required=True,
-                                                label=_("Текст преимущества"),
-                                            ),
-                                        ),
-                                    ]
-                                ),
-                                label=_("Преимущества"),
-                            ),
-                        ),
-                    ],
-                    label=_("Преимущества"),
-                    template="cms/home/blocks/features.html",
-                ),
-            ),
-            (
-                "about",
-                blocks.StructBlock(
-                    [
-                        (
-                            "title",
-                            blocks.CharBlock(required=True, label=_("Заголовок")),
-                        ),
-                        (
-                            "content",
-                            blocks.RichTextBlock(required=True, label=_("Содержимое")),
-                        ),
-                        (
-                            "image",
-                            ImageChooserBlock(required=False, label=_("Изображение")),
-                        ),
-                        (
-                            "stats",
-                            blocks.ListBlock(
-                                blocks.StructBlock(
-                                    [
-                                        (
-                                            "value",
-                                            blocks.CharBlock(
-                                                required=True,
-                                                label=_("Значение (напр. 10+)"),
-                                            ),
-                                        ),
-                                        (
-                                            "label",
-                                            blocks.CharBlock(
-                                                required=True,
-                                                label=_("Подпись (напр. лет опыта)"),
-                                            ),
-                                        ),
-                                    ]
-                                ),
-                                label=_("Показатели/Статистика"),
-                                required=False,
-                            ),
-                        ),
-                    ],
-                    label=_("О нас"),
-                    template="cms/home/blocks/about.html",
-                ),
-            ),
-            (
-                "content",
-                blocks.RichTextBlock(
-                    label=_("Основной текст"), template="cms/home/blocks/rich_text.html"
-                ),
-            ),
+            ("hero", HeroBlock()),
+            ("services", ServicesBlock()),
+            ("features", FeaturesBlock()),
+            ("about", AboutBlock()),
+            ("content", RichTextBlock()),
         ],
         use_json_field=True,
         blank=True,

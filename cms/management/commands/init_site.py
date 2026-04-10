@@ -2,7 +2,12 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from wagtail.models import Site, Page
 from cms.models import HomePage, FormPage, FormField
-from cms.models import SocialMediaSettings, ContactSettings
+from cms.models import (
+    SocialMediaSettings,
+    ContactSettings,
+    NavigationSettings,
+    MenuItem,
+)
 
 import os
 from urllib.parse import urlparse
@@ -42,13 +47,12 @@ class Command(BaseCommand):
         if run_all or admin_only:
             self.init_superuser()
 
+        if run_all or content_only:
+            self.init_content()
+
         if run_all or settings_only:
             self.init_global_settings()
-
-        if run_all or content_only:
-            homepage = self.init_content()
-            if homepage:
-                self.init_contact_form_page(homepage)
+            self.init_navigation_settings()
 
         self.stdout.write(self.style.SUCCESS("Site initialization finished!"))
 
@@ -123,6 +127,53 @@ class Command(BaseCommand):
                     )
                 )
 
+    def init_navigation_settings(self):
+        self.stdout.write("Initializing navigation settings...")
+        nav_settings = NavigationSettings.load()
+        if not nav_settings.menu_items.exists():
+            homepage = HomePage.objects.first()
+            contact_page = FormPage.objects.filter(slug="contact-us").first()
+
+            if homepage:
+                MenuItem.objects.create(
+                    setting=nav_settings,
+                    label="Главная",
+                    link_page=homepage,
+                    sort_order=0,
+                )
+                MenuItem.objects.create(
+                    setting=nav_settings,
+                    label="Услуги",
+                    link_url="#services",
+                    sort_order=1,
+                )
+                MenuItem.objects.create(
+                    setting=nav_settings,
+                    label="Преимущества",
+                    link_url="#features",
+                    sort_order=2,
+                )
+                MenuItem.objects.create(
+                    setting=nav_settings,
+                    label="О нас",
+                    link_url="#about-us",
+                    sort_order=3,
+                )
+
+            if contact_page:
+                MenuItem.objects.create(
+                    setting=nav_settings,
+                    label="Связаться с нами",
+                    link_page=contact_page,
+                    sort_order=4,
+                )
+
+            self.stdout.write(
+                self.style.SUCCESS("Navigation settings created with default items.")
+            )
+        else:
+            self.stdout.write(self.style.WARNING("Navigation settings already exist."))
+
     def init_content(self):
         # 1. Site configuration from env
         site_url_env = os.getenv("SITE_URL", "http://localhost:8000")
@@ -150,6 +201,7 @@ class Command(BaseCommand):
                 seo_title="Мойка и покраска крыш в Беларуси - HomeService",
                 search_description="Профессиональная мойка и покраска крыш, фасадов и заборов. Работаем по всей Беларуси. Качество, гарантия, доступные цены.",
                 live=True,
+                show_in_menus=True,
             )
             root_page.add_child(instance=homepage)
             homepage.save_revision().publish()
@@ -169,8 +221,18 @@ class Command(BaseCommand):
                 homepage.save_revision().publish()
                 self.stdout.write(self.style.SUCCESS("HomePage SEO tags updated."))
 
+            # Ensure homepage is in menu
+            if not homepage.show_in_menus:
+                homepage.show_in_menus = True
+                homepage.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("HomePage set to show in menus."))
+
+        # 2.5 Ensure Contact Form Page exists before filling content
+        self.init_contact_form_page(homepage)
+
         # 3. Fill with demo content if body is empty or we want to overwrite/extend
         if not homepage.body:
+            contact_page = FormPage.objects.filter(slug="contact-us").first()
             self.stdout.write("Filling HomePage with demo content...")
             homepage.body = [
                 (
@@ -179,12 +241,15 @@ class Command(BaseCommand):
                         "title": "Мойка и покраска крыш, домов, заборов",
                         "subtitle": "Моем всё! Профессиональная очистка и обновление вашего имущества. Работаем по всей Беларуси.",
                         "cta_text": "Связаться с нами",
+                        "cta_page": contact_page,
+                        "anchor": "hero",
                     },
                 ),
                 (
                     "services",
                     {
                         "title": "Что мы предлагаем",
+                        "anchor": "services",
                         "items": [
                             {
                                 "name": "Мойка крыш",
@@ -205,6 +270,7 @@ class Command(BaseCommand):
                     "features",
                     {
                         "title": "Почему выбирают нас",
+                        "anchor": "features",
                         "items": [
                             {
                                 "title": "Опыт и качество",
@@ -225,6 +291,7 @@ class Command(BaseCommand):
                     "about",
                     {
                         "title": "О нашей компании",
+                        "anchor": "about-us",
                         "content": "<p>Мы — команда профессионалов, которая занимается комплексным уходом за частными домами и прилегающими территориями уже более 5 лет. Наша миссия — возвращать эстетичный вид вашему имуществу и продлевать срок его службы.</p><p>Мы используем специализированное оборудование высокого давления и экологически безопасные составы для очистки и покраски.</p>",
                         "stats": [
                             {"value": "5+", "label": "лет работы"},
@@ -299,6 +366,7 @@ class Command(BaseCommand):
                 to_address="info@homeservice.by",  # Значение по умолчанию
                 from_address="noreply@homeservice.by",
                 subject="Новое сообщение с сайта",
+                show_in_menus=True,
             )
             homepage.add_child(instance=contact_page)
             contact_page.save_revision().publish()
@@ -337,3 +405,9 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Contact Form Page created."))
         else:
             self.stdout.write(self.style.WARNING("Contact Form Page already exists."))
+            if not contact_page.show_in_menus:
+                contact_page.show_in_menus = True
+                contact_page.save_revision().publish()
+                self.stdout.write(
+                    self.style.SUCCESS("Contact Form Page set to show in menus.")
+                )
