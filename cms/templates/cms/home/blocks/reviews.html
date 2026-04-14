@@ -18,7 +18,7 @@
                                         </div>
                                     {% endif %}
                                     <div>
-                                        <h4 class="h6 fw-bold mb-0">{{ review.author }}</h4>
+                                        <h3 class="h6 fw-bold mb-0">{{ review.author }}</h3>
                                         <div class="text-warning small">
                                             {% for i in "12345" %}
                                                 <i class="bi {% if forloop.counter <= review.rating %}bi-star-fill{% else %}bi-star{% endif %}"></i>
@@ -38,10 +38,10 @@
 
             {# Кнопки навигации (опционально, для десктопа) #}
             <div class="d-none d-md-flex justify-content-center gap-3 mt-3">
-                <button class="btn btn-outline-primary rounded-circle p-2 lh-1" onclick="document.querySelector('.reviews-slider').scrollBy({left: -300, behavior: 'smooth'})">
+                <button class="btn btn-outline-primary rounded-circle p-2 lh-1" onclick="document.querySelector('.reviews-slider').scrollBy({left: -300, behavior: 'smooth'})" aria-label="{% trans 'Предыдущий отзыв' %}">
                     <i class="bi bi-chevron-left"></i>
                 </button>
-                <button class="btn btn-outline-primary rounded-circle p-2 lh-1" onclick="document.querySelector('.reviews-slider').scrollBy({left: 300, behavior: 'smooth'})">
+                <button class="btn btn-outline-primary rounded-circle p-2 lh-1" onclick="document.querySelector('.reviews-slider').scrollBy({left: 300, behavior: 'smooth'})" aria-label="{% trans 'Следующий отзыв' %}">
                     <i class="bi bi-chevron-right"></i>
                 </button>
             </div>
