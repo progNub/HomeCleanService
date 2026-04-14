@@ -134,7 +134,7 @@ class Command(BaseCommand):
         nav_settings = NavigationSettings.load()
         if not nav_settings.menu_items.exists():
             homepage = HomePage.objects.first()
-            contact_page = FormPage.objects.filter(slug="contact-us").first()
+            contact_page = FormPage.objects.filter(slug="request").first()
 
             if homepage:
                 MenuItem.objects.create(
@@ -177,7 +177,7 @@ class Command(BaseCommand):
             if contact_page:
                 MenuItem.objects.create(
                     setting=nav_settings,
-                    label="Связаться с нами",
+                    label="Оставить заявку",
                     link_page=contact_page,
                     sort_order=4,
                 )
@@ -261,7 +261,7 @@ class Command(BaseCommand):
 
         # 3. Fill with demo content if body is empty or we want to overwrite/extend
         if not homepage.body:
-            contact_page = FormPage.objects.filter(slug="contact-us").first()
+            contact_page = FormPage.objects.filter(slug="request").first()
             self.stdout.write("Filling HomePage with demo content...")
             homepage.body = [
                 (
@@ -413,18 +413,24 @@ class Command(BaseCommand):
                 text="Заказывал мойку и покраску крыши. Ребята приехали вовремя, сделали всё очень аккуратно. Крыша выглядит как новая! Рекомендую.",
                 rating=5,
                 is_approved=True,
+                ip="127.0.0.1",
+                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             )
             Review.objects.create(
                 author="Мария С.",
                 text="Очень довольна результатом очистки фасада. Все пятна ушли, дом преобразился. Спасибо за профессионализм!",
                 rating=5,
                 is_approved=True,
+                ip="127.0.0.1",
+                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             )
             Review.objects.create(
                 author="Иван Петрович",
                 text="Хорошая работа. Быстро, четко и по адекватной цене. Буду обращаться еще.",
                 rating=4,
                 is_approved=True,
+                ip="127.0.0.1",
+                user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             )
             self.stdout.write(self.style.SUCCESS("Demo reviews created."))
         else:
@@ -436,23 +442,23 @@ class Command(BaseCommand):
         """
         self.stdout.write("Checking for Contact Form Page...")
         contact_page = (
-            FormPage.objects.descendant_of(homepage).filter(slug="contact-us").first()
+            FormPage.objects.descendant_of(homepage).filter(slug="request").first()
         )
 
         if not contact_page:
-            self.stdout.write("Creating Contact Form Page...")
+            self.stdout.write("Creating Request Form Page...")
             contact_page = FormPage(
-                title="Контакты",
-                slug="contact-us",
-                seo_title="Связаться с нами - HomeService",
+                title="Оставить заявку",
+                slug="request",
+                seo_title="Оставить заявку - HomeService",
                 search_description="Оставьте заявку на мойку или покраску крыши. Мы перезвоним вам в ближайшее время для уточнения деталей.",
                 og_type=SeoAbstract.OgTypeChoices.WEBSITE,
                 meta_robots=SeoAbstract.MetaRobotsChoices.INDEX_FOLLOW,
                 intro="<p>Пожалуйста, заполните форму ниже, и мы свяжемся с вами в ближайшее время.</p>",
-                thank_you_text="<p>Спасибо за ваше сообщение! Мы свяжемся с вами скоро.</p>",
+                thank_you_text="<p>Спасибо за вашу заявку! Мы свяжемся с вами скоро.</p>",
                 to_address="info@homeservice.by",  # Значение по умолчанию
                 from_address="noreply@homeservice.by",
-                subject="Новое сообщение с сайта",
+                subject="Новая заявка с сайта",
                 show_in_menus=True,
             )
             homepage.add_child(instance=contact_page)
@@ -489,14 +495,20 @@ class Command(BaseCommand):
             )
 
             contact_page.save_revision().publish()
-            self.stdout.write(self.style.SUCCESS("Contact Form Page created."))
+            self.stdout.write(self.style.SUCCESS("Request Form Page created."))
         else:
-            self.stdout.write(self.style.WARNING("Contact Form Page already exists."))
+            self.stdout.write(self.style.WARNING("Request Form Page already exists."))
 
             # Update SEO if empty
             updated = False
-            if not contact_page.seo_title:
-                contact_page.seo_title = "Связаться с нами - HomeService"
+            if contact_page.title == "Контакты":
+                contact_page.title = "Оставить заявку"
+                updated = True
+            if (
+                not contact_page.seo_title
+                or contact_page.seo_title == "Связаться с нами - HomeService"
+            ):
+                contact_page.seo_title = "Оставить заявку - HomeService"
                 updated = True
             if not contact_page.search_description:
                 contact_page.search_description = "Оставьте заявку на мойку или покраску крыши. Мы перезвоним вам в ближайшее время для уточнения деталей."

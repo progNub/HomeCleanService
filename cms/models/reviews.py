@@ -11,25 +11,20 @@ class Review(models.Model):
     rating = models.PositiveSmallIntegerField(
         default=5, choices=[(i, str(i)) for i in range(1, 6)], verbose_name=_("Рейтинг")
     )
-    date = models.DateField(auto_now_add=True, verbose_name=_("Дата"))
+    date = models.DateTimeField(auto_now_add=True, verbose_name=_("Дата и время"))
     is_approved = models.BooleanField(
         default=True, verbose_name=_("Одобрено (показывать)")
     )
-    image = models.ForeignKey(
-        "wagtailimages.Image",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-        verbose_name=_("Фото автора"),
-    )
+    ip = models.GenericIPAddressField(null=True, blank=True, verbose_name=_("IP-адрес"))
+    user_agent = models.TextField(null=True, blank=True, verbose_name=_("User-Agent"))
 
     panels = [
         FieldPanel("author"),
         FieldPanel("text"),
         FieldPanel("rating"),
         FieldPanel("is_approved"),
-        FieldPanel("image"),
+        FieldPanel("ip", read_only=True),
+        FieldPanel("user_agent", read_only=True),
     ]
 
     def __str__(self):
