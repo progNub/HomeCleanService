@@ -3,6 +3,7 @@ from wagtail.models import Page
 from wagtail.fields import StreamField
 from wagtail.admin.panels import FieldPanel
 
+from cms.models.seo import SeoAbstract
 from cms.blocks.hero import HeroBlock
 from cms.blocks.services import ServicesBlock
 from cms.blocks.features import FeaturesBlock
@@ -12,7 +13,7 @@ from cms.blocks.faq import FAQBlock
 from cms.blocks.content import RichTextBlock
 
 
-class HomePage(Page):
+class HomePage(SeoAbstract, Page):
     template = "cms/home/home_page.html"
 
     body = StreamField(
@@ -30,6 +31,8 @@ class HomePage(Page):
         null=True,
         verbose_name=_("Контент страницы"),
     )
+
+    promote_panels = SeoAbstract.promote_panels
 
     content_panels = Page.content_panels + [
         FieldPanel("body"),

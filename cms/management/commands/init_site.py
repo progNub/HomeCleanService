@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from wagtail.models import Site, Page
 from cms.models import HomePage, FormPage, FormField
+from cms.models.seo import SeoAbstract
 from cms.models import (
     SocialMediaSettings,
     ContactSettings,
@@ -213,6 +214,8 @@ class Command(BaseCommand):
                 slug="home",
                 seo_title="Мойка и покраска крыш в Беларуси - HomeService",
                 search_description="Профессиональная мойка и покраска крыш, фасадов и заборов. Работаем по всей Беларуси. Качество, гарантия, доступные цены.",
+                og_type=SeoAbstract.OgTypeChoices.WEBSITE,
+                meta_robots=SeoAbstract.MetaRobotsChoices.INDEX_FOLLOW,
                 live=True,
                 show_in_menus=True,
             )
@@ -228,6 +231,19 @@ class Command(BaseCommand):
                 updated = True
             if not homepage.search_description:
                 homepage.search_description = "Профессиональная мойка и покраска крыш, фасадов и заборов. Работаем по всей Беларуси. Качество, гарантия, доступные цены."
+                updated = True
+            if not homepage.og_type:
+                homepage.og_type = SeoAbstract.OgTypeChoices.WEBSITE
+                updated = True
+            if not homepage.meta_robots:
+                homepage.meta_robots = SeoAbstract.MetaRobotsChoices.INDEX_FOLLOW
+                updated = True
+
+            # Update dates if empty
+            if not homepage.published_date:
+                from django.utils import timezone
+
+                homepage.published_date = homepage.first_published_at or timezone.now()
                 updated = True
 
             if updated:
@@ -430,6 +446,8 @@ class Command(BaseCommand):
                 slug="contact-us",
                 seo_title="Связаться с нами - HomeService",
                 search_description="Оставьте заявку на мойку или покраску крыши. Мы перезвоним вам в ближайшее время для уточнения деталей.",
+                og_type=SeoAbstract.OgTypeChoices.WEBSITE,
+                meta_robots=SeoAbstract.MetaRobotsChoices.INDEX_FOLLOW,
                 intro="<p>Пожалуйста, заполните форму ниже, и мы свяжемся с вами в ближайшее время.</p>",
                 thank_you_text="<p>Спасибо за ваше сообщение! Мы свяжемся с вами скоро.</p>",
                 to_address="info@homeservice.by",  # Значение по умолчанию
@@ -482,6 +500,21 @@ class Command(BaseCommand):
                 updated = True
             if not contact_page.search_description:
                 contact_page.search_description = "Оставьте заявку на мойку или покраску крыши. Мы перезвоним вам в ближайшее время для уточнения деталей."
+                updated = True
+            if not contact_page.og_type:
+                contact_page.og_type = SeoAbstract.OgTypeChoices.WEBSITE
+                updated = True
+            if not contact_page.meta_robots:
+                contact_page.meta_robots = SeoAbstract.MetaRobotsChoices.INDEX_FOLLOW
+                updated = True
+
+            # Update dates if empty
+            if not contact_page.published_date:
+                from django.utils import timezone
+
+                contact_page.published_date = (
+                    contact_page.first_published_at or timezone.now()
+                )
                 updated = True
 
             if updated:

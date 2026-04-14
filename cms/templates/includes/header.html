@@ -4,7 +4,8 @@
     <div class="container">
         <a class="navbar-brand fw-bold text-primary fs-3 d-flex align-items-center" href="/">
             <img src="{% static 'cms/images/logo/logo_64x64.png' %}" alt="Logo" class="me-2" style="width: 32px; height: 32px;">
-            HomeService
+            {% wagtail_site as current_site %}
+            {{ current_site.site_name|default:"HomeService" }}
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

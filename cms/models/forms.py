@@ -5,6 +5,8 @@ from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFi
 from wagtail.fields import RichTextField
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
 
+from cms.models.seo import SeoAbstract
+
 
 class FormField(AbstractFormField):
     page = ParentalKey("FormPage", on_delete=models.CASCADE, related_name="form_fields")
@@ -14,7 +16,7 @@ class FormField(AbstractFormField):
         verbose_name_plural = _("Поля формы")
 
 
-class FormPage(AbstractEmailForm):
+class FormPage(SeoAbstract, AbstractEmailForm):
     intro = RichTextField(
         blank=True,
         verbose_name=_("Вступление"),
@@ -31,6 +33,8 @@ class FormPage(AbstractEmailForm):
     class Meta:
         verbose_name = _("Страница с формой")
         verbose_name_plural = _("Страницы с формами")
+
+    promote_panels = SeoAbstract.promote_panels
 
     content_panels = AbstractEmailForm.content_panels + [
         FieldPanel("intro"),
