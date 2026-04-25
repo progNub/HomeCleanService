@@ -67,6 +67,7 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "django_browser_reload",
     "django_bootstrap5",
+    "compressor",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + WAGTAIL_APPS + INTERNAL_APPS + THIRD_PARTY_APPS
@@ -170,6 +171,7 @@ AUTH_PASSWORD_VALIDATORS = [
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
 ]
 
 STATICFILES_DIRS = [
@@ -181,6 +183,12 @@ STATIC_URL = "/static/"
 
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
+
+# ==============================================================================
+# DJANGO COMPRESSOR
+# ==============================================================================
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = False
 
 # Default storage settings
 # See https://docs.djangoproject.com/en/6.0/ref/settings/#std-setting-STORAGES

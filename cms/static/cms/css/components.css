@@ -1,0 +1,43 @@
+/* ==========================================================================
+   COMPONENTS.CSS — Компоненты UI
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Reviews Slider
+   -------------------------------------------------------------------------- */
+.reviews-slider::-webkit-scrollbar {
+    height: 6px;
+}
+
+.reviews-slider::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.reviews-slider::-webkit-scrollbar-thumb {
+    background: #0d6efd;
+    border-radius: 10px;
+}
+
+.reviews-slider::-webkit-scrollbar-thumb:hover {
+    background: #0a58ca;
+}
+
+.review-slide {
+    transition: transform 0.3s ease;
+}
+
+.review-slide:hover {
+    transform: translateY(-5px);
+}
+
+/* --------------------------------------------------------------------------
+   2. Alerts / Messages (Django messages)
+   -------------------------------------------------------------------------- */
+.messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    max-width: 400px;
+}
