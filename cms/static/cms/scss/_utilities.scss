@@ -1,0 +1,12 @@
+// ==========================================================================
+// UTILITIES — Утилитарные классы
+// ==========================================================================
+
+.transition-hover {
+    transition: transform $transition-base, box-shadow $transition-base;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: $shadow-hover !important;
+    }
+}

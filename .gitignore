@@ -84,3 +84,13 @@ dmypy.json
 
 # MacOS
 .DS_Store
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Django Compressor cache
+CACHE/
+
+# Ruff
+.ruff_cache/

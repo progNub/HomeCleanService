@@ -190,6 +190,8 @@ MEDIA_URL = "/media/"
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
 
+COMPRESS_PRECOMPILERS = (("text/x-scss", "npx sass {infile} {outfile}"),)
+
 # Default storage settings
 # See https://docs.djangoproject.com/en/6.0/ref/settings/#std-setting-STORAGES
 STORAGES = {
