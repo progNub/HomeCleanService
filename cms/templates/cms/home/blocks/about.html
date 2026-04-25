@@ -1,7 +1,7 @@
 {% load wagtailcore_tags wagtailimages_tags i18n %}
 <section class="py-5 bg-body" id="{{ value.anchor|default:'about-us' }}">
     <div class="container py-5">
-        <div class="row align-items-center g-5">
+        <div class="row align-items-center g-4 g-lg-5">
             <div class="col-lg-6">
                 {% if value.image %}
                     {% image value.image original class="img-fluid rounded-4 shadow-lg" %}

@@ -3,16 +3,35 @@
 // ==========================================================================
 
 // --------------------------------------------------------------------------
+// Navbar
+// --------------------------------------------------------------------------
+.navbar {
+    .nav-link {
+        transition: color $transition-base;
+
+        &:hover,
+        &:focus {
+            color: var(--bs-primary) !important;
+        }
+    }
+}
+
+// --------------------------------------------------------------------------
 // Theme Switcher
 // --------------------------------------------------------------------------
 .btn-link.nav-link {
     border: none;
     background: none;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--bs-primary) !important;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover,
     &:focus {
-        color: #fff;
+        color: var(--bs-primary) !important;
+        opacity: 0.8;
     }
 }
 
@@ -43,22 +62,11 @@
 // Reviews Slider
 // --------------------------------------------------------------------------
 .reviews-slider {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
     &::-webkit-scrollbar {
-        height: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-        background: var(--bs-secondary-bg);
-        border-radius: 10px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background: var(--bs-primary);
-        border-radius: 10px;
-
-        &:hover {
-            background: var(--bs-primary-text-emphasis);
-        }
+        display: none;
     }
 }
 

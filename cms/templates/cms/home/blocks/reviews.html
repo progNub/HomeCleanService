@@ -4,7 +4,7 @@
     <div class="container py-4">
         <h2 class="text-center fw-bold mb-5 fs-1">{{ value.title }}</h2>
         <div class="reviews-slider-container position-relative mb-5">
-            <div class="reviews-slider d-flex overflow-x-auto pb-4 px-2" style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: thin;">
+            <div class="reviews-slider d-flex overflow-x-auto pb-4 px-2" style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;">
                 {% for review in reviews_list %}
                     {% if review.is_approved %}
                         <div class="review-slide flex-shrink-0 col-11 col-md-5 col-lg-4 px-2" style="scroll-snap-align: start;">

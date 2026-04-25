@@ -12,7 +12,7 @@
         document.documentElement.setAttribute('data-bs-theme', theme);
         const icon = document.getElementById('theme-icon');
         if (icon) {
-            icon.className = theme === 'dark' ? 'bi bi-sun-fill fs-5' : 'bi bi-moon-fill fs-5';
+            icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
         }
     };
 
