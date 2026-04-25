@@ -2,11 +2,27 @@
 // MAIN.SCSS — Главный файл стилей
 // ==========================================================================
 
-@import "variables";
+// 1. Подключаем функции Bootstrap (необходимы для работы остальных частей)
+@import "../../../../node_modules/bootstrap/scss/functions";
 
-// Import Bootstrap
+// 2. Ваши базовые переменные (переопределяют стандартные значения Bootstrap)
+// Здесь настраивается основной цвет ($primary) и другие глобальные константы
+@import "variables-config";
+
+// 3. Стандартные переменные Bootstrap
+@import "../../../../node_modules/bootstrap/scss/variables";
+@import "../../../../node_modules/bootstrap/scss/variables-dark";
+
+// 4. Ваши зависимые переменные
+// Здесь можно использовать переменные Bootstrap (например, $gray-300)
+@import "variables-derived";
+
+// 5. Ядро Bootstrap (карты, миксины и основные стили)
+@import "../../../../node_modules/bootstrap/scss/maps";
+@import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../../../../node_modules/bootstrap/scss/bootstrap";
 
-@import "base";
-@import "components";
-@import "utilities";
+// 6. Ваши кастомные стили
+@import "base";       // Базовые стили (body, html, общие теги)
+@import "components"; // Стили конкретных компонентов (Hero, Navbar и т.д.)
+@import "utilities";  // Вспомогательные классы (анимации, тени)

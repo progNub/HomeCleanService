@@ -6,85 +6,93 @@
 // Navbar
 // --------------------------------------------------------------------------
 .navbar {
-    .nav-link {
-        transition: color $transition-base;
+  .nav-link {
+    transition: color $transition-base;
 
-        &:hover,
-        &:focus {
-            color: var(--bs-primary) !important;
-        }
+    &:hover,
+    &:focus {
+      color: var(--bs-primary) !important;
     }
+  }
 }
 
 // --------------------------------------------------------------------------
 // Theme Switcher
 // --------------------------------------------------------------------------
 .btn-link.nav-link {
-    border: none;
-    background: none;
-    color: var(--bs-primary) !important;
-    font-size: 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  border: none;
+  background: none;
+  color: var(--bs-primary) !important;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    &:hover,
-    &:focus {
-        color: var(--bs-primary) !important;
-        opacity: 0.8;
-    }
+  &:hover,
+  &:focus {
+    color: var(--bs-primary) !important;
+    opacity: 0.8;
+  }
 }
 
 // --------------------------------------------------------------------------
 // Hero Section
 // --------------------------------------------------------------------------
 .hero-section {
-    background-color: $hero-light-bg;
-    color: var(--bs-body-color);
-    padding: 100px 0;
-    transition: background-color $transition-base;
+  position: relative;
+  overflow: hidden;
+  padding: 100px 0;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
 
-    [data-bs-theme="dark"] & {
-        background-color: $hero-dark-bg;
-    }
 
-    h1, .display-3 {
-        font-weight: 800;
-        color: var(--bs-emphasis-color);
-    }
+  .hero-bg-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+    opacity: 0.9;
+    pointer-events: none;
+  }
 
-    .lead {
-        color: var(--bs-secondary-color);
-    }
+  .container {
+    position: relative;
+    z-index: 1;
+  }
 }
 
 // --------------------------------------------------------------------------
 // Reviews Slider
 // --------------------------------------------------------------------------
 .reviews-slider {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
-    &::-webkit-scrollbar {
-        display: none;
-    }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .review-slide {
-    transition: transform $transition-base;
+  transition: transform $transition-base;
 
-    &:hover {
-        transform: translateY(-5px);
-    }
+  &:hover {
+    transform: translateY(-5px);
+  }
 }
 
 // --------------------------------------------------------------------------
 // Alerts / Messages (Django messages)
 // --------------------------------------------------------------------------
 .messages {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: $zindex-messages;
-    max-width: 400px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: $zindex-messages;
+  max-width: 400px;
 }
