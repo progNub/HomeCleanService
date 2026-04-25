@@ -91,10 +91,19 @@ class Command(BaseCommand):
             MenuItem.objects.filter()  # Just to have it in scope if needed, but not really
             from cms.models import SocialMediaLink
 
+            whatsapp_phone = (
+                os.getenv("CONTACT_PHONE", "375296023356")
+                .replace("+", "")
+                .replace(" ", "")
+                .replace("-", "")
+                .replace("(", "")
+                .replace(")", "")
+            )
+
             SocialMediaLink.objects.create(
                 setting=social_settings,
                 platform="whatsapp",
-                url="https://wa.me/375296023356",
+                url=f"https://wa.me/{whatsapp_phone}",
                 sort_order=0,
             )
             self.stdout.write(self.style.SUCCESS("Social media settings created."))
@@ -106,16 +115,21 @@ class Command(BaseCommand):
         # Contact Settings
         contact_settings = ContactSettings.load()
         if not contact_settings.phone_number:
-            contact_settings.phone_number = "+375296023356"
-            # contact_settings.email = "info@homeservice.by"
-            contact_settings.address = "Беларусь"
+            contact_settings.phone_number = os.getenv("CONTACT_PHONE", "+375296023356")
+            contact_settings.email = os.getenv("CONTACT_EMAIL", "info@homeservice.by")
+            contact_settings.address = os.getenv("CONTACT_ADDRESS", "Беларусь")
             contact_settings.save()
             self.stdout.write(self.style.SUCCESS("Contact settings created."))
         else:
             # Let's update it if it's the old default
             if contact_settings.phone_number == "+7 (900) 123-45-67":
-                contact_settings.phone_number = "+375296023356"
-                contact_settings.email = "info@homeservice.by"
+                contact_settings.phone_number = os.getenv(
+                    "CONTACT_PHONE", "+375296023356"
+                )
+                contact_settings.email = os.getenv(
+                    "CONTACT_EMAIL", "info@homeservice.by"
+                )
+                contact_settings.address = os.getenv("CONTACT_ADDRESS", "Беларусь")
                 contact_settings.save()
                 self.stdout.write(
                     self.style.SUCCESS(
@@ -448,7 +462,7 @@ class Command(BaseCommand):
         if not contact_page:
             self.stdout.write("Creating Request Form Page...")
             contact_page = FormPage(
-                title="Оставить заявку",
+                title="Заявка",
                 slug="request",
                 seo_title="Оставить заявку - HomeService",
                 search_description="Оставьте заявку на мойку или покраску крыши. Мы перезвоним вам в ближайшее время для уточнения деталей.",
@@ -456,8 +470,10 @@ class Command(BaseCommand):
                 meta_robots=SeoAbstract.MetaRobotsChoices.INDEX_FOLLOW,
                 intro="<p>Пожалуйста, заполните форму ниже, и мы свяжемся с вами в ближайшее время.</p>",
                 thank_you_text="<p>Спасибо за вашу заявку! Мы свяжемся с вами скоро.</p>",
-                to_address="info@homeservice.by",  # Значение по умолчанию
-                from_address="noreply@homeservice.by",
+                to_address=os.getenv("CONTACT_FORM_TO_EMAIL", "info@homeservice.by"),
+                from_address=os.getenv(
+                    "CONTACT_FORM_FROM_EMAIL", "noreply@homeservice.by"
+                ),
                 subject="Новая заявка с сайта",
                 show_in_menus=True,
             )
@@ -481,17 +497,10 @@ class Command(BaseCommand):
             )
             FormField.objects.create(
                 page=contact_page,
-                label="Email",
-                field_type="email",
-                required=False,
-                sort_order=2,
-            )
-            FormField.objects.create(
-                page=contact_page,
                 label="Ваш комментарий",
                 field_type="multiline",
                 required=False,
-                sort_order=3,
+                sort_order=2,
             )
 
             contact_page.save_revision().publish()
