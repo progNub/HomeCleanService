@@ -4,21 +4,21 @@
 {% block body_class %}template-form-landing{% endblock %}
 
 {% block content %}
-    <section class="py-5 min-vh-100 d-flex align-items-center bg-light">
+    <section class="py-5 min-vh-100 d-flex align-items-center bg-body-secondary">
         <div class="container py-5 text-center">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <div class="card border-0 shadow-lg rounded-4 p-4 p-lg-5 bg-white">
+                    <div class="card border-0 shadow-lg rounded-4 p-4 p-lg-5 bg-body">
                         <div class="mb-4">
                             <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
                         </div>
                         <h1 class="fw-bold display-6 mb-4 text-primary">{{ page.title }}</h1>
                         {% if page.thank_you_text %}
-                            <div class="text-muted lead mb-5">
+                            <div class="text-body-secondary lead mb-5">
                                 {{ page.thank_you_text|richtext }}
                             </div>
                         {% else %}
-                            <p class="text-muted lead mb-5">
+                            <p class="text-body-secondary lead mb-5">
                                 {% trans "Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время." %}
                             </p>
                         {% endif %}

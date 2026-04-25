@@ -1,6 +1,6 @@
 {% load wagtailcore_tags i18n %}
 
-<section class="py-5 bg-white" id="{{ value.anchor|default:'faq' }}">
+<section class="py-5 bg-body" id="{{ value.anchor|default:'faq' }}">
     <div class="container py-4">
         <h2 class="text-center fw-bold mb-5 fs-1">{{ value.title }}</h2>
         <div class="row justify-content-center">
@@ -14,7 +14,7 @@
                                 </button>
                             </h3>
                             <div id="flush-collapse-{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="flush-heading-{{ forloop.counter }}" data-bs-parent="#accordionFAQ">
-                                <div class="accordion-body py-4 text-muted">
+                                <div class="accordion-body py-4 text-body-secondary">
                                     {{ item.answer|richtext }}
                                 </div>
                             </div>

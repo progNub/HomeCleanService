@@ -3,6 +3,43 @@
 // ==========================================================================
 
 // --------------------------------------------------------------------------
+// Theme Switcher
+// --------------------------------------------------------------------------
+.btn-link.nav-link {
+    border: none;
+    background: none;
+    color: rgba(255, 255, 255, 0.55);
+
+    &:hover,
+    &:focus {
+        color: #fff;
+    }
+}
+
+// --------------------------------------------------------------------------
+// Hero Section
+// --------------------------------------------------------------------------
+.hero-section {
+    background-color: $hero-light-bg;
+    color: var(--bs-body-color);
+    padding: 100px 0;
+    transition: background-color $transition-base;
+
+    [data-bs-theme="dark"] & {
+        background-color: $hero-dark-bg;
+    }
+
+    h1, .display-3 {
+        font-weight: 800;
+        color: var(--bs-emphasis-color);
+    }
+
+    .lead {
+        color: var(--bs-secondary-color);
+    }
+}
+
+// --------------------------------------------------------------------------
 // Reviews Slider
 // --------------------------------------------------------------------------
 .reviews-slider {
@@ -11,16 +48,16 @@
     }
 
     &::-webkit-scrollbar-track {
-        background: $gray-100;
+        background: var(--bs-secondary-bg);
         border-radius: 10px;
     }
 
     &::-webkit-scrollbar-thumb {
-        background: $primary;
+        background: var(--bs-primary);
         border-radius: 10px;
 
         &:hover {
-            background: $primary-hover;
+            background: var(--bs-primary-text-emphasis);
         }
     }
 }

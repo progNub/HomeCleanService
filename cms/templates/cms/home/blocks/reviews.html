@@ -1,6 +1,6 @@
 {% load wagtailimages_tags i18n %}
 
-<section class="py-5 bg-light" id="{{ value.anchor|default:'reviews' }}">
+<section class="py-5 bg-body-secondary" id="{{ value.anchor|default:'reviews' }}">
     <div class="container py-4">
         <h2 class="text-center fw-bold mb-5 fs-1">{{ value.title }}</h2>
         <div class="reviews-slider-container position-relative mb-5">
@@ -22,8 +22,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p class="text-muted mb-0 italic">"{{ review.text }}"</p>
-                                <div class="text-end mt-3 small text-muted opacity-75">
+                                <p class="text-body-secondary mb-0 fst-italic">"{{ review.text }}"</p>
+                                <div class="text-end mt-3 small text-body-secondary opacity-75">
                                     {{ review.date|date:"d.m.Y" }}
                                 </div>
                             </div>
@@ -46,7 +46,7 @@
         {# Форма добавления отзыва #}
         <div class="row justify-content-center mt-5">
             <div class="col-lg-8">
-                <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-white">
+                <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-body">
                     <h3 class="text-center fw-bold mb-4">{% trans "Оставить отзыв" %}</h3>
                     {% if messages %}
                         {% for message in messages %}
@@ -77,7 +77,7 @@
                                 <button type="submit" class="btn btn-primary btn-lg px-5 py-2 fw-bold rounded-pill">
                                     {% trans "Отправить отзыв" %}
                                 </button>
-                                <p class="text-muted small mt-3 mb-0">
+                                <p class="text-body-secondary small mt-3 mb-0">
                                     * {% trans "Все отзывы проходят премодерацию перед публикацией." %}
                                 </p>
                             </div>

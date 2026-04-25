@@ -1,7 +1,7 @@
 {% load wagtailcore_tags i18n %}
 
 {% if self and not self.is_root and self.depth > 2 %}
-    <nav aria-label="breadcrumb" class="bg-light py-2 mb-4 border-bottom">
+    <nav aria-label="breadcrumb" class="bg-body-tertiary py-2 mb-4 border-bottom">
         <div class="container">
             <ol class="breadcrumb mb-0">
                 {% for page in self.get_ancestors %}

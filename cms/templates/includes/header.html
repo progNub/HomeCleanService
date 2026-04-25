@@ -1,6 +1,6 @@
 {% load static wagtailcore_tags wagtailsettings_tags i18n  %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm py-3">
+<nav class="navbar navbar-expand-lg shadow-sm py-3 navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand fw-bold text-primary fs-3 d-flex align-items-center" href="/">
             <img src="{% static 'cms/images/logo/logo_64x64.png' %}" alt="Logo" class="me-2" style="width: 32px; height: 32px;">
@@ -11,26 +11,31 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto align-items-lg-center">
+            <ul class="nav ms-auto align-items-lg-center">
                 {% get_settings %}
                 {% if settings.cms.NavigationSettings.menu_items.all %}
                     {% for item in settings.cms.NavigationSettings.menu_items.all %}
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold {% if request.path == item.link or request.path|add:item.link_url == item.link %}active{% endif %}" href="{{ item.link }}">{{ item.label }}</a>
+                            <a class="nav-link {% if request.path == item.link or request.path|add:item.link_url == item.link %}active{% endif %}" href="{{ item.link }}">{{ item.label }}</a>
                         </li>
                     {% endfor %}
                 {% else %}
                     {# Fallback if menu is not configured #}
                     <li class="nav-item">
-                        <a class="nav-link fw-semibold {% if request.path == "/" %}active{% endif %}" href="/">{% trans "Главная" %}</a>
+                        <a class="nav-link {% if request.path == "/" %}active{% endif %}" href="/">{% trans "Главная" %}</a>
                     </li>
                     {% wagtail_site as current_site %}
                     {% for menuitem in current_site.root_page.get_children.live.in_menu %}
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold {% if request.path == menuitem.url %}active{% endif %}" href="{% pageurl menuitem %}">{{ menuitem.title }}</a>
+                            <a class="nav-link {% if request.path == menuitem.url %}active{% endif %}" href="{% pageurl menuitem %}">{{ menuitem.title }}</a>
                         </li>
                     {% endfor %}
                 {% endif %}
+                <li class="nav-item ms-lg-3">
+                    <button class="btn btn-link nav-link p-2" onclick="toggleTheme()" aria-label="{% trans 'Переключить тему' %}" title="{% trans 'Переключить тему' %}">
+                        <i id="theme-icon" class="bi bi-moon-fill"></i>
+                    </button>
+                </li>
             </ul>
         </div>
     </div>
