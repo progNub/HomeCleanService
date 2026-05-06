@@ -2,21 +2,27 @@ from django.conf import settings
 from django.urls import include, path
 from django.contrib import admin
 from django.conf.urls.i18n import i18n_patterns
+from django.views.generic import TemplateView
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
-from search import views as search_views
 from cms import views as cms_views
 from wagtail.contrib.sitemaps.views import sitemap
 
-urlpatterns = i18n_patterns(
+urlpatterns = [
+    path(
+        "robots.txt",
+        TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+    ),
+]
+
+urlpatterns += i18n_patterns(
     path("django-admin/", admin.site.urls),
     path("sitemap.xml", sitemap),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
-    path("search/", search_views.search, name="search"),
     path("post-review/", cms_views.post_review, name="post_review"),
     path("i18n/", include("django.conf.urls.i18n")),
     prefix_default_language=False,

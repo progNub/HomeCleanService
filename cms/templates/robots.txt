@@ -1,0 +1,9 @@
+{% load wagtailsettings_tags %}{% get_settings %}User-agent: *
+Allow: /
+
+{% if settings.cms.RobotsSettings.disallow_rules.all %}{% for rule in settings.cms.RobotsSettings.disallow_rules.all %}Disallow: {{ rule.path }}
+{% endfor %}{% else %}Disallow: /admin/
+Disallow: /django-admin/
+Disallow: /documents/
+{% endif %}
+Sitemap: {{ request.scheme }}://{{ request.get_host }}/sitemap.xml
