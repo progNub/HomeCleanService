@@ -4,6 +4,8 @@ from .settings import (
     SocialMediaLink,
     NavigationSettings,
     MenuItem,
+    RobotsSettings,
+    RobotsDisallowRule,
 )
 from .home import HomePage
 from .forms import FormPage, FormField

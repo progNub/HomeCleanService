@@ -174,11 +174,7 @@ STATICFILES_FINDERS = [
     "compressor.finders.CompressorFinder",
 ]
 
-STATICFILES_DIRS = [
-    # BASE_DIR / "static", # Это STATIC_ROOT, его не должно быть в DIRS
-]
-
-STATIC_ROOT = BASE_DIR / "static"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "/static/"
 
 MEDIA_ROOT = BASE_DIR / "media"
@@ -190,7 +186,9 @@ MEDIA_URL = "/media/"
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
 
-COMPRESS_PRECOMPILERS = (("text/x-scss", "npx sass {infile} {outfile}"),)
+COMPRESS_PRECOMPILERS = (
+    ("text/x-scss", "npx sass --load-path=node_modules {infile} {outfile}"),
+)
 
 # Default storage settings
 # See https://docs.djangoproject.com/en/6.0/ref/settings/#std-setting-STORAGES
@@ -305,5 +303,20 @@ BOOTSTRAP5 = {
     },
     "field_renderers": {
         "default": "django_bootstrap5.renderers.FieldRenderer",
+    },
+}
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
     },
 }
