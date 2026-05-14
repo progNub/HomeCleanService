@@ -44,13 +44,13 @@ class Command(BaseCommand):
         if run_all or admin_only:
             init_superuser(self)
 
+        if run_all or settings_only:
+            init_global_settings(self)
+            init_navigation_settings(self)
+
         if run_all or content_only:
             init_reviews(self)
             homepage = init_content(self)
             init_legal_pages(self, homepage)
-
-        if run_all or settings_only:
-            init_global_settings(self)
-            init_navigation_settings(self)
 
         self.stdout.write(self.style.SUCCESS("Site initialization finished!"))
