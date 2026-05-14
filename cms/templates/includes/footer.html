@@ -61,9 +61,16 @@
             </p>
             <p class="mb-1">
                 {% if settings.cms.ContactSettings.legal_address %}
-                    {% trans "Юридический адрес" %}: {{ settings.cms.ContactSettings.legal_address }}
+                    {{ settings.cms.ContactSettings.legal_address }}
                 {% endif %}
             </p>
+            <div class="mt-2">
+                {% if settings.cms.ContactSettings.legal_index_page %}
+                    <a href="{% pageurl settings.cms.ContactSettings.legal_index_page %}" class="text-secondary text-decoration-none mx-2">
+                        {{ settings.cms.ContactSettings.legal_index_page.title }}
+                    </a>
+                {% endif %}
+            </div>
         </div>
     </div>
 </footer>

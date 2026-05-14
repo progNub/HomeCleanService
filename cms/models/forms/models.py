@@ -17,7 +17,7 @@ class FormField(AbstractFormField):
         verbose_name_plural = _("Поля формы")
 
     field_type = models.CharField(
-        verbose_name=_("field type"), max_length=16, choices=CUSTOM_FORM_FIELD_CHOICES
+        verbose_name=_("field type"), max_length=32, choices=CUSTOM_FORM_FIELD_CHOICES
     )
 
 

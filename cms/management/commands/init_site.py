@@ -9,6 +9,8 @@ from cms.models import (
     NavigationSettings,
     MenuItem,
     Review,
+    LegalIndexPage,
+    LegalDocumentPage,
 )
 
 import os
@@ -51,7 +53,8 @@ class Command(BaseCommand):
 
         if run_all or content_only:
             self.init_reviews()
-            self.init_content()
+            homepage = self.init_content()
+            self.init_legal_pages(homepage)
 
         if run_all or settings_only:
             self.init_global_settings()
@@ -557,3 +560,185 @@ class Command(BaseCommand):
                 self.stdout.write(
                     self.style.SUCCESS("Contact Form Page set to show in menus.")
                 )
+
+        # Ensure Agreement Checkbox exists
+        self.ensure_agreement_field(contact_page)
+
+    def ensure_agreement_field(self, contact_page):
+        """
+        Adds or updates the agreement checkbox
+        """
+
+        agreement_field = contact_page.form_fields.filter(
+            field_type="checkbox_agreement"
+        ).first()
+        if not agreement_field:
+            FormField.objects.create(
+                page=contact_page,
+                label="Согласие на обработку персональных данных",
+                field_type="checkbox_agreement",
+                required=True,
+                sort_order=10,
+            )
+            contact_page.save_revision().publish()
+            self.stdout.write(self.style.SUCCESS("Agreement checkbox added to form."))
+        else:
+            agreement_field.save()
+            contact_page.save_revision().publish()
+            self.stdout.write(
+                self.style.SUCCESS("Agreement checkbox help_text updated.")
+            )
+
+    def init_legal_pages(self, homepage):
+        """
+        Creates a 'Legal' parent page and nested legal documents.
+        """
+        self.stdout.write("Checking for Legal Pages...")
+
+        # 1. Create Legal parent page if it doesn't exist
+        legal_parent = (
+            LegalIndexPage.objects.descendant_of(homepage).filter(slug="legal").first()
+        )
+        if not legal_parent:
+            # Check if it exists but as a plain Page (from previous init)
+            existing_plain = (
+                Page.objects.descendant_of(homepage).filter(slug="legal").first()
+            )
+            if existing_plain:
+                self.stdout.write("Deleting existing plain Legal page...")
+                existing_plain.delete()
+
+            self.stdout.write("Creating Legal parent page (LegalIndexPage)...")
+            legal_parent = LegalIndexPage(
+                title="Юридическая информация",
+                slug="legal",
+                body="<p>В данном разделе представлены основные юридические документы, регламентирующие работу нашего сервиса и правила обработки данных.</p>",
+                meta_robots=SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW,
+                show_in_menus=False,
+            )
+            homepage.add_child(instance=legal_parent)
+            legal_parent.save_revision().publish()
+            self.stdout.write(self.style.SUCCESS("Legal parent page created."))
+        else:
+            # Update meta_robots if not set
+            if (
+                legal_parent.meta_robots
+                != SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW
+            ):
+                legal_parent.meta_robots = (
+                    SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW
+                )
+                legal_parent.save_revision().publish()
+                self.stdout.write(
+                    self.style.SUCCESS("Legal parent page SEO tags updated.")
+                )
+
+        # 2. Create Privacy Policy
+        privacy_policy = (
+            LegalDocumentPage.objects.descendant_of(legal_parent)
+            .filter(slug="privacy-policy")
+            .first()
+        )
+        if not privacy_policy:
+            # Check if it exists as old LegalPage
+            existing_old = (
+                Page.objects.descendant_of(legal_parent)
+                .filter(slug="privacy-policy")
+                .first()
+            )
+            if existing_old:
+                existing_old.delete()
+
+            self.stdout.write("Creating Privacy Policy page...")
+            privacy_policy = LegalDocumentPage(
+                title="Политика конфиденциальности",
+                slug="privacy-policy",
+                body="<h2>1. Общие положения</h2><p>Настоящая политика обработки персональных данных составлена в соответствии с требованиями Закона Республики Беларусь от 07.05.2021 № 99-З «О защите персональных данных»...</p>",
+                meta_robots=SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW,
+                show_in_menus=False,
+            )
+            legal_parent.add_child(instance=privacy_policy)
+            privacy_policy.save_revision().publish()
+            self.stdout.write(self.style.SUCCESS("Privacy Policy page created."))
+        else:
+            # Update meta_robots if not set
+            if (
+                privacy_policy.meta_robots
+                != SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW
+            ):
+                privacy_policy.meta_robots = (
+                    SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW
+                )
+                privacy_policy.save_revision().publish()
+                self.stdout.write(
+                    self.style.SUCCESS("Privacy Policy page SEO tags updated.")
+                )
+
+        # 3. Create User Agreement
+        user_agreement = (
+            LegalDocumentPage.objects.descendant_of(legal_parent)
+            .filter(slug="user-agreement")
+            .first()
+        )
+        if not user_agreement:
+            # Check if it exists as old LegalPage
+            existing_old = (
+                Page.objects.descendant_of(legal_parent)
+                .filter(slug="user-agreement")
+                .first()
+            )
+            if existing_old:
+                existing_old.delete()
+
+            self.stdout.write("Creating User Agreement page...")
+            user_agreement = LegalDocumentPage(
+                title="Пользовательское соглашение",
+                slug="user-agreement",
+                body="<h2>1. Предмет соглашения</h2><p>Данное соглашение регулирует правила использования сайта и предоставления услуг...</p>",
+                meta_robots=SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW,
+                show_in_menus=False,
+            )
+            legal_parent.add_child(instance=user_agreement)
+            user_agreement.save_revision().publish()
+            self.stdout.write(self.style.SUCCESS("User Agreement page created."))
+        else:
+            # Update meta_robots if not set
+            if (
+                user_agreement.meta_robots
+                != SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW
+            ):
+                user_agreement.meta_robots = (
+                    SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW
+                )
+                user_agreement.save_revision().publish()
+                self.stdout.write(
+                    self.style.SUCCESS("User Agreement page SEO tags updated.")
+                )
+
+        # 4. Link in ContactSettings
+        contact_settings = ContactSettings.load()
+        updated = False
+        if (
+            not contact_settings.privacy_policy_page
+            or contact_settings.privacy_policy_page.id != privacy_policy.id
+        ):
+            contact_settings.privacy_policy_page = privacy_policy
+            updated = True
+        if (
+            not contact_settings.terms_of_service_page
+            or contact_settings.terms_of_service_page.id != user_agreement.id
+        ):
+            contact_settings.terms_of_service_page = user_agreement
+            updated = True
+        if (
+            not contact_settings.legal_index_page
+            or contact_settings.legal_index_page.id != legal_parent.id
+        ):
+            contact_settings.legal_index_page = legal_parent
+            updated = True
+
+        if updated:
+            contact_settings.save()
+            self.stdout.write(
+                self.style.SUCCESS("Legal pages linked in Contact Settings.")
+            )

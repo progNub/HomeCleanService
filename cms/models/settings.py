@@ -127,6 +127,30 @@ class ContactSettings(SettingsPreviewMixin, PreviewableMixin, BaseGenericSetting
         verbose_name=_("Дата регистрации"),
         help_text=_("Дата государственной регистрации"),
     )
+    privacy_policy_page = models.ForeignKey(
+        "wagtailcore.Page",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name=_("Страница политики конфиденциальности"),
+    )
+    terms_of_service_page = models.ForeignKey(
+        "wagtailcore.Page",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name=_("Страница пользовательского соглашения"),
+    )
+    legal_index_page = models.ForeignKey(
+        "wagtailcore.Page",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name=_("Главная юридическая страница"),
+    )
 
     panels = [
         MultiFieldPanel(
@@ -145,6 +169,14 @@ class ContactSettings(SettingsPreviewMixin, PreviewableMixin, BaseGenericSetting
                 FieldPanel("legal_reg_date"),
             ],
             heading=_("Юридическая информация"),
+        ),
+        MultiFieldPanel(
+            [
+                PageChooserPanel("legal_index_page", "cms.LegalIndexPage"),
+                PageChooserPanel("privacy_policy_page", "cms.LegalDocumentPage"),
+                PageChooserPanel("terms_of_service_page", "cms.LegalDocumentPage"),
+            ],
+            heading=_("Юридические документы"),
         ),
     ]
 

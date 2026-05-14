@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags i18n static %}
+
+{% block body_class %}template-legaldocumentpage{% endblock %}
+
+{% block content %}
+    <section class="py-5">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <article class="bg-body p-4 p-lg-5 rounded-4 shadow-sm border">
+                        <header class="mb-5 border-bottom pb-4">
+                            <h1 class="display-5 fw-bold text-primary mb-3">{{ page.title }}</h1>
+                            {% if page.last_published_at %}
+                                <p class="text-secondary small mb-0">
+                                    {% trans "Последнее обновление" %}: {{ page.last_published_at|date:"d.m.Y" }}
+                                </p>
+                            {% endif %}
+                        </header>
+
+                        <div class="legal-content lead-text">
+                            {{ page.body|richtext }}
+                        </div>
+
+                        <div class="mt-5 pt-4 border-top">
+                            <a href="/" class="btn btn-outline-primary rounded-pill px-4">
+                                <i class="bi bi-arrow-left me-2"></i>{% trans "Вернуться на главную" %}
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}
