@@ -6,6 +6,7 @@ from wagtail.fields import RichTextField
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
 
 from cms.models.seo import SeoAbstract
+from .builder import CustomFormBuilder, CUSTOM_FORM_FIELD_CHOICES
 
 
 class FormField(AbstractFormField):
@@ -15,8 +16,14 @@ class FormField(AbstractFormField):
         verbose_name = _("Поле формы")
         verbose_name_plural = _("Поля формы")
 
+    field_type = models.CharField(
+        verbose_name=_("field type"), max_length=16, choices=CUSTOM_FORM_FIELD_CHOICES
+    )
+
 
 class FormPage(SeoAbstract, AbstractEmailForm):
+    form_builder = CustomFormBuilder
+
     intro = RichTextField(
         blank=True,
         verbose_name=_("Вступление"),
