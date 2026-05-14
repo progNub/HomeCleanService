@@ -491,7 +491,7 @@ class Command(BaseCommand):
             FormField.objects.create(
                 page=contact_page,
                 label="Телефон",
-                field_type="singleline",
+                field_type="phonenumber",
                 required=True,
                 sort_order=1,
             )
