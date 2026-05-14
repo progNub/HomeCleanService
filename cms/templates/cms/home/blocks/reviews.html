@@ -1,4 +1,4 @@
-{% load wagtailcore_tags wagtailimages_tags i18n wagtailsettings_tags django_bootstrap5 %}
+{% load wagtailcore_tags wagtailimages_tags i18n wagtailsettings_tags django_bootstrap5 agreement_tags %}
 
 <section class="py-5 bg-body-secondary" id="{{ value.anchor|default:'reviews' }}">
     <div class="container py-4">
@@ -60,11 +60,19 @@
                     {% endif %}
                     <form action="{% url 'post_review' %}" method="POST">
                         {% csrf_token %}
-                        {% bootstrap_form review_form %}
+                        {% for field in review_form %}
+                            <div class="mb-3">
+                                {% bootstrap_field field %}
+                                {% if field.name == "accept_privacy" %}
+                                    {% agreement_text %}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
                         <div class="text-center mt-4">
                             {% bootstrap_button button_type="submit" content=_("Отправить отзыв") %}
                             <p class="text-body-secondary small mt-3 mb-0">
                                 * {% trans "Все отзывы проходят премодерацию перед публикацией." %}
+                            </p>
                         </div>
                     </form>
                 </div>

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags django_bootstrap5 i18n static %}
+{% load wagtailcore_tags django_bootstrap5 i18n static agreement_tags %}
 
 {% block body_class %}template-formpage{% endblock %}
 
@@ -23,24 +23,7 @@
                                     <div>
                                         {% bootstrap_field field %}
                                         {% if field.field.field_type == "checkbox_agreement" %}
-                                            <div>
-                                                <p class="form-text px-4">
-                                                    {% if settings.cms.ContactSettings.privacy_policy_page or settings.cms.ContactSettings.terms_of_service_page %}
-                                                        {% trans "в соответствии с" %}
-                                                        {% if settings.cms.ContactSettings.privacy_policy_page %}
-                                                            <a href="{% pageurl settings.cms.ContactSettings.privacy_policy_page %}"
-                                                               target="_blank">{{ settings.cms.ContactSettings.privacy_policy_page.title }}</a>
-                                                        {% endif %}
-                                                        {% if settings.cms.ContactSettings.privacy_policy_page and settings.cms.ContactSettings.terms_of_service_page %}
-                                                            {% trans "и" %}
-                                                        {% endif %}
-                                                        {% if settings.cms.ContactSettings.terms_of_service_page %}
-                                                            <a href="{% pageurl settings.cms.ContactSettings.terms_of_service_page %}"
-                                                               target="_blank">{{ settings.cms.ContactSettings.terms_of_service_page.title }}</a>
-                                                        {% endif %}
-                                                    {% endif %}
-                                                </p>
-                                            </div>
+                                            {% agreement_text %}
                                         {% endif %}
                                     </div>
                                 {% endfor %}

@@ -1,0 +1,20 @@
+{% load wagtailcore_tags i18n wagtailsettings_tags %}
+
+{% if settings.cms.ContactSettings.privacy_policy_page or settings.cms.ContactSettings.terms_of_service_page %}
+    <div>
+        <p class="form-text px-4">
+            {% trans "в соответствии с" %}
+            {% if settings.cms.ContactSettings.privacy_policy_page %}
+                <a href="{% pageurl settings.cms.ContactSettings.privacy_policy_page %}"
+                   target="_blank">{{ settings.cms.ContactSettings.privacy_policy_page.title }}</a>
+            {% endif %}
+            {% if settings.cms.ContactSettings.privacy_policy_page and settings.cms.ContactSettings.terms_of_service_page %}
+                {% trans "и" %}
+            {% endif %}
+            {% if settings.cms.ContactSettings.terms_of_service_page %}
+                <a href="{% pageurl settings.cms.ContactSettings.terms_of_service_page %}"
+                   target="_blank">{{ settings.cms.ContactSettings.terms_of_service_page.title }}</a>
+            {% endif %}
+        </p>
+    </div>
+{% endif %}
