@@ -101,6 +101,32 @@ class ContactSettings(SettingsPreviewMixin, PreviewableMixin, BaseGenericSetting
     address = models.TextField(
         blank=True, null=True, verbose_name=_("Адрес"), help_text=_("Адрес офиса")
     )
+    legal_full_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_("Юридическое ФИО"),
+        help_text=_("Полное ФИО индивидуального предпринимателя"),
+    )
+    legal_unp = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        verbose_name=_("УНП"),
+        help_text=_("Учетный номер плательщика"),
+    )
+    legal_address = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_("Юридический адрес"),
+        help_text=_("Адрес регистрации"),
+    )
+    legal_reg_date = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name=_("Дата регистрации"),
+        help_text=_("Дата государственной регистрации"),
+    )
 
     panels = [
         MultiFieldPanel(
@@ -110,7 +136,16 @@ class ContactSettings(SettingsPreviewMixin, PreviewableMixin, BaseGenericSetting
                 FieldPanel("address"),
             ],
             heading=_("Контактная информация"),
-        )
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("legal_full_name"),
+                FieldPanel("legal_unp"),
+                FieldPanel("legal_address"),
+                FieldPanel("legal_reg_date"),
+            ],
+            heading=_("Юридическая информация"),
+        ),
     ]
 
     class Meta:

@@ -4,7 +4,8 @@
         <div class="row g-4 mb-4">
             <div class="col-lg-5">
                 <a href="/" class="text-decoration-none d-flex align-items-center mb-3">
-                    <img src="{% static 'cms/images/logo/logo_64x64.png' %}" alt="Logo" class="me-2" style="width: 48px; height: 48px;">
+                    <img src="{% static 'cms/images/logo/logo_64x64.png' %}" alt="Logo" class="me-2"
+                         style="width: 48px; height: 48px;">
                     <div class="h3 fw-bold text-primary mb-0">
                         {% wagtail_site as current_site %}
                         {{ current_site.site_name|default:"HomeService" }}
@@ -17,14 +18,16 @@
                 <ul class="list-unstyled">
                     {% if settings.cms.ContactSettings.phone_number %}
                         <li class="mb-2">
-                            <a href="tel:{{ settings.cms.ContactSettings.phone_number }}" class="text-secondary text-decoration-none">
+                            <a href="tel:{{ settings.cms.ContactSettings.phone_number }}"
+                               class="text-secondary text-decoration-none">
                                 <i class="bi bi-telephone me-2"></i>{{ settings.cms.ContactSettings.phone_number }}
                             </a>
                         </li>
                     {% endif %}
                     {% if settings.cms.ContactSettings.email %}
                         <li class="mb-2">
-                            <a href="mailto:{{ settings.cms.ContactSettings.email }}" class="text-secondary text-decoration-none">
+                            <a href="mailto:{{ settings.cms.ContactSettings.email }}"
+                               class="text-secondary text-decoration-none">
                                 <i class="bi bi-envelope me-2"></i>{{ settings.cms.ContactSettings.email }}
                             </a>
                         </li>
@@ -40,17 +43,27 @@
                 <h3 class="h5 fw-bold mb-3 text-white">{% trans "Мы в соцсетях" %}</h3>
                 <div class="d-flex gap-2 justify-content-lg-end flex-wrap">
                     {% for item in settings.cms.SocialMediaSettings.social_media_links.all %}
-                        <a href="{{ item.url }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3" target="_blank">{{ item.get_platform_display }}</a>
+                        <a href="{{ item.url }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3"
+                           target="_blank">{{ item.get_platform_display }}</a>
                     {% endfor %}
                 </div>
             </div>
         </div>
         <hr class="border-secondary opacity-25">
         <div class="text-center text-secondary small pt-3">
-            <p class="mb-0">&copy; {% now "Y" %}
-                {% wagtail_site as current_site %}
-                {{ current_site.site_name|default:"HomeService" }}.
-                {% trans "Все права защищены." %}</p>
+            {% if settings.cms.ContactSettings.legal_full_name %}
+                <p class="mb-1">{{ settings.cms.ContactSettings.legal_full_name }}</p>
+            {% endif %}
+            <p class="mb-1">
+                {% if settings.cms.ContactSettings.legal_unp %}
+                    {% trans "УНП" %}: {{ settings.cms.ContactSettings.legal_unp }}
+                {% endif %}
+            </p>
+            <p class="mb-1">
+                {% if settings.cms.ContactSettings.legal_address %}
+                    {% trans "Юридический адрес" %}: {{ settings.cms.ContactSettings.legal_address }}
+                {% endif %}
+            </p>
         </div>
     </div>
 </footer>

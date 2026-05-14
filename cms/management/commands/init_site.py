@@ -114,12 +114,19 @@ class Command(BaseCommand):
 
         # Contact Settings
         contact_settings = ContactSettings.load()
-        if not contact_settings.phone_number:
+        if not contact_settings.phone_number or not contact_settings.legal_unp:
             contact_settings.phone_number = os.getenv("CONTACT_PHONE", "+375296023356")
             contact_settings.email = os.getenv("CONTACT_EMAIL", "info@homeservice.by")
             contact_settings.address = os.getenv("CONTACT_ADDRESS", "Беларусь")
+
+            # Legal info
+            contact_settings.legal_full_name = os.getenv("LEGAL_FULL_NAME")
+            contact_settings.legal_unp = os.getenv("LEGAL_UNP")
+            contact_settings.legal_address = os.getenv("LEGAL_ADDRESS")
+            contact_settings.legal_reg_date = os.getenv("LEGAL_REG_DATE")
+
             contact_settings.save()
-            self.stdout.write(self.style.SUCCESS("Contact settings created."))
+            self.stdout.write(self.style.SUCCESS("Contact settings created/updated."))
         else:
             # Let's update it if it's the old default
             if contact_settings.phone_number == "+7 (900) 123-45-67":
