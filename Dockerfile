@@ -62,12 +62,9 @@ USER wagtail
 
 # Collect static files (Sass will be compiled during this step by django-compressor)
 
-run python manage.py migrate --noinput
-run python manage.py collectstatic --noinput --clear
+RUN python manage.py migrate --noinput
+RUN python manage.py collectstatic --noinput --clear
 RUN python manage.py compress --force
 
-
-
-
 # Runtime command that executes when "docker run" is called
-ENTRYPOINT ["/app/scripts/entrypoint.sh"]
+ENTRYPOINT ["/app/deploy/scripts/entrypoint.sh"]
