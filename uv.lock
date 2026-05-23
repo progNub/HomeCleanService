@@ -245,6 +245,19 @@ wheels = [
 ]
 
 [[package]]
+name = "django-redis"
+version = "6.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "redis" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/08/53/dbcfa1e528e0d6c39947092625b2c89274b5d88f14d357cee53c4d6dbbd4/django_redis-6.0.0.tar.gz", hash = "sha256:2d9cb12a20424a4c4dde082c6122f486628bae2d9c2bee4c0126a4de7fda00dd", size = 56904, upload-time = "2025-06-17T18:15:46.376Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7e/79/055dfcc508cfe9f439d9f453741188d633efa9eab90fc78a67b0ab50b137/django_redis-6.0.0-py3-none-any.whl", hash = "sha256:20bf0063a8abee567eb5f77f375143c32810c8700c0674ced34737f8de4e36c0", size = 33687, upload-time = "2025-06-17T18:15:34.165Z" },
+]
+
+[[package]]
 name = "django-stubs-ext"
 version = "6.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -363,9 +376,12 @@ dependencies = [
     { name = "django-bootstrap5" },
     { name = "django-browser-reload" },
     { name = "django-compressor" },
+    { name = "django-redis" },
     { name = "gunicorn" },
     { name = "python-dotenv" },
+    { name = "redis" },
     { name = "wagtail" },
+    { name = "wagtail-cache" },
     { name = "wagtail-localize" },
 ]
 
@@ -380,9 +396,12 @@ requires-dist = [
     { name = "django-bootstrap5", specifier = ">=26.2" },
     { name = "django-browser-reload", specifier = "==1.21.0" },
     { name = "django-compressor", specifier = ">=4.5.1" },
+    { name = "django-redis", specifier = ">=6.0.0" },
     { name = "gunicorn", specifier = ">=25.3.0" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
+    { name = "redis", specifier = ">=5.3.1" },
     { name = "wagtail", specifier = ">=7.3.1" },
+    { name = "wagtail-cache", specifier = ">=3.0.0" },
     { name = "wagtail-localize", specifier = ">=1.13" },
 ]
 
@@ -714,6 +733,15 @@ wheels = [
 ]
 
 [[package]]
+name = "redis"
+version = "7.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7b/7f/3759b1d0d72b7c92f0d70ffd9dc962b7b7b5ee74e135f9d7d8ab06b8a318/redis-7.4.0.tar.gz", hash = "sha256:64a6ea7bf567ad43c964d2c30d82853f8df927c5c9017766c55a1d1ed95d18ad", size = 4943913, upload-time = "2026-03-24T09:14:37.53Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/74/3a/95deec7db1eb53979973ebd156f3369a72732208d1391cd2e5d127062a32/redis-7.4.0-py3-none-any.whl", hash = "sha256:a9c74a5c893a5ef8455a5adb793a31bb70feb821c86eccb62eebef5a19c429ec", size = 409772, upload-time = "2026-03-24T09:14:35.968Z" },
+]
+
+[[package]]
 name = "requests"
 version = "2.33.1"
 source = { registry = "https://pypi.org/simple" }
@@ -887,6 +915,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/4e/f9/e28a1b87ea61c68b74990c9f5c8cb11da9a689e07c8b769acc89121f8523/wagtail-7.3.1.tar.gz", hash = "sha256:2ce131d9a4e7d55fdb5b592d320a758a189174b2cc3966b70a34a1b3dc56f449", size = 6855119, upload-time = "2026-03-03T15:54:48.523Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bb/0e/5efc903966b966df2261a66cce8cb88909e4ade86f1173a156aadbbd1a06/wagtail-7.3.1-py3-none-any.whl", hash = "sha256:eab131e15ab9edc7ed24143d44271e92af79239e105bc3e173d26c95d2b489b3", size = 9479191, upload-time = "2026-03-03T15:54:42.644Z" },
+]
+
+[[package]]
+name = "wagtail-cache"
+version = "3.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "wagtail" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/03/de/30e9441b66e9f679198ff5046b6bb6fa3dffe5e1a8268ac5b0847356ab89/wagtail_cache-3.0.0.tar.gz", hash = "sha256:a12b9f7dbd41b560b7fa77be08a6c7ab292536e37296dc910275b99c198ddd1e", size = 12318, upload-time = "2025-07-09T22:18:59.137Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/19/92/1c83f4c93e015034666ac192a7e7716236c9595331a8db45fa7b43d159ea/wagtail_cache-3.0.0-py3-none-any.whl", hash = "sha256:2bbb8d1bc5c4c9d7755113c0c8b91b3ec8a0c90bd560ef62aab99698961114fa", size = 14981, upload-time = "2025-07-09T22:18:57.637Z" },
 ]
 
 [[package]]

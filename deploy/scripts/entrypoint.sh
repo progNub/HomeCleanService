@@ -4,12 +4,11 @@
 set -e
 
 echo "--> Выполнение миграций..."
-
+python manage.py migrate --noinput
 echo "--> Сбор статических файлов..."
-
+python manage.py collectstatic --noinput --clear
+python manage.py compress --force
 echo "--> Инициализация данных сайта..."
-# Мы используем --noinput если команда его поддерживает,
-# но наша кастомная команда init_site берет данные из .env
 python manage.py init_site
 
 echo "--> Запуск Gunicorn..."

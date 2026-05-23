@@ -11,10 +11,17 @@ services:
       - static_volume:/app/staticfiles
     env_file:
       - ../.env
-    environment:
-      - PORT=8000
+    depends_on:
+      - redis
 #    depends_on:
 #      - db # В будущем если будет Postgres
+
+  redis:
+    image: redis:alpine
+    container_name: homeservice_redis
+    restart: always
+    expose:
+      - "6379"
 
   nginx:
     image: nginx:latest

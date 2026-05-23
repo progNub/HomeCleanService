@@ -52,6 +52,7 @@ WAGTAIL_APPS = [
     # localization Wagtail
     "wagtail_localize",
     "wagtail_localize.locales",
+    "wagtailcache",
 ]
 
 # 3. Local apps
@@ -99,6 +100,7 @@ LOCALE_PATHS = [
 # ==============================================================================
 
 MIDDLEWARE = [
+    "wagtailcache.cache.UpdateCacheMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -109,6 +111,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+    "wagtailcache.cache.FetchFromCacheMiddleware",
 ]
 
 ROOT_URLCONF = "cms.urls"
