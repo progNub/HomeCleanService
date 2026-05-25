@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# Останавливаем скрипт при ошибке
+# Stop script on error
 set -e
 
-echo "--> Выполнение миграций..."
+echo "--> Running migrations..."
 python manage.py migrate --noinput
-echo "--> Сбор статических файлов..."
+echo "--> Collecting static files..."
 python manage.py collectstatic --noinput --clear
 python manage.py compress --force
-echo "--> Инициализация данных сайта..."
+echo "--> Initializing site data..."
 python manage.py init_site
 
-echo "--> Запуск Gunicorn..."
+echo "--> Starting Gunicorn..."
 exec gunicorn cms.wsgi:application \
     --name homeservice \
     --bind 0.0.0.0:$PORT \
