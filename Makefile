@@ -36,6 +36,9 @@ help:
 	@echo "    make prod-cache-clear  - Clear Wagtail cache inside production container"
 	@echo "    make prod-shell        - Open Django shell inside production container"
 	@echo ""
+	@echo "  Backup & Maintenance:"
+	@echo "    make prod-db-backup    - Create a database backup (SQL dump)"
+	@echo ""
 	@echo "  Shared Management (Uses local .venv):"
 	@echo "    make migrate           - Apply migrations locally"
 	@echo "    make superuser         - Create superuser locally"
@@ -87,6 +90,15 @@ prod-cache-clear:
 
 prod-shell:
 	$(DOCKER_EXEC) python manage.py shell
+
+# ==============================================================================
+# BACKUP & MAINTENANCE
+# ==============================================================================
+
+prod-db-backup:
+	@mkdir -p backups
+	$(COMPOSE_PROD) exec db pg_dump -U homeservice_user homeservice > backups/db_backup_$$(date +%Y%m%d_%H%M%S).sql
+	@echo "Backup created in backups/ directory."
 
 # ==============================================================================
 # LOCAL MANAGEMENT

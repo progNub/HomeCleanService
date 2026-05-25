@@ -3,6 +3,7 @@ from django.urls import include, path
 from django.contrib import admin
 from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import TemplateView
+from django.http import HttpResponse
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
@@ -16,6 +17,7 @@ urlpatterns = [
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
     ),
+    path("health/", lambda r: HttpResponse("OK"), name="health_check"),
 ]
 
 urlpatterns += i18n_patterns(

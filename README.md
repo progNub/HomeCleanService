@@ -102,7 +102,13 @@ To run the full production stack (Nginx + Gunicorn + Postgres + Redis) inside Do
 | `make migrate` | Apply migrations locally |
 | `make superuser` | Create admin user locally |
 | `make cache-clear` | Clear Wagtail cache |
+| `make prod-db-backup` | Create a DB backup in `backups/` |
 | `make help` | Show all available commands |
+
+### Health Checks & Security
+- **Rate Limiting**: Configured at the Nginx level (5 req/s per IP with burst support) to protect against DDoS and brute-force.
+- **Security Headers**: Production settings include HSTS, SSL redirect, and secure cookies.
+- **Docker Health Checks**: Containers `web` and `db` have health checks configured for better stability.
 
 ### Architecture
 - **Settings**: Split into `base.py`, `dev.py`, and `production.py`.
