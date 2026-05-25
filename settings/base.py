@@ -13,8 +13,10 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 PROJECT_DIR = BASE_DIR / "cms"
 
 
@@ -35,7 +37,7 @@ DJANGO_APPS = [
     "django.contrib.postgres",
 ]
 
-# 2.  Wagtail apps
+# 2. Wagtail apps
 WAGTAIL_APPS = [
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
@@ -50,7 +52,6 @@ WAGTAIL_APPS = [
     "wagtail.search",
     "wagtail.admin",
     "wagtail",
-    # localization Wagtail
     "wagtail_localize",
     "wagtail_localize.locales",
     "wagtailcache",
@@ -114,6 +115,11 @@ MIDDLEWARE = [
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "wagtailcache.cache.FetchFromCacheMiddleware",
 ]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 
 ROOT_URLCONF = "cms.urls"
 

@@ -6,6 +6,7 @@ from .settings import (
     MenuItem,
     RobotsSettings,
     RobotsDisallowRule,
+    AnalyticsSettings,
 )
 from .home import HomePage
 from .forms import FormPage, FormField

@@ -43,6 +43,7 @@ help:
 	@echo "    make migrate           - Apply migrations locally"
 	@echo "    make superuser         - Create superuser locally"
 	@echo "    make cache-clear       - Clear Wagtail cache locally"
+	@echo "    make db-init-umami     - Manually initialize Umami database (Dev)"
 
 # ==============================================================================
 # DEVELOPMENT
@@ -112,3 +113,7 @@ superuser:
 
 cache-clear:
 	$(MANAGE) clear_wagtail_cache
+
+db-init-umami:
+	@echo "Initializing Umami database in Dev container..."
+	$(COMPOSE_DEV) exec db /docker-entrypoint-initdb.d/init-db.sh
