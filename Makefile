@@ -14,7 +14,7 @@ MANAGE = $(PYTHON) manage.py
 # Docker Execution command for Production
 DOCKER_EXEC = $(COMPOSE_PROD) exec web
 
-.PHONY: help dev-up dev-down dev-logs run prod-up prod-down prod-logs prod-build prod-migrate prod-superuser prod-cache-clear prod-shell migrate superuser cache-clear
+.PHONY: help dev-up dev-down dev-logs run prod-up prod-down prod-logs prod-build prod-migrate prod-superuser prod-cache-clear prod-shell migrate superuser cache-clear dev-reset prod-reset reset-all
 
 # Default target: show help
 help:
@@ -35,6 +35,11 @@ help:
 	@echo "    make prod-superuser    - Create superuser inside production container"
 	@echo "    make prod-cache-clear  - Clear Wagtail cache inside production container"
 	@echo "    make prod-shell        - Open Django shell inside production container"
+	@echo "    make prod-reset        - FULL RESET: Stop, remove production volumes and start again"
+	@echo ""
+	@echo "  Clean up & Reset:"
+	@echo "    make dev-reset         - FULL RESET: Stop, remove development volumes and start again"
+	@echo "    make reset-all         - Nuclear option: Reset both dev and prod environments"
 	@echo ""
 	@echo "  Backup & Maintenance:"
 	@echo "    make prod-db-backup    - Create a database backup (SQL dump)"
@@ -57,6 +62,10 @@ dev-down:
 
 dev-logs:
 	$(COMPOSE_DEV) logs -f
+
+dev-reset:
+	$(COMPOSE_DEV) down -v --remove-orphans
+	$(COMPOSE_DEV) up -d
 
 run:
 	$(MANAGE) runserver
@@ -91,6 +100,17 @@ prod-cache-clear:
 
 prod-shell:
 	$(DOCKER_EXEC) python manage.py shell
+
+prod-reset:
+	$(COMPOSE_PROD) down -v --remove-orphans
+	$(COMPOSE_PROD) up -d --build
+
+# ==============================================================================
+# CLEAN UP
+# ==============================================================================
+
+reset-all: dev-reset prod-reset
+	@echo "All environments have been reset."
 
 # ==============================================================================
 # BACKUP & MAINTENANCE
