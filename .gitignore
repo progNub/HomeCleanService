@@ -54,6 +54,7 @@ db.sqlite3-journal
 # Wagtail stuff
 /media/
 /static/
+/staticfiles/
 
 # Sphinx documentation
 docs/_build/
