@@ -13,8 +13,10 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 PROJECT_DIR = BASE_DIR / "cms"
 
 
@@ -32,9 +34,10 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
+    "django.contrib.postgres",
 ]
 
-# 2.  Wagtail apps
+# 2. Wagtail apps
 WAGTAIL_APPS = [
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
@@ -49,9 +52,9 @@ WAGTAIL_APPS = [
     "wagtail.search",
     "wagtail.admin",
     "wagtail",
-    # localization Wagtail
     "wagtail_localize",
     "wagtail_localize.locales",
+    "wagtailcache",
 ]
 
 # 3. Local apps
@@ -99,6 +102,7 @@ LOCALE_PATHS = [
 # ==============================================================================
 
 MIDDLEWARE = [
+    "wagtailcache.cache.UpdateCacheMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -109,7 +113,13 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+    "wagtailcache.cache.FetchFromCacheMiddleware",
 ]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 
 ROOT_URLCONF = "cms.urls"
 
@@ -140,8 +150,12 @@ WSGI_APPLICATION = "cms.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME", "homeservice"),
+        "USER": os.getenv("DB_USER", "homeservice_user"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "homeservice_pass"),
+        "HOST": os.getenv("DB_HOST", "localhost"),
+        "PORT": os.getenv("DB_PORT", "5433"),
     }
 }
 

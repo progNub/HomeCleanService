@@ -8,7 +8,11 @@ from wagtail.admin.panels import (
     InlinePanel,
     PageChooserPanel,
 )
-from wagtail.contrib.settings.models import BaseGenericSetting, register_setting
+from wagtail.contrib.settings.models import (
+    BaseGenericSetting,
+    BaseSiteSetting,
+    register_setting,
+)
 from wagtail.models import Orderable, PreviewableMixin
 
 
@@ -101,6 +105,56 @@ class ContactSettings(SettingsPreviewMixin, PreviewableMixin, BaseGenericSetting
     address = models.TextField(
         blank=True, null=True, verbose_name=_("Адрес"), help_text=_("Адрес офиса")
     )
+    legal_full_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_("Юридическое ФИО"),
+        help_text=_("Полное ФИО индивидуального предпринимателя"),
+    )
+    legal_unp = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        verbose_name=_("УНП"),
+        help_text=_("Учетный номер плательщика"),
+    )
+    legal_address = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_("Юридический адрес"),
+        help_text=_("Адрес регистрации"),
+    )
+    legal_reg_date = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name=_("Дата регистрации"),
+        help_text=_("Дата государственной регистрации"),
+    )
+    privacy_policy_page = models.ForeignKey(
+        "wagtailcore.Page",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name=_("Страница политики конфиденциальности"),
+    )
+    terms_of_service_page = models.ForeignKey(
+        "wagtailcore.Page",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name=_("Страница пользовательского соглашения"),
+    )
+    legal_index_page = models.ForeignKey(
+        "wagtailcore.Page",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name=_("Главная юридическая страница"),
+    )
 
     panels = [
         MultiFieldPanel(
@@ -110,7 +164,24 @@ class ContactSettings(SettingsPreviewMixin, PreviewableMixin, BaseGenericSetting
                 FieldPanel("address"),
             ],
             heading=_("Контактная информация"),
-        )
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("legal_full_name"),
+                FieldPanel("legal_unp"),
+                FieldPanel("legal_address"),
+                FieldPanel("legal_reg_date"),
+            ],
+            heading=_("Юридическая информация"),
+        ),
+        MultiFieldPanel(
+            [
+                PageChooserPanel("legal_index_page", "cms.LegalIndexPage"),
+                PageChooserPanel("privacy_policy_page", "cms.LegalDocumentPage"),
+                PageChooserPanel("terms_of_service_page", "cms.LegalDocumentPage"),
+            ],
+            heading=_("Юридические документы"),
+        ),
     ]
 
     class Meta:
@@ -162,6 +233,63 @@ class NavigationSettings(
 
     class Meta:
         verbose_name = _("Настройки навигации")
+
+
+@register_setting
+class AnalyticsSettings(BaseSiteSetting):
+    """
+    Settings for analytics scripts (Umami, Google Analytics, etc.)
+    """
+
+    umami_website_id = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_("Umami Website ID"),
+        help_text=_("Уникальный идентификатор вашего сайта в Umami"),
+    )
+    site = models.ForeignKey(
+        "wagtailcore.Site",
+        on_delete=models.CASCADE,
+        editable=False,
+        related_name="+",
+        default=2,
+    )
+    umami_server_url = models.URLField(
+        blank=True,
+        null=True,
+        verbose_name=_("URL сервера Umami"),
+        help_text=_(
+            "URL вашего сервера Umami (например, https://stats.example.com). Если оставить пустым, будет использоваться прокси /stats по умолчанию."
+        ),
+    )
+    custom_script = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_("Пользовательский скрипт аналитики"),
+        help_text=_(
+            "Вставьте сюда любой дополнительный код отслеживания (например, Google Analytics, Яндекс.Метрика)"
+        ),
+    )
+
+    panels = [
+        MultiFieldPanel(
+            [
+                FieldPanel("umami_website_id"),
+                FieldPanel("umami_server_url"),
+            ],
+            heading=_("Аналитика Umami"),
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("custom_script"),
+            ],
+            heading=_("Дополнительные скрипты"),
+        ),
+    ]
+
+    class Meta:
+        verbose_name = _("Настройки аналитики")
 
 
 class MenuItem(Orderable):

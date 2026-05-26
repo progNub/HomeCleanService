@@ -6,7 +6,14 @@
 {% block body_class %}template-404{% endblock %}
 
 {% block content %}
-<h1>{% trans "Страница не найдена" %}</h1>
-
-<h2>{% trans "К сожалению, мы не смогли найти эту страницу." %}</h2>
+<div class="container text-center py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="display-1 fw-bold">404</h1>
+            <h2 class="mb-4">{% trans "Страница не найдена" %}</h2>
+            <p class="lead mb-5">{% trans "К сожалению, мы не смогли найти страницу, которую вы ищете." %}</p>
+            <a href="/" class="btn btn-primary btn-lg">{% trans "На главную" %}</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

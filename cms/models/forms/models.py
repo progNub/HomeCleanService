@@ -6,6 +6,7 @@ from wagtail.fields import RichTextField
 from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
 
 from cms.models.seo import SeoAbstract
+from .builder import CustomFormBuilder, CUSTOM_FORM_FIELD_CHOICES
 
 
 class FormField(AbstractFormField):
@@ -15,8 +16,14 @@ class FormField(AbstractFormField):
         verbose_name = _("Поле формы")
         verbose_name_plural = _("Поля формы")
 
+    field_type = models.CharField(
+        verbose_name=_("field type"), max_length=32, choices=CUSTOM_FORM_FIELD_CHOICES
+    )
+
 
 class FormPage(SeoAbstract, AbstractEmailForm):
+    form_builder = CustomFormBuilder
+
     intro = RichTextField(
         blank=True,
         verbose_name=_("Вступление"),
@@ -29,6 +36,23 @@ class FormPage(SeoAbstract, AbstractEmailForm):
             "Сообщение, которое увидит пользователь после успешной заполнения формы"
         ),
     )
+
+    def process_form_submission(self, form):
+        """
+        Overrides the default process_form_submission to save the data in the database
+        but suppress the default email sending. This is a placeholder for future
+        Telegram/SMS integration.
+        """
+        submission = self.get_submission_class().objects.create(
+            form_data=form.cleaned_data,
+            page=self,
+        )
+
+        # TODO: Add Telegram notification logic here in the future
+        # e.g., send_telegram_notification(submission.form_data)
+
+        # We return the submission object to allow Wagtail to show the success message,
+        return submission
 
     class Meta:
         verbose_name = _("Страница с формой")

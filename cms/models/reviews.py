@@ -12,8 +12,16 @@ class Review(models.Model):
         default=5, choices=[(i, str(i)) for i in range(1, 6)], verbose_name=_("Рейтинг")
     )
     date = models.DateTimeField(auto_now_add=True, verbose_name=_("Дата и время"))
+
+    accept_privacy = models.BooleanField(
+        blank=False,
+        null=False,
+        default=False,
+        verbose_name=_("Согласие на обработку персональных данных"),
+    )
+
     is_approved = models.BooleanField(
-        default=True, verbose_name=_("Одобрено (показывать)")
+        default=False, verbose_name=_("Одобрено (показывать)")
     )
     ip = models.GenericIPAddressField(null=True, blank=True, verbose_name=_("IP-адрес"))
     user_agent = models.TextField(null=True, blank=True, verbose_name=_("User-Agent"))
@@ -22,14 +30,15 @@ class Review(models.Model):
         FieldPanel("author"),
         FieldPanel("text"),
         FieldPanel("rating"),
+        FieldPanel("accept_privacy", read_only=True),
         FieldPanel("is_approved"),
         FieldPanel("ip", read_only=True),
         FieldPanel("user_agent", read_only=True),
     ]
 
-    def __str__(self):
-        return f"{self.author} - {self.rating}"
-
     class Meta:
         verbose_name = _("Отзыв")
         verbose_name_plural = _("Отзывы")
+
+    def __str__(self):
+        return f"{self.author} - {self.rating}"

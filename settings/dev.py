@@ -17,6 +17,21 @@ INSTALLED_APPS.append("wagtail.contrib.styleguide")
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
+# ==============================================================================
+# CACHING SETTINGS (Local Memory)
+# ==============================================================================
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+    }
+}
+
+WAGTAIL_CACHE = True
+WAGTAIL_CACHE_HEADER = "X-Wagtail-Cache"
+CACHE_MIDDLEWARE_SECONDS = 600  # 10 minutes
+# ==============================================================================
+
 
 try:
     from .local import *

@@ -1,4 +1,4 @@
-{% load static wagtailcore_tags wagtailuserbar seo_tags compress%}
+{% load static wagtailcore_tags wagtailuserbar wagtailsettings_tags seo_tags compress%}
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -82,21 +82,28 @@
 
     {% block extra_css %}
     {% endblock %}
+    {% get_settings %}
+    {% if settings.cms.AnalyticsSettings.umami_website_id %}
+        <script defer src="{{ settings.cms.AnalyticsSettings.umami_server_url }}/script.js" data-website-id="{{ settings.cms.AnalyticsSettings.umami_website_id }}"></script>
+    {% endif %}
+    {% if settings.cms.AnalyticsSettings.custom_script %}
+        {{ settings.cms.AnalyticsSettings.custom_script|safe }}
+    {% endif %}
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
-{# Панель администратора Wagtail #}
+{# Wagtail Admin Bar #}
 {% wagtailuserbar %}
 
-{# Шапка сайта (Меню навигации) #}
+{# Header (Navigation Menu) #}
 {% include "includes/header.html" %}
 
-{# Хлебные крошки (Навигационная цепочка) #}
+{# Breadcrumbs #}
 {% if self %}
     {% include "includes/breadcrumbs.html" %}
 {% endif %}
 
-{# Системные уведомления (Django messages) #}
+{# System Notifications (Django messages) #}
 {% if messages %}
     <div class="container mt-3">
         <div class="messages">
@@ -111,12 +118,12 @@
     </div>
 {% endif %}
 
-{# Основной контент страницы #}
+{# Main content #}
 <main>
     {% block content %}{% endblock %}
 </main>
 
-{# Подвал сайта (Footer) #}
+{# Footer #}
 {% include "includes/footer.html" %}
 
 {# Global javascript #}

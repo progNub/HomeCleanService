@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags django_bootstrap5 i18n static   %}
+{% load wagtailcore_tags django_bootstrap5 i18n static agreement_tags %}
 
 {% block body_class %}template-formpage{% endblock %}
 
@@ -17,14 +17,18 @@
                                 {% endif %}
                             </div>
 
-                            <form action="{% pageurl page %}" method="POST">
+                            <form action="{% pageurl page %}" method="POST" id="request-form">
                                 {% csrf_token %}
-
-                                {% bootstrap_form form %}
-
-                                <div class="d-grid mt-5">
-                                    {% trans "Отправить" as submit_text %}
-                                    {% bootstrap_button content=submit_text button_type="submit" button_class="btn-primary btn-lg py-3 fw-bold rounded-pill shadow-sm" %}
+                                {% for field in form %}
+                                    <div>
+                                        {% bootstrap_field field %}
+                                        {% if field.field.field_type == "checkbox_agreement" %}
+                                            {% agreement_text %}
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                                <div class="d-grid mt-4">
+                                    {% bootstrap_button content=_("Отправить") button_type="submit" button_class="btn-primary btn-lg py-3 fw-bold rounded-pill shadow-sm" id="submit-btn" %}
                                 </div>
                             </form>
                         </div>

@@ -5,35 +5,53 @@
     const getPreferredTheme = () => {
         const storedTheme = getStoredTheme();
         if (storedTheme) return storedTheme;
+        return 'auto';
+    };
+
+    const getSystemTheme = () => {
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     };
 
-    const setTheme = theme => {
-        document.documentElement.setAttribute('data-bs-theme', theme);
+    const setTheme = (theme) => {
+        const actualTheme = theme === 'auto' ? getSystemTheme() : theme;
+        document.documentElement.setAttribute('data-bs-theme', actualTheme);
+
         const icon = document.getElementById('theme-icon');
         if (icon) {
-            icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+            if (theme === 'auto') {
+                icon.className = 'bi bi-circle-half';
+            } else {
+                icon.className = theme === 'dark' ? 'bi bi-moon-fill' : 'bi bi-sun-fill';
+            }
         }
     };
 
-    // Применяем тему немедленно (до отрисовки, если скрипт в head, или максимально быстро)
+    // Применяем тему немедленно
     setTheme(getPreferredTheme());
 
     // Слушаем системные изменения
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-        const storedTheme = getStoredTheme();
-        if (storedTheme !== 'light' && storedTheme !== 'dark') {
-            setTheme(getPreferredTheme());
+        if (getStoredTheme() === 'auto' || !getStoredTheme()) {
+            setTheme('auto');
         }
     });
 
     window.toggleTheme = function() {
-        const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        const storedTheme = getPreferredTheme();
+        let newTheme;
+
+        if (storedTheme === 'auto') {
+            newTheme = 'light';
+        } else if (storedTheme === 'light') {
+            newTheme = 'dark';
+        } else {
+            newTheme = 'auto';
+        }
+
         setStoredTheme(newTheme);
         setTheme(newTheme);
     };
 
-    // Повторная проверка после загрузки DOM на случай, если иконка еще не была доступна
+    // Повторная проверка после загрузки DOM
     document.addEventListener('DOMContentLoaded', () => setTheme(getPreferredTheme()));
 })();

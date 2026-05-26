@@ -60,14 +60,5 @@ ENV DJANGO_SETTINGS_MODULE=settings.production
 # Use user "wagtail" to run the build commands below and the server itself.
 USER wagtail
 
-# Collect static files (Sass will be compiled during this step by django-compressor)
-
-run python manage.py migrate --noinput
-run python manage.py collectstatic --noinput --clear
-RUN python manage.py compress --force
-
-
-
-
 # Runtime command that executes when "docker run" is called
-ENTRYPOINT ["/app/scripts/entrypoint.sh"]
+ENTRYPOINT ["/app/deploy/scripts/entrypoint.sh"]

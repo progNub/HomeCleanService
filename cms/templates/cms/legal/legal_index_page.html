@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags i18n static %}
+
+{% block body_class %}template-legalindexpage{% endblock %}
+
+{% block content %}
+    <section class="py-5">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <article class="bg-body p-4 p-lg-5 rounded-4 shadow-sm border">
+                        <header class="mb-5 border-bottom pb-4">
+                            <h1 class="display-5 fw-bold text-primary mb-3">{{ page.title }}</h1>
+                        </header>
+
+                        {% if page.body %}
+                            <div class="legal-content mb-5">
+                                {{ page.body|richtext }}
+                            </div>
+                        {% endif %}
+
+                        <div class="list-group list-group-flush rounded-4 overflow-hidden border">
+                            {% for doc in documents %}
+                                <a href="{% pageurl doc %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3 px-4">
+                                    <span class="fs-5">{{ doc.title }}</span>
+                                    <i class="bi bi-chevron-right text-primary"></i>
+                                </a>
+                            {% empty %}
+                                <div class="list-group-item py-4 text-center text-secondary">
+                                    {% trans "Документы пока не добавлены" %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mt-5 pt-4 border-top">
+                            <a href="/" class="btn btn-outline-primary rounded-pill px-4">
+                                <i class="bi bi-arrow-left me-2"></i>{% trans "Вернуться на главную" %}
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}
