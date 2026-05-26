@@ -37,6 +37,23 @@ class FormPage(SeoAbstract, AbstractEmailForm):
         ),
     )
 
+    def process_form_submission(self, form):
+        """
+        Overrides the default process_form_submission to save the data in the database
+        but suppress the default email sending. This is a placeholder for future
+        Telegram/SMS integration.
+        """
+        submission = self.get_submission_class().objects.create(
+            form_data=form.cleaned_data,
+            page=self,
+        )
+
+        # TODO: Add Telegram notification logic here in the future
+        # e.g., send_telegram_notification(submission.form_data)
+
+        # We return the submission object to allow Wagtail to show the success message,
+        return submission
+
     class Meta:
         verbose_name = _("Страница с формой")
         verbose_name_plural = _("Страницы с формами")
