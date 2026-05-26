@@ -10,10 +10,35 @@ STORAGES["staticfiles"]["BACKEND"] = (
     "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 )
 
-ALLOWED_HOSTS = ["*"]
+# SECURITY SETTINGS
+# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "change-me-in-production")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+
+# ALLOWED_HOSTS should be set to your domain names in production
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
+
+# Security headers and cookies
+SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "True") == "True"
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# HSTS settings
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Proxy setting for HTTPS detection
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+if not CSRF_TRUSTED_ORIGINS or CSRF_TRUSTED_ORIGINS == [""]:
+    # Fallback or empty if not provided
+    CSRF_TRUSTED_ORIGINS = []
 
 # ==============================================================================
 # CACHING SETTINGS (Redis & Wagtail Cache)
