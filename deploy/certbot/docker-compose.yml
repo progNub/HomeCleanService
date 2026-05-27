@@ -1,0 +1,25 @@
+services:
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - webroot:/var/www/certbot
+    networks:
+      - homeservice_network
+
+volumes:
+  certbot-etc:
+    external: true
+    name: homeservice-prod_certbot-etc
+  certbot-var:
+    external: true
+    name: homeservice-prod_certbot-var
+  webroot:
+    external: true
+    name: homeservice-prod_webroot
+
+networks:
+  homeservice_network:
+    external: true
+    name: homeservice_prod_network

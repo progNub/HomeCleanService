@@ -43,7 +43,7 @@ This setup is much cleaner than using subfolders and avoids asset path issues.
 
 ## 5. Technical Information
 *   **Database:** Umami uses a separate database named `umami` inside your shared PostgreSQL container.
-*   **Initialization:** The database is created automatically by the `deploy/scripts/umami/init-db.sh` script.
+*   **Initialization:** The database is created automatically by the `deploy/umami/init-db.sh` script.
 *   **Manual Management:** If you need to create the database manually, use the `make db-init-umami` command.
 *   **Tracker:** The tracking script is automatically inserted into all pages via the base template `cms/templates/base.html`.
 

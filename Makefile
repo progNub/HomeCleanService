@@ -5,6 +5,7 @@ PROJECT_PROD = homeservice-prod
 # Docker Compose commands
 COMPOSE_DEV = docker compose -p $(PROJECT_DEV) -f deploy/docker-compose.dev.yml
 COMPOSE_PROD = docker compose -p $(PROJECT_PROD) -f deploy/docker-compose.yml
+COMPOSE_SSL = docker compose -p $(PROJECT_PROD) -f deploy/certbot/docker-compose.yml
 
 # Python and Local Virtual Environment
 VENV = .venv
@@ -14,7 +15,7 @@ MANAGE = $(PYTHON) manage.py
 # Docker Execution command for Production
 DOCKER_EXEC = $(COMPOSE_PROD) exec web
 
-.PHONY: help dev-up dev-down dev-logs run prod-up prod-down prod-logs prod-build prod-migrate prod-superuser prod-cache-clear prod-shell migrate superuser cache-clear dev-reset prod-reset reset-all
+.PHONY: help dev-up dev-down dev-logs run prod-up prod-down prod-logs prod-logs-web prod-build prod-migrate prod-superuser prod-cache-clear prod-shell migrate superuser cache-clear dev-reset prod-reset reset-all cert
 
 # Default target: show help
 help:
@@ -43,6 +44,9 @@ help:
 	@echo ""
 	@echo "  Backup & Maintenance:"
 	@echo "    make prod-db-backup    - Create a database backup (SQL dump)"
+	@echo ""
+	@echo "  SSL/HTTPS:"
+	@echo "    make cert              - Get or renew SSL certificates"
 	@echo ""
 	@echo "  Shared Management (Uses local .venv):"
 	@echo "    make migrate           - Apply migrations locally"
@@ -120,6 +124,13 @@ prod-db-backup:
 	@mkdir -p backups
 	$(COMPOSE_PROD) exec db pg_dump -U homeservice_user homeservice > backups/db_backup_$$(date +%Y%m%d_%H%M%S).sql
 	@echo "Backup created in backups/ directory."
+
+# ==============================================================================
+# SSL / HTTPS
+# ==============================================================================
+
+cert:
+	@bash deploy/certbot/cert-manage.sh
 
 # ==============================================================================
 # LOCAL MANAGEMENT
