@@ -18,12 +18,12 @@ COMPOSE_PROD="docker compose -p homeservice-prod -f deploy/docker-compose.yml"
 
 echo "Checking SSL certificates for $DOMAIN..."
 
-# Check for existing certificates
-if $COMPOSE_SSL run --rm --entrypoint "ls /etc/letsencrypt/live/$DOMAIN" certbot >/dev/null 2>&1; then
-    echo "Certificates found. Attempting to renew..."
+# Check for existing renewal configuration (indicates real certificates)
+if $COMPOSE_SSL run --rm --entrypoint "ls /etc/letsencrypt/renewal/$DOMAIN.conf" certbot >/dev/null 2>&1; then
+    echo "Real certificates found. Attempting to renew..."
     $COMPOSE_SSL run --rm certbot renew
 else
-    echo "Certificates not found. Requesting new ones..."
+    echo "Real certificates not found (only dummy or none). Requesting new ones from Let's Encrypt..."
     $COMPOSE_SSL run --rm --entrypoint \
         "certbot certonly --webroot -w /var/www/certbot \
         --email $CERT_EMAIL --agree-tos --no-eff-email \
