@@ -34,20 +34,26 @@ if [ "$RENEWAL_CONF_EXISTS" -eq 1 ] && [ "$IS_DUMMY" -eq 0 ]; then
     echo "Real certificates found. Attempting to renew..."
     if ! $COMPOSE_SSL run --rm certbot renew; then
         echo "Renewal failed. Trying to re-obtain certificates..."
+        # Cleanup before re-obtaining to avoid -0001 issue
+        $COMPOSE_SSL run --rm --entrypoint "rm -rf /etc/letsencrypt/live/$DOMAIN /etc/letsencrypt/archive/$DOMAIN /etc/letsencrypt/renewal/$DOMAIN.conf /etc/letsencrypt/live/$DOMAIN-0001 /etc/letsencrypt/archive/$DOMAIN-0001 /etc/letsencrypt/renewal/$DOMAIN-0001.conf" certbot
+
         $COMPOSE_SSL run --rm --entrypoint \
             "certbot certonly --webroot -w /var/www/certbot \
             --email $CERT_EMAIL --agree-tos --no-eff-email --force-renewal \
+            --cert-name $DOMAIN \
             -d $DOMAIN -d www.$DOMAIN -d stats.$DOMAIN" certbot
     fi
 else
     echo "Real certificates not found (only dummy or none). Requesting new ones from Let's Encrypt..."
     # If dummy or broken directory exists, we might need to remove it or use --force-renewal
-    # Cleaning up dummy/broken directory to avoid "live directory exists" error
-    $COMPOSE_SSL run --rm --entrypoint "rm -rf /etc/letsencrypt/live/$DOMAIN /etc/letsencrypt/archive/$DOMAIN /etc/letsencrypt/renewal/$DOMAIN.conf" certbot
+    # Cleaning up dummy/broken directory to avoid "live directory exists" or suffix "-0001" errors
+    # We remove any potential conflicting lineages to ensure a clean request
+    $COMPOSE_SSL run --rm --entrypoint "rm -rf /etc/letsencrypt/live/$DOMAIN /etc/letsencrypt/archive/$DOMAIN /etc/letsencrypt/renewal/$DOMAIN.conf /etc/letsencrypt/live/$DOMAIN-0001 /etc/letsencrypt/archive/$DOMAIN-0001 /etc/letsencrypt/renewal/$DOMAIN-0001.conf" certbot
 
     $COMPOSE_SSL run --rm --entrypoint \
         "certbot certonly --webroot -w /var/www/certbot \
         --email $CERT_EMAIL --agree-tos --no-eff-email \
+        --cert-name $DOMAIN \
         -d $DOMAIN -d www.$DOMAIN -d stats.$DOMAIN" certbot
 fi
 
