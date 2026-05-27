@@ -61,4 +61,4 @@ ENV DJANGO_SETTINGS_MODULE=settings.production
 USER wagtail
 
 # Runtime command that executes when "docker run" is called
-ENTRYPOINT ["/app/deploy/scripts/entrypoint.sh"]
+ENTRYPOINT ["/app/deploy/entrypoint.sh"]
