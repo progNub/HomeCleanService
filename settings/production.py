@@ -25,6 +25,7 @@ SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "True") == "True"
 CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "True") == "True"
 SECURE_BROWSER_XSS_FILTER = os.getenv("SECURE_BROWSER_XSS_FILTER", "True") == "True"
 SECURE_CONTENT_TYPE_NOSNIFF = os.getenv("SECURE_CONTENT_TYPE_NOSNIFF", "True") == "True"
+SECURE_REFERRER_POLICY = "no-referrer-when-downgrade"
 
 # HSTS settings
 SECURE_HSTS_SECONDS = 31536000  # 1 year
