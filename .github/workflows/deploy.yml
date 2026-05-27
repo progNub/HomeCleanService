@@ -20,7 +20,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd HomeCleanService
-            git pull origin main
+            git pull origin master
             make prod-down
             make prod-build
             make prod-up
