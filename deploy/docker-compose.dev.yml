@@ -34,8 +34,8 @@ services:
       - TRACKER_SCRIPT_NAME=stats
     depends_on:
       - db
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     networks:
       - default
 

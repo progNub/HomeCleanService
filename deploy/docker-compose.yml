@@ -21,6 +21,8 @@ services:
     depends_on:
       - redis
       - db
+    networks:
+      - homeservice_network
 
   db:
     image: postgres:16-alpine
@@ -40,6 +42,8 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD:-homeservice_pass}
     env_file:
       - ../.env
+    networks:
+      - homeservice_network
 
   redis:
     image: redis:alpine
@@ -47,6 +51,8 @@ services:
     restart: always
     expose:
       - "6379"
+    networks:
+      - homeservice_network
 
   umami:
     image: ghcr.io/umami-software/umami:postgresql-latest
@@ -59,8 +65,10 @@ services:
       - TRACKER_SCRIPT_NAME=stats
     depends_on:
       - db
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
+    networks:
+      - homeservice_network
   nginx:
     image: nginx:latest
     container_name: homeservice_nginx_prod
@@ -75,6 +83,12 @@ services:
     depends_on:
       - web
       - umami
+    networks:
+      - homeservice_network
+
+networks:
+  homeservice_network:
+    name: homeservice_prod_network
 
 volumes:
   postgres_data:
