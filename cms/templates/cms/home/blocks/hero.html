@@ -1,7 +1,7 @@
 {% load wagtailcore_tags wagtailimages_tags i18n %}
 <section class="bg-body-tertiary hero-section" {% if value.anchor %}id="{{ value.anchor }}"{% endif %}>
     {% if value.image %}
-        {% image value.image original as hero_img %}
+        {% image value.image original format-webp as hero_img %}
         <div class="hero-bg-image" style="background-image: url('{{ hero_img.url }}');"></div>
     {% endif %}
     <div class="container text-center">
