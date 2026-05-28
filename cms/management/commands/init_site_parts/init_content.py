@@ -109,6 +109,9 @@ def init_content(command):
         fence_img = get_or_import_image(
             "cms/static/cms/images/default/fence_washing.webp", "Мойка забора"
         )
+        hero_img = get_or_import_image(
+            "cms/static/cms/images/default/hero_1.webp", "Главное изображение"
+        )
 
         command.stdout.write("Filling HomePage with demo content...")
         homepage.body = [
@@ -117,6 +120,7 @@ def init_content(command):
                 {
                     "title": "Мойка и покраска крыш, домов, заборов",
                     "subtitle": "Моем всё! Профессиональная очистка и обновление вашего имущества. Работаем по всей Беларуси.",
+                    "image": hero_img,
                     "cta_text": "Связаться с нами",
                     "cta_page": contact_page,
                     "anchor": "hero",
