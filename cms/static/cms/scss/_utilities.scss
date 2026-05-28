@@ -10,3 +10,17 @@
         box-shadow: $shadow-hover !important;
     }
 }
+
+.transition-scale {
+    transition: transform 0.5s ease;
+}
+
+.zoom-container {
+    overflow: hidden;
+
+    &:hover {
+        .transition-scale {
+            transform: scale(1.05);
+        }
+    }
+}

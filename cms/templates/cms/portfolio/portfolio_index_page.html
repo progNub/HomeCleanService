@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags i18n %}
+
+{% block body_class %}template-portfoliopage{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <h1 class="display-4 fw-bold mb-4">{{ page.title }}</h1>
+
+        {% if page.body %}
+            <div class="lead mb-5">
+                {{ page.body|richtext }}
+            </div>
+        {% endif %}
+
+        <div class="row g-4">
+            {% for work in works %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm transition-hover portfolio-card">
+                        {% if work.main_image %}
+                            <div class="zoom-container">
+                                {% image work.main_image fill-600x600 class="card-img-top img-fluid transition-scale portfolio-card-img" %}
+                            </div>
+                        {% endif %}
+                        <div class="card-body p-4">
+                            <h3 class="card-title h5 fw-bold mb-2">
+                                <a href="{% pageurl work %}" class="stretched-link">{{ work.title }}</a>
+                            </h3>
+                            {% if work.short_description %}
+                                <p class="card-text text-body-secondary small mb-0">{{ work.short_description }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">{% trans "Работ пока нет." %}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

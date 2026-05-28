@@ -4,6 +4,7 @@ from cms.management.commands.init_site_parts import (
     init_superuser,
     init_reviews,
     init_legal_pages,
+    init_portfolio_pages,
     init_navigation_settings,
     init_global_settings,
 )
@@ -52,5 +53,6 @@ class Command(BaseCommand):
             init_reviews(self)
             homepage = init_content(self)
             init_legal_pages(self, homepage)
+            init_portfolio_pages(self, homepage)
 
         self.stdout.write(self.style.SUCCESS("Site initialization finished!"))

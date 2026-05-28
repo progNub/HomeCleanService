@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags i18n static %}
+
+{% block body_class %}template-portfolioworkpage{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <h1 class="display-4 fw-bold mb-4">{{ page.title }}</h1>
+
+                {% if page.main_image %}
+                    <div class="mb-4 portfolio-main-image-container">
+                        {% image page.main_image fill-1200x600 class="img-fluid rounded shadow" %}
+                    </div>
+                {% endif %}
+
+                <div class="full-description mb-4 lead">
+                    {{ page.full_description|richtext }}
+                </div>
+
+                {# CTA Block #}
+                <div class="card border-0 shadow-sm bg-body-tertiary mb-5 portfolio-cta-card">
+                    <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+                        <div class="mb-3 mb-md-0">
+                            <h3 class="h5 fw-bold mb-1">{% trans "Интересует подобная работа?" %}</h3>
+                            <p class="text-secondary mb-0">{% trans "Оставьте заявку, и мы проконсультируем вас бесплатно." %}</p>
+                        </div>
+                        <div class="flex-shrink-0 ms-md-4">
+                            <a href="/request/" class="btn btn-primary px-4">{% trans "Заказать расчет" %}</a>
+                        </div>
+                    </div>
+                </div>
+
+                {# Content Blocks #}
+                <div class="portfolio-content mb-5">
+                    {% include_block page.body %}
+                </div>
+
+                {% if other_works %}
+                    <div class="other-works-section mt-5 pt-5 border-top">
+                        <h2 class="h4 fw-bold mb-4">{% trans "Другие работы" %}</h2>
+                        <div class="row g-4">
+                            {% for work in other_works %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card h-100 border-0 shadow-sm transition-hover portfolio-card">
+                                        {% if work.main_image %}
+                                            <div class="zoom-container">
+                                                {% image work.main_image fill-600x600 class="card-img-top transition-scale portfolio-card-img" %}
+                                            </div>
+                                        {% endif %}
+                                        <div class="card-body p-4">
+                                            <h4 class="card-title h5 fw-bold mb-0">
+                                                <a href="{% pageurl work %}" class="stretched-link">{{ work.title }}</a>
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
