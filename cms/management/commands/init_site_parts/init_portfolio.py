@@ -13,7 +13,7 @@ def init_portfolio_pages(command, homepage):
         portfolio_index = PortfolioIndexPage(
             title="Наши работы",
             slug="portfolio",
-            body="Примеры наших выполненных работ по мойке и покраске крыш, фасадов и заборов.",
+            body="Примеры наших выполненных работ.",
             seo_title="Наши работы - примеры мойки и покраски - HomeService",
             search_description="Посмотрите примеры наших работ по мойке и покраске крыш, фасадов и заборов по всей Беларуси. Фото до и после, описание процесса.",
             og_type=SeoAbstract.OgTypeChoices.WEBSITE,
