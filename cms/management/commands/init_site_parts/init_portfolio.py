@@ -14,7 +14,7 @@ def init_portfolio_pages(command, homepage):
             title="Наши работы",
             slug="portfolio",
             body="Примеры наших выполненных работ.",
-            seo_title="Наши работы - примеры мойки и покраски - HomeService",
+            seo_title="Наши работы - примеры мойки и покраски - HomeCleanService",
             search_description="Посмотрите примеры наших работ по мойке и покраске крыш, фасадов и заборов по всей Беларуси. Фото до и после, описание процесса.",
             og_type=SeoAbstract.OgTypeChoices.WEBSITE,
             meta_robots=SeoAbstract.MetaRobotsChoices.INDEX_FOLLOW,

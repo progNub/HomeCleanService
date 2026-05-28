@@ -46,7 +46,7 @@ def init_content(command):
         homepage = HomePage(
             title="Главная",
             slug="home",
-            seo_title="Мойка и покраска крыш в Беларуси - HomeService",
+            seo_title="Мойка и покраска крыш в Беларуси - HomeCleanService",
             search_description="Профессиональная мойка и покраска крыш, фасадов и заборов. Работаем по всей Беларуси. Качество, гарантия, доступные цены.",
             og_type=SeoAbstract.OgTypeChoices.WEBSITE,
             meta_robots=SeoAbstract.MetaRobotsChoices.INDEX_FOLLOW,
@@ -61,7 +61,7 @@ def init_content(command):
         # Update SEO if empty
         updated = False
         if not homepage.seo_title:
-            homepage.seo_title = "Мойка и покраска крыш в Беларуси - HomeService"
+            homepage.seo_title = "Мойка и покраска крыш в Беларуси - HomeCleanService"
             updated = True
         if not homepage.search_description:
             homepage.search_description = "Профессиональная мойка и покраска крыш, фасадов и заборов. Работаем по всей Беларуси. Качество, гарантия, доступные цены."
@@ -248,7 +248,7 @@ def init_content(command):
             port=port,
             root_page=homepage,
             is_default_site=True,
-            site_name="HomeService",
+            site_name="HomeCleanService",
         )
         command.stdout.write(command.style.SUCCESS("Site object created."))
 
