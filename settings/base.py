@@ -237,6 +237,13 @@ WAGTAILSEARCH_BACKENDS = {
     }
 }
 
+# Wagtail Images
+WAGTAILIMAGES_FORMAT_CONVERSIONS = {
+    "bmp": "webp",
+    "jpeg": "webp",
+    "png": "webp",
+}
+
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
 WAGTAILADMIN_BASE_URL = os.getenv("SITE_URL", "https://homecleanservice.by")

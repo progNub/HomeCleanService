@@ -1,14 +1,14 @@
 {% load wagtailcore_tags wagtailimages_tags i18n %}
-<section class="bg-body-tertiary hero-section" {% if value.anchor %}id="{{ value.anchor }}"{% endif %}>
+<section class="bg-body-tertiary hero-section {% if value.image %}has-image{% endif %}" {% if value.anchor %}id="{{ value.anchor }}"{% endif %}>
     {% if value.image %}
-        {% image value.image original as hero_img %}
+        {% image value.image original format-webp as hero_img %}
         <div class="hero-bg-image" style="background-image: url('{{ hero_img.url }}');"></div>
     {% endif %}
     <div class="container text-center">
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <h1 class="display-3 text-body-emphasis fw-bold mb-4">{{ value.title }}</h1>
-                <p class="mb-5 fs-4 text-body-emphasis fw-semibold">{{ value.subtitle }}</p>
+                <h1 class="display-3 fw-bold mb-4 {% if value.image %}text-white{% else %}text-body-emphasis{% endif %}">{{ value.title }}</h1>
+                <p class="mb-5 fs-4 fw-semibold {% if value.image %}text-white{% else %}text-body-emphasis{% endif %}">{{ value.subtitle }}</p>
                 {% if value.cta_text %}
                     {% if value.cta_page %}
                         <a href="{% pageurl value.cta_page %}" class="btn btn-primary btn-lg px-5 py-3 fw-bold rounded-pill">

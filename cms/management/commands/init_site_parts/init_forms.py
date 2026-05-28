@@ -18,14 +18,16 @@ def init_contact_form_page(command, homepage):
         contact_page = FormPage(
             title="Заявка",
             slug="request",
-            seo_title="Оставить заявку - HomeService",
+            seo_title="Оставить заявку - HomeCleanService",
             search_description="Оставьте заявку на мойку или покраску крыши. Мы перезвоним вам в ближайшее время для уточнения деталей.",
             og_type=SeoAbstract.OgTypeChoices.WEBSITE,
             meta_robots=SeoAbstract.MetaRobotsChoices.INDEX_FOLLOW,
             intro="<p>Пожалуйста, заполните форму ниже, и мы свяжемся с вами в ближайшее время.</p>",
             thank_you_text="<p>Спасибо за вашу заявку! Мы свяжемся с вами скоро.</p>",
-            to_address=os.getenv("CONTACT_FORM_TO_EMAIL", "info@homeservice.by"),
-            from_address=os.getenv("CONTACT_FORM_FROM_EMAIL", "noreply@homeservice.by"),
+            to_address=os.getenv("CONTACT_FORM_TO_EMAIL", "info@homecleanservice.by"),
+            from_address=os.getenv(
+                "CONTACT_FORM_FROM_EMAIL", "noreply@homecleanservice.by"
+            ),
             subject="Новая заявка с сайта",
             show_in_menus=True,
         )
@@ -67,9 +69,9 @@ def init_contact_form_page(command, homepage):
             updated = True
         if (
             not contact_page.seo_title
-            or contact_page.seo_title == "Связаться с нами - HomeService"
+            or contact_page.seo_title == "Связаться с нами - HomeCleanService"
         ):
-            contact_page.seo_title = "Оставить заявку - HomeService"
+            contact_page.seo_title = "Оставить заявку - HomeCleanService"
             updated = True
         if not contact_page.search_description:
             contact_page.search_description = "Оставьте заявку на мойку или покраску крыши. Мы перезвоним вам в ближайшее время для уточнения деталей."

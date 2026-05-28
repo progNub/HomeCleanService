@@ -45,7 +45,7 @@ def init_global_settings(command):
     contact_settings = ContactSettings.load()
     if not contact_settings.phone_number or not contact_settings.legal_unp:
         contact_settings.phone_number = os.getenv("CONTACT_PHONE", "+375296023356")
-        contact_settings.email = os.getenv("CONTACT_EMAIL", "info@homeservice.by")
+        contact_settings.email = os.getenv("CONTACT_EMAIL", "info@homecleanservice.by")
         contact_settings.address = os.getenv("CONTACT_ADDRESS", "Беларусь")
 
         # Legal info
