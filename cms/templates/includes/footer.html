@@ -1,5 +1,5 @@
 {% load wagtailcore_tags i18n static %}
-<footer class="bg-dark text-light py-5 mt-auto">
+<footer class="footer-custom py-5 mt-auto">
     <div class="container">
         <div class="row g-4 mb-4">
             <div class="col-lg-5">
@@ -11,15 +11,15 @@
                         {{ current_site.site_name|default:"HomeService" }}
                     </div>
                 </a>
-                <p class="text-secondary pe-lg-5">{% trans "Профессиональные услуги по уходу за вашим домом. Мы ценим качество и ваше время." %}</p>
+                <p class="pe-lg-5 opacity-75">{% trans "Профессиональные услуги по уходу за вашим домом. Мы ценим качество и ваше время." %}</p>
             </div>
             <div class="col-sm-6 col-lg-3">
-                <h2 class="h5 fw-bold mb-3 text-white">{% trans "Контакты" %}</h2>
+                <h2 class="h5 fw-bold mb-3">{% trans "Контакты" %}</h2>
                 <ul class="list-unstyled">
                     {% if settings.cms.ContactSettings.phone_number %}
                         <li class="mb-2">
                             <a href="tel:{{ settings.cms.ContactSettings.phone_number }}"
-                               class="text-secondary text-decoration-none">
+                               class="text-decoration-none">
                                 <i class="bi bi-telephone me-2"></i>{{ settings.cms.ContactSettings.phone_number }}
                             </a>
                         </li>
@@ -27,20 +27,20 @@
                     {% if settings.cms.ContactSettings.email %}
                         <li class="mb-2">
                             <a href="mailto:{{ settings.cms.ContactSettings.email }}"
-                               class="text-secondary text-decoration-none">
+                               class="text-decoration-none">
                                 <i class="bi bi-envelope me-2"></i>{{ settings.cms.ContactSettings.email }}
                             </a>
                         </li>
                     {% endif %}
                     {% if settings.cms.ContactSettings.address %}
-                        <li class="text-secondary">
+                        <li class="opacity-75">
                             <i class="bi bi-geo-alt me-2"></i>{{ settings.cms.ContactSettings.address }}
                         </li>
                     {% endif %}
                 </ul>
             </div>
             <div class="col-sm-6 col-lg-4 text-lg-end">
-                <h3 class="h5 fw-bold mb-3 text-white">{% trans "Мы в соцсетях" %}</h3>
+                <h3 class="h5 fw-bold mb-3">{% trans "Мы в соцсетях" %}</h3>
                 <div class="d-flex gap-2 justify-content-lg-end flex-wrap">
                     {% for item in settings.cms.SocialMediaSettings.social_media_links.all %}
                         <a href="{{ item.url }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3"
@@ -49,8 +49,8 @@
                 </div>
             </div>
         </div>
-        <hr class="border-secondary opacity-25">
-        <div class="text-center text-secondary small pt-3">
+        <hr class="opacity-25">
+        <div class="text-center small pt-3">
             {% if settings.cms.ContactSettings.legal_full_name %}
                 <p class="mb-1">{{ settings.cms.ContactSettings.legal_full_name }}</p>
             {% endif %}
@@ -64,9 +64,9 @@
                     {{ settings.cms.ContactSettings.legal_address }}
                 {% endif %}
             </p>
-            <div class="mt-2">
+                    <div class="mt-2">
                 {% if settings.cms.ContactSettings.legal_index_page %}
-                    <a href="{% pageurl settings.cms.ContactSettings.legal_index_page %}" class="text-secondary text-decoration-none mx-2">
+                    <a href="{% pageurl settings.cms.ContactSettings.legal_index_page %}" class="mx-2">
                         {{ settings.cms.ContactSettings.legal_index_page.title }}
                     </a>
                 {% endif %}
