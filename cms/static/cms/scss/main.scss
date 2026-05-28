@@ -26,3 +26,5 @@
 @import "base";       // Базовые стили (body, html, общие теги)
 @import "components"; // Стили конкретных компонентов (Hero, Navbar и т.д.)
 @import "utilities";  // Вспомогательные классы (анимации, тени)
+@import "pages/portfolio/work";
+@import "pages/portfolio/common";

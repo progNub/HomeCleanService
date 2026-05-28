@@ -1,0 +1,25 @@
+// ==========================================================================
+// PORTFOLIO COMMON
+// ==========================================================================
+
+.portfolio-card-img {
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    width: 100%;
+    height: auto;
+}
+
+.portfolio-card {
+    position: relative;
+    cursor: pointer;
+    background-color: var(--bs-body-bg);
+
+    .card-title a {
+        color: var(--bs-body-color);
+        text-decoration: none;
+
+        &:hover {
+            color: $primary;
+        }
+    }
+}

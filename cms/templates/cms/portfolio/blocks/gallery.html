@@ -1,0 +1,20 @@
+{% load wagtailimages_tags %}
+
+<div class="portfolio-block portfolio-gallery-block my-5">
+    <div class="row g-4">
+        {% for item in self.images %}
+            <div class="col-md-6 col-lg-4">
+        <div class="gallery-item-wrapper rounded shadow-sm overflow-hidden h-100 transition-hover" style="background-color: rgba(var(--bs-tertiary-bg-rgb), 0.5);">
+                    <div class="zoom-container">
+                        {% image item.image fill-600x600 class="img-fluid w-100 h-100 transition-scale" %}
+                    </div>
+                    {% if item.caption %}
+                        <div class="gallery-caption p-2 text-center small text-muted">
+                            {{ item.caption }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

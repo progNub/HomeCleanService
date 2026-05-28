@@ -1,0 +1,26 @@
+{% load wagtailimages_tags wagtailcore_tags %}
+
+<div class="portfolio-block portfolio-comparison-block my-5">
+    {% if self.caption %}
+        <div class="mb-4 text-center mx-auto" style="max-width: 800px;">
+            <div class="rich-text text-muted h5">
+                {{ self.caption }}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="position-relative overflow-hidden rounded shadow-sm border h-100">
+                {% image self.image_before fill-800x600 class="img-fluid w-100 h-100 object-fit-cover" %}
+                <span class="badge bg-dark position-absolute top-0 start-0 m-3 opacity-75">До</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="position-relative overflow-hidden rounded shadow-sm border h-100">
+                {% image self.image_after fill-800x600 class="img-fluid w-100 h-100 object-fit-cover" %}
+                <span class="badge bg-primary position-absolute top-0 start-0 m-3 opacity-75">После</span>
+            </div>
+        </div>
+    </div>
+</div>
