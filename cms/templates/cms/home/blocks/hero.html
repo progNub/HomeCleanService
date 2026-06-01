@@ -5,11 +5,14 @@
 
 {% block container_class %}text-center{% endblock %}
 
-{% block block_content %}
+{% block section_pre_container %}
     {% if self.image %}
         {% image self.image original format-webp as hero_img %}
         <div class="hero-bg-image" style="background-image: url('{{ hero_img.url }}');"></div>
     {% endif %}
+{% endblock %}
+
+{% block block_content %}
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <h1 class="display-3 fw-bold mb-4 {% if self.image %}text-white{% else %}text-body-emphasis{% endif %}">{{ self.title }}</h1>

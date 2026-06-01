@@ -1,6 +1,7 @@
 <section {% if self.anchor %}id="{{ self.anchor }}"{% endif %}
-         class="block-wrapper {{ self.padding_vertical }} {{ self.background_color }} {% block section_class %}{% endblock %}"
+         class="block-wrapper position-relative {{ self.padding_vertical }} {{ self.background_color }} {% block section_class %}{% endblock %}"
          {% block section_attributes %}{% endblock %}>
+    {% block section_pre_container %}{% endblock %}
     <div class="container {% block container_class %}{% endblock %}">
         {% block block_content %}{% endblock %}
     </div>
