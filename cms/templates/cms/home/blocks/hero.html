@@ -1,18 +1,20 @@
 {% load wagtailcore_tags wagtailimages_tags i18n %}
-<section class="bg-body-tertiary hero-section {% if value.image %}has-image{% endif %}" {% if value.anchor %}id="{{ value.anchor }}"{% endif %}>
-    {% if value.image %}
-        {% image value.image original format-webp as hero_img %}
+
+<section {% if self.anchor %}id="{{ self.anchor }}"{% endif %}
+         class="hero-section {{ self.background_color|default:'bg-body-tertiary' }} {% if self.image %}has-image{% endif %} {{ self.padding_top }} {{ self.padding_bottom }}">
+    {% if self.image %}
+        {% image self.image original format-webp as hero_img %}
         <div class="hero-bg-image" style="background-image: url('{{ hero_img.url }}');"></div>
     {% endif %}
     <div class="container text-center">
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <h1 class="display-3 fw-bold mb-4 {% if value.image %}text-white{% else %}text-body-emphasis{% endif %}">{{ value.title }}</h1>
-                <p class="mb-5 fs-4 fw-semibold {% if value.image %}text-white{% else %}text-body-emphasis{% endif %}">{{ value.subtitle }}</p>
-                {% if value.cta_text %}
-                    {% if value.cta_page %}
-                        <a href="{% pageurl value.cta_page %}" class="btn btn-primary btn-lg px-5 py-3 fw-bold rounded-pill">
-                            {{ value.cta_text }}
+                <h1 class="display-3 fw-bold mb-4 {% if self.image %}text-white{% else %}text-body-emphasis{% endif %}">{{ self.title }}</h1>
+                <p class="mb-5 fs-4 fw-semibold {% if self.image %}text-white{% else %}text-body-emphasis{% endif %}">{{ self.subtitle }}</p>
+                {% if self.cta_text %}
+                    {% if self.cta_page %}
+                        <a href="{% pageurl self.cta_page %}" class="btn btn-primary btn-lg px-5 py-3 fw-bold rounded-pill">
+                            {{ self.cta_text }}
                         </a>
                     {% endif %}
                 {% endif %}

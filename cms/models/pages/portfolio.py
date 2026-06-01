@@ -4,10 +4,10 @@ from wagtail.models import Page
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
 
+from cms.blocks.content import RichTextBlock
 from cms.models.seo import SeoAbstract
 from cms.blocks.portfolio import (
     PortfolioImageBlock,
-    PortfolioRichTextBlock,
     PortfolioComparisonBlock,
     PortfolioGalleryBlock,
 )
@@ -64,8 +64,8 @@ class PortfolioWorkPage(SeoAbstract, Page):
     body = StreamField(
         [
             ("image", PortfolioImageBlock()),
-            ("text", PortfolioRichTextBlock()),
             ("comparison", PortfolioComparisonBlock()),
+            ("content", RichTextBlock()),
             ("gallery", PortfolioGalleryBlock()),
         ],
         null=True,

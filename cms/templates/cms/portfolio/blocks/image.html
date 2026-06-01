@@ -1,6 +1,7 @@
+{% extends "blocks/base_block_wrapper.html" %}
 {% load wagtailimages_tags %}
 
-<div class="portfolio-block portfolio-image-block my-5">
+{% block block_content %}
     <div class="portfolio-step-image-container zoom-container rounded shadow-sm mx-auto overflow-hidden">
         {% image self.image max-1000x800 format-webp class="img-fluid w-100 h-100" %}
     </div>
@@ -9,4 +10,4 @@
             {{ self.caption }}
         </div>
     {% endif %}
-</div>
+{% endblock %}

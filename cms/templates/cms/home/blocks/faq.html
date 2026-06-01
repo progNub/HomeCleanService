@@ -1,27 +1,26 @@
+{% extends "blocks/base_block_wrapper.html" %}
 {% load wagtailcore_tags i18n %}
 
-<section class="py-5 bg-body" id="{{ value.anchor|default:'faq' }}">
-    <div class="container py-4">
-        <h2 class="text-center fw-bold mb-5 fs-1">{{ value.title }}</h2>
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="accordion accordion-flush shadow-sm rounded-4 overflow-hidden" id="accordionFAQ">
-                    {% for item in value.items %}
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="flush-heading-{{ forloop.counter }}">
-                                <button class="accordion-button collapsed fw-bold py-4" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-{{ forloop.counter }}" aria-expanded="false" aria-controls="flush-collapse-{{ forloop.counter }}">
-                                    {{ item.question }}
-                                </button>
-                            </h3>
-                            <div id="flush-collapse-{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="flush-heading-{{ forloop.counter }}" data-bs-parent="#accordionFAQ">
-                                <div class="accordion-body py-4 text-body-secondary">
-                                    {{ item.answer|richtext }}
-                                </div>
+{% block block_content %}
+    <h2 class="text-center fw-bold mb-5 fs-1">{{ self.title }}</h2>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="accordion accordion-flush shadow-sm rounded-4 overflow-hidden" id="accordionFAQ">
+                {% for item in self.items %}
+                    <div class="accordion-item">
+                        <h3 class="accordion-header" id="flush-heading-{{ forloop.counter }}">
+                            <button class="accordion-button collapsed fw-bold py-4" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-{{ forloop.counter }}" aria-expanded="false" aria-controls="flush-collapse-{{ forloop.counter }}">
+                                {{ item.question }}
+                            </button>
+                        </h3>
+                        <div id="flush-collapse-{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="flush-heading-{{ forloop.counter }}" data-bs-parent="#accordionFAQ">
+                            <div class="accordion-body py-4 text-body-secondary">
+                                {{ item.answer|richtext }}
                             </div>
                         </div>
-                    {% endfor %}
-                </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
-</section>
+{% endblock %}
