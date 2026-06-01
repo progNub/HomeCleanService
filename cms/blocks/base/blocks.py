@@ -20,6 +20,7 @@ class BaseStructBlock(blocks.StructBlock):
         default="",
         label=_("Цвет фона"),
     )
+
     padding_vertical = blocks.ChoiceBlock(
         choices=[
             ("py-0", _("Без отступов")),

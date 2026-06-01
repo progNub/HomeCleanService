@@ -1,24 +1,26 @@
+{% extends "blocks/base_block_wrapper.html" %}
 {% load wagtailcore_tags wagtailimages_tags i18n %}
 
-<section {% if self.anchor %}id="{{ self.anchor }}"{% endif %}
-         class="hero-section {{ self.background_color|default:'bg-body-tertiary' }} {% if self.image %}has-image{% endif %} {{ self.padding_top }} {{ self.padding_bottom }}">
+{% block section_class %}hero-section {% if self.image %}has-image{% endif %}{% endblock %}
+
+{% block container_class %}text-center{% endblock %}
+
+{% block block_content %}
     {% if self.image %}
         {% image self.image original format-webp as hero_img %}
         <div class="hero-bg-image" style="background-image: url('{{ hero_img.url }}');"></div>
     {% endif %}
-    <div class="container text-center">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <h1 class="display-3 fw-bold mb-4 {% if self.image %}text-white{% else %}text-body-emphasis{% endif %}">{{ self.title }}</h1>
-                <p class="mb-5 fs-4 fw-semibold {% if self.image %}text-white{% else %}text-body-emphasis{% endif %}">{{ self.subtitle }}</p>
-                {% if self.cta_text %}
-                    {% if self.cta_page %}
-                        <a href="{% pageurl self.cta_page %}" class="btn btn-primary btn-lg px-5 py-3 fw-bold rounded-pill">
-                            {{ self.cta_text }}
-                        </a>
-                    {% endif %}
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="display-3 fw-bold mb-4 {% if self.image %}text-white{% else %}text-body-emphasis{% endif %}">{{ self.title }}</h1>
+            <p class="mb-5 fs-4 fw-semibold {% if self.image %}text-white{% else %}text-body-emphasis{% endif %}">{{ self.subtitle }}</p>
+            {% if self.cta_text %}
+                {% if self.cta_page %}
+                    <a href="{% pageurl self.cta_page %}" class="btn btn-primary btn-lg px-5 py-3 fw-bold rounded-pill">
+                        {{ self.cta_text }}
+                    </a>
                 {% endif %}
-            </div>
+            {% endif %}
         </div>
     </div>
-</section>
+{% endblock %}
