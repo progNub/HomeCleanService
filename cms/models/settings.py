@@ -236,18 +236,15 @@ class NavigationSettings(
 
 
 @register_setting
-class AnalyticsSettings(BaseSiteSetting):
+class AnalyticsSettings(
+    SettingsPreviewMixin, PreviewableMixin, ClusterableModel, BaseSiteSetting
+):
     """
     Settings for analytics scripts (Umami, Google Analytics, etc.)
     """
 
-    umami_website_id = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        verbose_name=_("Umami Website ID"),
-        help_text=_("Уникальный идентификатор вашего сайта в Umami"),
-    )
+    select_related = ("site",)
+
     site = models.ForeignKey(
         "wagtailcore.Site",
         on_delete=models.CASCADE,
@@ -255,41 +252,51 @@ class AnalyticsSettings(BaseSiteSetting):
         related_name="+",
         default=2,
     )
-    umami_server_url = models.URLField(
-        blank=True,
-        null=True,
-        verbose_name=_("URL сервера Umami"),
-        help_text=_(
-            "URL вашего сервера Umami (например, https://stats.example.com). Если оставить пустым, будет использоваться прокси /stats по умолчанию."
-        ),
-    )
-    custom_script = models.TextField(
-        blank=True,
-        null=True,
-        verbose_name=_("Пользовательский скрипт аналитики"),
-        help_text=_(
-            "Вставьте сюда любой дополнительный код отслеживания (например, Google Analytics, Яндекс.Метрика)"
-        ),
-    )
 
     panels = [
-        MultiFieldPanel(
-            [
-                FieldPanel("umami_website_id"),
-                FieldPanel("umami_server_url"),
-            ],
-            heading=_("Аналитика Umami"),
-        ),
-        MultiFieldPanel(
-            [
-                FieldPanel("custom_script"),
-            ],
-            heading=_("Дополнительные скрипты"),
+        InlinePanel(
+            "custom_scripts",
+            label=_("Пользовательские скрипты"),
+            help_text=_(
+                "Добавьте дополнительные коды отслеживания (Google Analytics, Яндекс.Метрика и др.)"
+            ),
         ),
     ]
 
     class Meta:
         verbose_name = _("Настройки аналитики")
+
+
+class LocationChoices(models.TextChoices):
+    HEAD = ("head", _("Внутри <head>"))
+    BODY_TOP = ("body_top", _("После начала <body>"))
+    BODY_BOTTOM = ("body_bottom", _("Перед концом </body>"))
+
+
+class CustomScript(Orderable):
+    setting = ParentalKey(
+        AnalyticsSettings, related_name="custom_scripts", on_delete=models.CASCADE
+    )
+    name = models.CharField(max_length=255, verbose_name=_("Название скрипта"))
+    code = models.TextField(verbose_name=_("Код скрипта"))
+    location = models.CharField(
+        max_length=20,
+        choices=LocationChoices,
+        default="head",
+        verbose_name=_("Место размещения"),
+    )
+    is_active = models.BooleanField(default=True, verbose_name=_("Активен"))
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("code"),
+        FieldPanel("location"),
+        FieldPanel("is_active"),
+    ]
+
+    class Meta(Orderable.Meta):
+        verbose_name = _("Пользовательский скрипт")
+        verbose_name_plural = _("Пользовательские скрипты")
 
 
 class MenuItem(Orderable):
