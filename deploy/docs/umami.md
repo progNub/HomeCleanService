@@ -24,30 +24,33 @@ To start collecting data, follow these steps:
 7.  Click the **Edit** button (or the `</>` code icon) next to the created site and copy the **Website ID**.
 
 ## 3. Connecting to Django
-Analytics are managed directly in the Wagtail Admin, supporting multiple sites:
+Analytics are managed directly in the Wagtail Admin:
 1. Log in to your Wagtail Admin (`/admin`).
-2. Go to **Settings -> Analytics Settings**.
-3. Select the site you want to configure (if you have multiple sites).
-4. Enter your **Umami Website ID** (copied from Umami dashboard).
-5. Enter the **Umami Server URL** (e.g., `http://stats.localhost` or `http://stats.your-domain.com`).
-6. You can also add any other tracking scripts (like Google Analytics or Yandex.Metrica) in the **Custom Scripts** field.
+2. Go to **Settings -> Script Settings**.
+3. In the **Custom Scripts** section, click **Add**.
+4. Give it a name (e.g., "Umami").
+5. Paste the tracking code provided by Umami into the **Code** field.
+   It should look something like this:
+   ```html
+   <script defer src="http://stats.your-domain.com/script.js" data-website-id="your-website-id"></script>
+   ```
+6. Set the **Location** to "Inside <head>".
 7. Click **Save**.
 
-The settings take effect immediately without restarting the server. Each site in your Wagtail instance can have its own unique tracking ID.
+The settings take effect immediately.
 
 ## 4. Access via Nginx (Subdomain)
 For security and convenience, Umami is configured on a separate subdomain:
 *   Login address: `http://stats.your-domain.com`
 *   Tracker script is available at: `http://stats.your-domain.com/script.js`
-This setup is much cleaner than using subfolders and avoids asset path issues.
 
 ## 5. Technical Information
 *   **Database:** Umami uses a separate database named `umami` inside your shared PostgreSQL container.
 *   **Initialization:** The database is created automatically by the `deploy/umami/init-db.sh` script.
 *   **Manual Management:** If you need to create the database manually, use the `make db-init-umami` command.
-*   **Tracker:** The tracking script is automatically inserted into all pages via the base template `cms/templates/base.html`.
+*   **Tracker:** The tracking script is inserted into pages via the **Custom Scripts** system in **Script Settings**.
 
 ## 6. Troubleshooting
 *   **Data not appearing:** Check if AdBlock is disabled for your site in the browser.
-*   **404 Error for script.js:** Ensure the `umami` container is running and accessible at the address specified in `UMAMI_SERVER_URL` in Django settings.
+*   **404 Error for script.js:** Ensure the `umami` container is running and accessible. Check the `src` URL in your custom script code.
 *   **Resetting Data:** If you need to completely clear statistics, you can delete the `umami` database and recreate it.
