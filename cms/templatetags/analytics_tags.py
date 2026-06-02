@@ -1,7 +1,7 @@
 from django import template
 from django.utils.safestring import mark_safe
 
-from cms.models import AnalyticsSettings
+from cms.models import ScriptSettings
 from cms.models.settings import LocationChoices
 
 
@@ -19,7 +19,7 @@ def _render_scripts(context, location):
 
     try:
         # Get settings for the current site (Wagtail handles preview state automatically)
-        settings = AnalyticsSettings.for_request(request)
+        settings = ScriptSettings.for_request(request)
         if not settings:
             return ""
 

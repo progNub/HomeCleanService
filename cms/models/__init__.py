@@ -7,7 +7,8 @@ from .settings import (
     MenuItem,
     RobotsSettings,
     RobotsDisallowRule,
-    AnalyticsSettings,
+    ScriptSettings,
+    ScriptSnippet,
 )
 from .reviews import Review
 from cms.models.pages import (
