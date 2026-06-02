@@ -24,19 +24,21 @@ MANAGE = $(PYTHON) manage.py
 # Docker Execution command for Production
 DOCKER_EXEC = $(COMPOSE_PROD) exec web
 
-.PHONY: help dev-up dev-down dev-logs run prod-up prod-down prod-logs prod-logs-web prod-logs-dozzle dozzle-gen-pass prod-build prod-migrate prod-superuser prod-cache-clear prod-shell migrate superuser cache-clear dev-reset dev-db-refresh prod-reset prod-db-refresh cert prod-db-backup db-init-umami
+.PHONY: help dev-up dev-start dev-down dev-logs run prod-up prod-start prod-down prod-logs prod-logs-web prod-logs-dozzle dozzle-gen-pass prod-build prod-migrate prod-superuser prod-cache-clear prod-shell migrate superuser cache-clear dev-reset dev-db-refresh prod-reset prod-db-refresh cert prod-db-backup db-init-umami
 
 # Default target: show help
 help:
 	@echo "Available commands:"
 	@echo "  Development (Infrastructure in Docker + App locally):"
-	@echo "    make dev-up            - Start DB and Redis for development"
+	@echo "    make dev-up            - Start containers and follow logs"
+	@echo "    make dev-start         - Start containers in background (detach)"
 	@echo "    make dev-down          - Stop development infrastructure"
 	@echo "    make dev-logs          - Follow development infrastructure logs"
 	@echo "    make run               - Run Django development server locally"
 	@echo ""
 	@echo "  Production (Full stack in Docker):"
-	@echo "    make prod-up           - Build and start the full production stack"
+	@echo "    make prod-up           - Build, start stack and follow logs"
+	@echo "    make prod-start        - Build and start stack in background (detach)"
 	@echo "    make prod-down         - Stop production stack"
 	@echo "    make prod-logs         - Follow all production logs"
 	@echo "    make prod-logs-web     - Follow only web container logs"
@@ -70,15 +72,17 @@ help:
 # DEVELOPMENT
 # ==============================================================================
 
-dev-up:
+dev-up: dev-start
+	@echo "Waiting for containers to initialize..."
+	@sleep 2
+	$(MAKE) dev-logs
+
+dev-start:
 	@if [ ! -f deploy/dozzle/users.yml ]; then \
 		echo "deploy/dozzle/users.yml not found. Generating with default or provided credentials..."; \
 		$(MAKE) dozzle-gen-pass; \
 	fi
 	$(COMPOSE_DEV) up -d
-	@echo "Waiting for containers to initialize..."
-	@sleep 2
-	$(MAKE) dev-logs
 
 dev-down:
 	$(COMPOSE_DEV) down --remove-orphans
@@ -106,15 +110,17 @@ run:
 # PRODUCTION
 # ==============================================================================
 
-prod-up:
+prod-up: prod-start
+	@echo "Waiting for containers to initialize..."
+	@sleep 2
+	$(MAKE) prod-logs
+
+prod-start:
 	@if [ ! -f deploy/dozzle/users.yml ]; then \
 		echo "deploy/dozzle/users.yml not found. Generating with default or provided credentials..."; \
 		$(MAKE) dozzle-gen-pass; \
 	fi
 	$(COMPOSE_PROD) up -d --build
-	@echo "Waiting for containers to initialize..."
-	@sleep 2
-	$(MAKE) prod-logs
 
 prod-down:
 	$(COMPOSE_PROD) down
