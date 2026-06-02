@@ -13,6 +13,7 @@ The project includes the following guides:
 - [Localization Guide](../locale/README.md) — how to change and add translations.
 - [Deployment Guide](DEPLOYMENT.md) — how to launch the project in production.
 - [Analytics (Umami)](../deploy/docs/umami.md) — setting up the analytics system.
+- [Log Viewer (Dozzle)](LOGS.md) — viewing real-time logs of the project.
 - [Robots.txt](ROBOTS_TXT.md) — managing indexing.
 - **Data Models**: Described in `cms/models/` (settings, pages) and `home/models/` (home page).
 

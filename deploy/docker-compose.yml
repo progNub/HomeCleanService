@@ -6,7 +6,7 @@ services:
     container_name: homeservice_web_prod
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health/" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -29,7 +29,7 @@ services:
     container_name: homeservice_db_prod
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-homeservice_user} -d ${DB_NAME:-homeservice}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-homeservice_user} -d ${DB_NAME:-homeservice}" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -69,6 +69,26 @@ services:
       - "3000"
     networks:
       - homeservice_network
+
+  dozzle:
+    image: amir20/dozzle:v10.6.3
+    container_name: homeservice_dozzle
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - dozzle_data:/data
+    secrets:
+      - source: dozzle_users
+        target: /data/users.yml
+    environment:
+      - DOZZLE_AUTH_PROVIDER=simple
+    env_file:
+      - ../.env
+    expose:
+      - "8080"
+    networks:
+      - homeservice_network
+
   nginx:
     image: nginx:latest
     container_name: homeservice_nginx_prod
@@ -79,6 +99,7 @@ services:
     depends_on:
       - web
       - umami
+      - dozzle
     networks:
       - homeservice_network
     volumes:
@@ -94,8 +115,13 @@ networks:
   homeservice_network:
     name: homeservice_prod_network
 
+secrets:
+  dozzle_users:
+    file: ./dozzle/users.yml
+
 volumes:
   postgres_data:
   certbot-etc:
   certbot-var:
   webroot:
+  dozzle_data:
