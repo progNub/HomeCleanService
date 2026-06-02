@@ -96,5 +96,8 @@ CACHE/
 # Custom local Makefile configuration
 Makefile.config
 
+# Dozzle secrets
+/deploy/dozzle/users.yml
+
 # Ruff
 .ruff_cache/
