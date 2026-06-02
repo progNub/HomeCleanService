@@ -93,5 +93,8 @@ npm-debug.log*
 # Django Compressor cache
 CACHE/
 
+# Custom local Makefile configuration
+Makefile.config
+
 # Ruff
 .ruff_cache/
