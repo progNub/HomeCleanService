@@ -19,3 +19,35 @@ main {
 section[id] {
     scroll-margin-top: $header-height;
 }
+
+// Wagtail RichText Image alignments (Compatibility with Bootstrap)
+.rich-text {
+    &::after {
+        display: block;
+        clear: both;
+        content: "";
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+
+        &.left {
+            float: left;
+            margin-right: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        &.right {
+            float: right;
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        &.full-width {
+            width: 100%;
+            display: block;
+            margin-bottom: 1.5rem;
+        }
+    }
+}

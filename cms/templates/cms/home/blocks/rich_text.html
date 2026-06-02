@@ -1,6 +1,0 @@
-{% load wagtailcore_tags %}
-<section class="rich-text" {% if value.anchor %}id="{{ value.anchor }}"{% endif %}>
-    <div class="container">
-        {{ value.content|richtext }}
-    </div>
-</section>

@@ -1,12 +1,13 @@
 // ==========================================================================
-// VARIABLES CONFIG — Базовые настройки (цвета, шрифты и т.д.)
-// Эти переменные используются для переопределения Bootstrap
+// VARIABLES CONFIG — Base Settings (colors, transitions, etc.)
+// These variables are used to customize and override Bootstrap
 // ==========================================================================
 
 // --------------------------------------------------------------------------
 // Colors
 // --------------------------------------------------------------------------
-$primary: #5cae35;
+$primary:             #5cae35; // Brand green color
+$primary-rgb:         92, 174, 53; // Brand green in RGB format (required for Bootstrap utilities)
 
 // Custom colors for navbar and footer
 $nav-footer-bg-light: #ffffff; // Light theme background (white)

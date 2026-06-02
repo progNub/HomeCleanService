@@ -1,35 +1,35 @@
+{% extends "blocks/base_block_wrapper.html" %}
 {% load wagtailcore_tags wagtailimages_tags i18n %}
-<section class="py-5 bg-body" id="{{ value.anchor|default:'about-us' }}">
-    <div class="container py-5">
-        <div class="row align-items-center g-4 g-lg-5">
-            <div class="col-lg-6">
-                {% if value.image %}
-                    {% image value.image original format-webp class="img-fluid rounded-4 shadow-lg" %}
-                {% else %}
-                    <div class="bg-body-secondary rounded-4 d-flex align-items-center justify-content-center shadow-sm" style="min-height: 400px;">
-                        <i class="bi bi-building text-primary opacity-25" style="font-size: 10rem;"></i>
-                    </div>
-                {% endif %}
-            </div>
-            <div class="col-lg-6">
-                <h2 class="display-5 fw-bold mb-4">{{ value.title }}</h2>
-                <div class="lead text-body-secondary mb-5">
-                    {{ value.content|richtext }}
-                </div>
 
-                {% if value.stats %}
-                    <div class="row g-4">
-                        {% for stat in value.stats %}
-                            <div class="col-6 col-sm-4">
-                                <div class="p-3 border-start border-primary border-4 bg-body-secondary rounded-end">
-                                    <div class="h3 fw-bold mb-1">{{ stat.value }}</div>
-                                    <div class="small text-uppercase fw-semibold text-body-secondary">{{ stat.label }}</div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+{% block block_content %}
+    <div class="row align-items-center g-4 g-lg-5">
+        <div class="col-lg-6">
+            {% if self.image %}
+                {% image self.image original format-webp class="img-fluid rounded-4 shadow-lg" %}
+            {% else %}
+                <div class="bg-body-secondary rounded-4 d-flex align-items-center justify-content-center shadow-sm" style="min-height: 400px;">
+                    <i class="bi bi-building text-primary opacity-25" style="font-size: 10rem;"></i>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-lg-6">
+            <h2 class="display-5 fw-bold mb-4">{{ self.title }}</h2>
+            <div class="lead text-body-secondary mb-5">
+                {{ self.content|richtext }}
             </div>
+
+            {% if self.stats %}
+                <div class="row g-4">
+                    {% for stat in self.stats %}
+                        <div class="col-6 col-sm-4">
+                            <div class="p-3 border-start border-primary border-4 bg-body-secondary rounded-end">
+                                <div class="h3 fw-bold mb-1">{{ stat.value }}</div>
+                                <div class="small text-uppercase fw-semibold text-body-secondary">{{ stat.label }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
     </div>
-</section>
+{% endblock %}

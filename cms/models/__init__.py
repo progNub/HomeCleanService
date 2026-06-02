@@ -1,3 +1,4 @@
+from cms.models.seo import SeoAbstract
 from .settings import (
     ContactSettings,
     SocialMediaSettings,
@@ -6,10 +7,16 @@ from .settings import (
     MenuItem,
     RobotsSettings,
     RobotsDisallowRule,
-    AnalyticsSettings,
+    ScriptSettings,
+    ScriptSnippet,
 )
-from .home import HomePage
-from .forms import FormPage, FormField
 from .reviews import Review
-from .legal import LegalIndexPage, LegalDocumentPage
-from .portfolio import PortfolioIndexPage, PortfolioWorkPage
+from cms.models.pages import (
+    HomePage,
+    FormPage,
+    FormField,
+    LegalIndexPage,
+    LegalDocumentPage,
+    PortfolioIndexPage,
+    PortfolioWorkPage,
+)

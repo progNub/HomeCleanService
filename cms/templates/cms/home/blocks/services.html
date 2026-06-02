@@ -1,26 +1,26 @@
+{% extends "blocks/base_block_wrapper.html" %}
 {% load wagtailimages_tags i18n %}
-<section class="py-5 bg-body-secondary" id="{{ value.anchor|default:'services' }}">
-    <div class="container py-4">
-        <h2 class="text-center fw-bold mb-5 fs-1">{{ value.title }}</h2>
-        <div class="row g-4">
-            {% for item in value.items %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm transition-hover">
-                        {% if item.image %}
-                            {% image item.image max-600x400 format-webp class="card-img-top" %}
-                        {% else %}
-                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center text-light opacity-50" style="height: 200px;">
-                                <i class="bi bi-image fs-1"></i>
-                                <span class="ms-2">{% trans "Нет фото" %}</span>
-                            </div>
-                        {% endif %}
-                        <div class="card-body p-4">
-                            <h3 class="card-title h5 fw-bold mb-3">{{ item.name }}</h3>
-                            <p class="card-text text-body-secondary">{{ item.description }}</p>
+
+{% block block_content %}
+    <h2 class="text-center fw-bold mb-5 fs-1">{{ self.title }}</h2>
+    <div class="row g-4">
+        {% for item in self.items %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm transition-hover">
+                    {% if item.image %}
+                        {% image item.image max-600x400 format-webp class="card-img-top" %}
+                    {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center text-light opacity-50" style="height: 200px;">
+                            <i class="bi bi-image fs-1"></i>
+                            <span class="ms-2">{% trans "Нет фото" %}</span>
                         </div>
+                    {% endif %}
+                    <div class="card-body p-4">
+                        <h3 class="card-title h5 fw-bold mb-3">{{ item.name }}</h3>
+                        <p class="card-text text-body-secondary">{{ item.description }}</p>
                     </div>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
     </div>
-</section>
+{% endblock %}

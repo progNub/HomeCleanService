@@ -9,5 +9,5 @@ class RichTextBlock(BaseStructBlock):
 
     class Meta:
         label = _("Основной текст")
-        template = "cms/home/blocks/rich_text.html"
+        template = "blocks/rich_text.html"
         icon = "doc-full"

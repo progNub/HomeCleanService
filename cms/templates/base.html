@@ -1,4 +1,4 @@
-{% load static wagtailcore_tags wagtailuserbar wagtailsettings_tags seo_tags compress%}
+{% load static wagtailcore_tags wagtailuserbar wagtailsettings_tags seo_tags analytics_tags compress %}
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -77,21 +77,22 @@
     {# Global stylesheets #}
     <link rel="icon" type="image/png" href="{% static 'cms/images/logo/logo_64x64.png' %}">
     {% compress css %}
-    <link rel="stylesheet" type="text/x-scss" href="{% static 'cms/scss/main.scss' %}">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'cms/scss/main.scss' %}">
     {% endcompress %}
 
     {% block extra_css %}
     {% endblock %}
     {% get_settings %}
-    {% if settings.cms.AnalyticsSettings.umami_website_id %}
-        <script defer src="{{ settings.cms.AnalyticsSettings.umami_server_url }}/script.js" data-website-id="{{ settings.cms.AnalyticsSettings.umami_website_id }}"></script>
-    {% endif %}
-    {% if settings.cms.AnalyticsSettings.custom_script %}
-        {{ settings.cms.AnalyticsSettings.custom_script|safe }}
-    {% endif %}
+    {% wagtail_site as current_site %}
+
+    {% render_analytics_header %}
+    {# Analytics scripts inside <head> (e.g. Google Analytics, Umami) #}
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
+{# Analytics scripts immediately after <body> tag starts #}
+{% render_analytics_body_top %}
+
 {# Wagtail Admin Bar #}
 {% wagtailuserbar %}
 
@@ -141,5 +142,8 @@
 {% if debug %}
     <script src="{% static 'django-browser-reload/reload-listener.js' %}"></script>
 {% endif %}
+
+{# Analytics scripts before <body> tag ends #}
+{% render_analytics_body_bottom %}
 </body>
 </html>

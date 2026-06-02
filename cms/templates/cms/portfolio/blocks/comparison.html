@@ -1,6 +1,7 @@
+{% extends "blocks/base_block_wrapper.html" %}
 {% load wagtailimages_tags wagtailcore_tags %}
 
-<div class="portfolio-block portfolio-comparison-block my-5">
+{% block block_content %}
     {% if self.caption %}
         <div class="mb-4 text-center mx-auto" style="max-width: 800px;">
             <div class="rich-text text-muted h5">
@@ -23,4 +24,4 @@
             </div>
         </div>
     </div>
-</div>
+{% endblock %}

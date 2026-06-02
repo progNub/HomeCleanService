@@ -3,6 +3,7 @@ from wagtail.images.models import Image
 from django.core.files import File
 from cms.models import HomePage, FormPage
 from cms.models.seo import SeoAbstract
+from cms.blocks.base.blocks import BackgroundColorChoices, PaddingVerticalChoices
 from .init_forms import init_contact_form_page
 
 import os
@@ -124,6 +125,7 @@ def init_content(command):
                     "cta_text": "Связаться с нами",
                     "cta_page": contact_page,
                     "anchor": "hero",
+                    "padding_vertical": PaddingVerticalChoices.PY_0,
                 },
             ),
             (
@@ -131,6 +133,7 @@ def init_content(command):
                 {
                     "title": "Что мы предлагаем",
                     "anchor": "services",
+                    "background_color": BackgroundColorChoices.TERTIARY,
                     "items": [
                         {
                             "name": "Мойка крыш",
@@ -155,6 +158,7 @@ def init_content(command):
                 {
                     "title": "Почему выбирают нас",
                     "anchor": "features",
+                    "background_color": BackgroundColorChoices.DEFAULT,
                     "items": [
                         {
                             "title": "Опыт и качество",
@@ -176,6 +180,7 @@ def init_content(command):
                 {
                     "title": "О нашей компании",
                     "anchor": "about-us",
+                    "background_color": BackgroundColorChoices.TERTIARY,
                     "content": "<p>Мы — команда профессионалов, которая занимается комплексным уходом за частными домами и прилегающими территориями уже более 5 лет. Наша миссия — возвращать эстетичный вид вашему имуществу и продлевать срок его службы.</p><p>Мы используем специализированное оборудование высокого давления и экологически безопасные составы для очистки и покраски.</p>",
                     "stats": [
                         {"value": "5+", "label": "лет работы"},
@@ -189,6 +194,7 @@ def init_content(command):
                 {
                     "title": "Отзывы наших клиентов",
                     "anchor": "reviews",
+                    "background_color": BackgroundColorChoices.SECONDARY,
                     "reviews": [],
                 },
             ),
@@ -197,6 +203,7 @@ def init_content(command):
                 {
                     "title": "Часто задаваемые вопросы",
                     "anchor": "faq",
+                    "background_color": BackgroundColorChoices.TERTIARY,
                     "items": [
                         {
                             "question": "Сколько времени занимает мойка крыши?",

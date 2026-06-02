@@ -1,20 +1,23 @@
-# Обзор проекта HomeService
+# HomeService Project Overview
 
-Этот проект представляет собой веб-сайт на базе **Django** и **Wagtail CMS** для предоставления услуг по уходу за домом.
+This project is a website based on **Django** and **Wagtail CMS** for providing home care services.
 
-### Основные компоненты проекта:
-- **Wagtail CMS**: Используется для удобного управления контентом (страницами, изображениями, настройками).
-- **Bootstrap 5**: Проект использует фреймворк Bootstrap для стилизации и адаптивности интерфейса.
-- **Django I18N**: Система интернационализации для поддержки нескольких языков (Русский и Английский).
-- **init_site.py**: Команда для автоматической инициализации базового контента и настроек.
+### Core Components:
+- **Wagtail CMS**: Used for easy content management (pages, images, settings).
+- **Bootstrap 5**: The project uses the Bootstrap framework for styling and interface responsiveness.
+- **Django I18N**: Internationalization system supporting multiple languages (Russian and English).
+- **init_site.py**: A command for automatic initialization of base content and settings.
 
-### Документация:
-В проекте предусмотрены следующие руководства:
-- [Инструкция по локализации](../locale/README.md) — как изменять и добавлять переводы.
-- **Модели данных**: Описаны в `cms/models.py` (настройки) и `home/models.py` (главная страница).
+### Documentation:
+The project includes the following guides:
+- [Localization Guide](../locale/README.md) — how to change and add translations.
+- [Deployment Guide](DEPLOYMENT.md) — how to launch the project in production.
+- [Analytics (Umami)](../deploy/docs/umami.md) — setting up the analytics system.
+- [Robots.txt](ROBOTS_TXT.md) — managing indexing.
+- **Data Models**: Described in `cms/models/` (settings, pages) and `home/models/` (home page).
 
-### Как запустить проект:
-1. Установите зависимости.
-2. Примените миграции: `python manage.py migrate`.
-3. Инициализируйте сайт: `python manage.py init_site`.
-4. Запустите сервер: `python manage.py runserver`.
+### How to Start the Project:
+1. Install dependencies.
+2. Apply migrations: `python manage.py migrate`.
+3. Initialize the site: `python manage.py init_site`.
+4. Start the server: `python manage.py runserver`.

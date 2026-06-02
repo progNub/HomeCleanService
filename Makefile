@@ -1,6 +1,15 @@
-# Project constants
-PROJECT_DEV = homeservice-dev
-PROJECT_PROD = homeservice-prod
+-include Makefile.config
+
+# Confirmation helper
+define confirm_action
+	@echo -n "Are you sure you want to proceed with $(1)? [y/N] " && read ans && [ $${ans:-N} = y ]
+endef
+
+# Default values for local environment (can be overridden by environment variables)
+PROJECT_DEV ?= homeservice-dev
+PROJECT_PROD ?= homeservice-prod
+DB_NAME ?= dbname
+DB_USER ?= dbuser
 
 # Docker Compose commands
 COMPOSE_DEV = docker compose -p $(PROJECT_DEV) -f deploy/docker-compose.dev.yml
@@ -15,7 +24,7 @@ MANAGE = $(PYTHON) manage.py
 # Docker Execution command for Production
 DOCKER_EXEC = $(COMPOSE_PROD) exec web
 
-.PHONY: help dev-up dev-down dev-logs run prod-up prod-down prod-logs prod-logs-web prod-build prod-migrate prod-superuser prod-cache-clear prod-shell migrate superuser cache-clear dev-reset prod-reset reset-all cert
+.PHONY: help dev-up dev-down dev-logs run prod-up prod-down prod-logs prod-logs-web prod-build prod-migrate prod-superuser prod-cache-clear prod-shell migrate superuser cache-clear dev-reset dev-db-refresh prod-reset prod-db-refresh cert
 
 # Default target: show help
 help:
@@ -36,11 +45,12 @@ help:
 	@echo "    make prod-superuser    - Create superuser inside production container"
 	@echo "    make prod-cache-clear  - Clear Wagtail cache inside production container"
 	@echo "    make prod-shell        - Open Django shell inside production container"
-	@echo "    make prod-reset        - FULL RESET: Stop, remove production volumes and start again"
+	@echo "    make prod-reset        - NUCLEAR RESET: Stop, remove production volumes (DB + Stats) and start again"
+	@echo "    make prod-db-refresh   - DJANGO ONLY RESET: Recreate Django DB, keeping Umami data"
 	@echo ""
 	@echo "  Clean up & Reset:"
-	@echo "    make dev-reset         - FULL RESET: Stop, remove development volumes and start again"
-	@echo "    make reset-all         - Nuclear option: Reset both dev and prod environments"
+	@echo "    make dev-reset         - NUCLEAR RESET: Stop, remove development volumes (DB + Stats) and start again"
+	@echo "    make dev-db-refresh    - DJANGO ONLY RESET: Recreate Django DB locally, keeping Umami data"
 	@echo ""
 	@echo "  Backup & Maintenance:"
 	@echo "    make prod-db-backup    - Create a database backup (SQL dump)"
@@ -68,8 +78,21 @@ dev-logs:
 	$(COMPOSE_DEV) logs -f
 
 dev-reset:
+	$(call confirm_action,FULL RESET (ALL DATA WILL BE LOST))
 	$(COMPOSE_DEV) down -v --remove-orphans
 	$(COMPOSE_DEV) up -d
+
+dev-db-refresh:
+	$(call confirm_action,REFRESH DJANGO DB (Umami data will be preserved))
+	$(COMPOSE_DEV) exec db dropdb -U $(DB_USER) --if-exists $(DB_NAME)
+	$(COMPOSE_DEV) exec db createdb -U $(DB_USER) $(DB_NAME)
+	@echo "Django development database refreshed."
+
+prod-reset:
+	$(call confirm_action,FULL PRODUCTION RESET (ALL DATA WILL BE LOST))
+	$(COMPOSE_PROD) down -v --remove-orphans
+	$(COMPOSE_PROD) up -d --build
+	@echo "Full production reset complete."
 
 run:
 	$(MANAGE) runserver
@@ -105,16 +128,11 @@ prod-cache-clear:
 prod-shell:
 	$(DOCKER_EXEC) python manage.py shell
 
-prod-reset:
-	$(COMPOSE_PROD) down -v --remove-orphans
-	$(COMPOSE_PROD) up -d --build
-
-# ==============================================================================
-# CLEAN UP
-# ==============================================================================
-
-reset-all: dev-reset prod-reset
-	@echo "All environments have been reset."
+prod-db-refresh:
+	$(call confirm_action,REFRESH PRODUCTION DJANGO DB (Umami data will be preserved))
+	$(COMPOSE_PROD) exec db dropdb -U $(DB_USER) --if-exists $(DB_NAME)
+	$(COMPOSE_PROD) exec db createdb -U $(DB_USER) $(DB_NAME)
+	@echo "Django production database refreshed."
 
 # ==============================================================================
 # BACKUP & MAINTENANCE
@@ -122,7 +140,7 @@ reset-all: dev-reset prod-reset
 
 prod-db-backup:
 	@mkdir -p backups
-	$(COMPOSE_PROD) exec db pg_dump -U homeservice_user homeservice > backups/db_backup_$$(date +%Y%m%d_%H%M%S).sql
+	$(COMPOSE_PROD) exec db pg_dump -U $(DB_USER) $(DB_NAME) > backups/db_backup_$$(date +%Y%m%d_%H%M%S).sql
 	@echo "Backup created in backups/ directory."
 
 # ==============================================================================
