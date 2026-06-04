@@ -23,6 +23,27 @@ services:
     networks:
       - default
 
+  worker:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: homeservice_worker_dev
+    restart: always
+    volumes:
+      - ..:/app
+    entrypoint: /app/deploy/worker-entrypoint.sh
+    command: python manage.py db_worker --queue-name default,notifications
+    env_file:
+      - ../.env
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      - redis
+      - db
+    networks:
+      - default
+
   umami:
     image: ghcr.io/umami-software/umami:postgresql-latest
     container_name: homeservice_umami_dev
