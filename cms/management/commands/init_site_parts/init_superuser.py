@@ -1,11 +1,11 @@
-import os
+from django.conf import settings
 from django.contrib.auth.models import User
 
 
 def init_superuser(command):
-    username = os.getenv("SUPERUSER_USERNAME")
-    email = os.getenv("SUPERUSER_EMAIL")
-    password = os.getenv("SUPERUSER_PASSWORD")
+    username = settings.ENV_SUPERUSER_USERNAME
+    email = settings.ENV_SUPERUSER_EMAIL
+    password = settings.ENV_SUPERUSER_PASSWORD
 
     if username and password:
         if not User.objects.filter(username=username).exists():

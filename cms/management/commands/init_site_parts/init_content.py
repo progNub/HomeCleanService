@@ -6,6 +6,7 @@ from cms.models.seo import SeoAbstract
 from cms.blocks.base.blocks import BackgroundColorChoices, PaddingVerticalChoices
 from .init_forms import init_contact_form_page
 
+from django.conf import settings
 import os
 from urllib.parse import urlparse
 
@@ -25,7 +26,7 @@ def get_or_import_image(image_path, title):
 
 def init_content(command):
     # 1. Site configuration from env
-    site_url_env = os.getenv("SITE_URL", "http://localhost:8000")
+    site_url_env = settings.ENV_SITE_URL
     parsed_url = urlparse(site_url_env)
     hostname = parsed_url.hostname or "localhost"
     port = parsed_url.port

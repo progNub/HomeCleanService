@@ -8,7 +8,7 @@ from cms.models import (
 )
 
 
-import os
+from django.conf import settings
 
 
 def init_global_settings(command):
@@ -21,8 +21,7 @@ def init_global_settings(command):
         from cms.models import SocialMediaLink
 
         whatsapp_phone = (
-            os.getenv("CONTACT_PHONE", "375296023356")
-            .replace("+", "")
+            settings.ENV_CONTACT_PHONE.replace("+", "")
             .replace(" ", "")
             .replace("-", "")
             .replace("(", "")
@@ -44,24 +43,24 @@ def init_global_settings(command):
     # Contact Settings
     contact_settings = ContactSettings.load()
     if not contact_settings.phone_number or not contact_settings.legal_unp:
-        contact_settings.phone_number = os.getenv("CONTACT_PHONE", "+375296023356")
-        contact_settings.email = os.getenv("CONTACT_EMAIL", "info@homecleanservice.by")
-        contact_settings.address = os.getenv("CONTACT_ADDRESS", "Беларусь")
+        contact_settings.phone_number = settings.ENV_CONTACT_PHONE
+        contact_settings.email = settings.ENV_CONTACT_EMAIL
+        contact_settings.address = settings.ENV_CONTACT_ADDRESS
 
         # Legal info
-        contact_settings.legal_full_name = os.getenv("LEGAL_FULL_NAME")
-        contact_settings.legal_unp = os.getenv("LEGAL_UNP")
-        contact_settings.legal_address = os.getenv("LEGAL_ADDRESS")
-        contact_settings.legal_reg_date = os.getenv("LEGAL_REG_DATE")
+        contact_settings.legal_full_name = settings.ENV_LEGAL_FULL_NAME
+        contact_settings.legal_unp = settings.ENV_LEGAL_UNP
+        contact_settings.legal_address = settings.ENV_LEGAL_ADDRESS
+        contact_settings.legal_reg_date = settings.ENV_LEGAL_REG_DATE
 
         contact_settings.save()
         command.stdout.write(command.style.SUCCESS("Contact settings created/updated."))
     else:
         # Let's update it if it's the old default
         if contact_settings.phone_number == "+7 (900) 123-45-67":
-            contact_settings.phone_number = os.getenv("CONTACT_PHONE", "+375296023356")
-            contact_settings.email = os.getenv("CONTACT_EMAIL", "info@homeservice.by")
-            contact_settings.address = os.getenv("CONTACT_ADDRESS", "Беларусь")
+            contact_settings.phone_number = settings.ENV_CONTACT_PHONE
+            contact_settings.email = settings.ENV_CONTACT_EMAIL
+            contact_settings.address = settings.ENV_CONTACT_ADDRESS
             contact_settings.save()
             command.stdout.write(
                 command.style.SUCCESS("Contact settings updated with new phone number.")

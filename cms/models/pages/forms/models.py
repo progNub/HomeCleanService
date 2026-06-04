@@ -7,6 +7,12 @@ from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
 
 from cms.models.seo import SeoAbstract
 from .builder import CustomFormBuilder, CUSTOM_FORM_FIELD_CHOICES
+from cms.services.telegram.notifications import LeadNotificationService
+
+
+import logging
+
+logger = logging.getLogger("notifications")
 
 
 class FormField(AbstractFormField):
@@ -48,8 +54,11 @@ class FormPage(SeoAbstract, AbstractEmailForm):
             page=self,
         )
 
-        # TODO: Add Telegram notification logic here in the future
-        # e.g., send_telegram_notification(submission.form_data)
+        try:
+            notification_service = LeadNotificationService(submission)
+            notification_service.send()
+        except Exception:
+            logger.exception(_("Error sending notification to Telegram"))
 
         # We return the submission object to allow Wagtail to show the success message,
         return submission
