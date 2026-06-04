@@ -1,7 +1,7 @@
 from cms.models import FormPage, FormField
 from cms.models.seo import SeoAbstract
 
-import os
+from django.conf import settings
 
 
 def init_contact_form_page(command, homepage):
@@ -24,10 +24,8 @@ def init_contact_form_page(command, homepage):
             meta_robots=SeoAbstract.MetaRobotsChoices.INDEX_FOLLOW,
             intro="<p>Пожалуйста, заполните форму ниже, и мы свяжемся с вами в ближайшее время.</p>",
             thank_you_text="<p>Спасибо за вашу заявку! Мы свяжемся с вами скоро.</p>",
-            to_address=os.getenv("CONTACT_FORM_TO_EMAIL", "info@homecleanservice.by"),
-            from_address=os.getenv(
-                "CONTACT_FORM_FROM_EMAIL", "noreply@homecleanservice.by"
-            ),
+            to_address=settings.ENV_CONTACT_FORM_TO_EMAIL,
+            from_address=settings.ENV_CONTACT_FORM_FROM_EMAIL,
             subject="Новая заявка с сайта",
             show_in_menus=True,
         )
