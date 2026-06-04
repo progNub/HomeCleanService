@@ -139,6 +139,7 @@ THIRD_PARTY_APPS = [
     "django_browser_reload",
     "django_bootstrap5",
     "compressor",
+    "django_tasks_db",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + WAGTAIL_APPS + INTERNAL_APPS + THIRD_PARTY_APPS
@@ -395,6 +396,20 @@ BOOTSTRAP5 = {
         "default": "django_bootstrap5.renderers.FieldRenderer",
     },
 }
+# ==============================================================================
+# DJANGO TASKS (Django 6.0+)
+# ==============================================================================
+
+TELEGRAM_BOT_TOKEN = ENV_TELEGRAM_BOT_TOKEN
+TELEGRAM_LOGS_CHAT_ID = ENV_TELEGRAM_LOGS_CHAT_ID
+TELEGRAM_NOTIFICATIONS_CHAT_ID = ENV_TELEGRAM_NOTIFICATIONS_CHAT_ID
+
+TASKS = {
+    "default": {
+        "BACKEND": "django_tasks_db.DatabaseBackend",
+        "QUEUES": ["default", "notifications"],
+    },
+}
 
 
 LOGGING = {
@@ -410,6 +425,13 @@ LOGGING = {
         "console": {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
+        },
+        "telegram_logs": {
+            "class": "cms.logging.handlers.AsyncTelegramHandler",
+            "level": "ERROR",
+            "token": TELEGRAM_BOT_TOKEN,
+            "chat_id": TELEGRAM_LOGS_CHAT_ID,
+            "timeout": 10,
         },
     },
     "root": {
@@ -430,6 +452,11 @@ LOGGING = {
         "django": {
             "handlers": ["console"],
             "level": "INFO",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console", "telegram_logs"],
+            "level": "ERROR",
             "propagate": False,
         },
     },
