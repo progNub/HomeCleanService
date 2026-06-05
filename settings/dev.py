@@ -3,6 +3,12 @@ from .base import *
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+try:
+    INSTALLED_APPS.append("debug_toolbar")
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+except ImportError:
+    pass
+
 INSTALLED_APPS.append("wagtail.contrib.styleguide")
 
 ALLOWED_HOSTS = ["*"]
