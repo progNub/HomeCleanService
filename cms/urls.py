@@ -11,6 +11,8 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from cms import views as cms_views
 from wagtail.contrib.sitemaps.views import sitemap
+from debug_toolbar.toolbar import debug_toolbar_urls
+
 
 urlpatterns = [
     path(
@@ -39,6 +41,7 @@ if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += [path("__reload__/", include("django_browser_reload.urls"))]
+    urlpatterns += debug_toolbar_urls()
 
 urlpatterns = urlpatterns + i18n_patterns(
     path("", include(wagtail_urls)),
