@@ -1,10 +1,11 @@
 from datetime import timedelta
 
 from django import forms
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from cms.models.reviews import Review
-from django.core.exceptions import ValidationError
 
 
 class ReviewForm(forms.ModelForm):
@@ -28,11 +29,7 @@ class ReviewForm(forms.ModelForm):
     def clean_accept_privacy(self):
         data = self.cleaned_data.get("accept_privacy")
         if data is not True:
-            raise ValidationError(
-                _(
-                    "Вы должны подтвердить согласие на обработку данных для отправки отзыва."
-                )
-            )
+            raise ValidationError(_("Вы должны подтвердить согласие на обработку данных для отправки отзыва."))
         return data
 
     def clean(self):
@@ -46,9 +43,7 @@ class ReviewForm(forms.ModelForm):
         cooldown_time = timezone.now() - timedelta(hours=cooldown_hours)
 
         last_review = (
-            Review.objects.filter(ip=ip, user_agent=user_agent, date__gte=cooldown_time)
-            .order_by("-date")
-            .first()
+            Review.objects.filter(ip=ip, user_agent=user_agent, date__gte=cooldown_time).order_by("-date").first()
         )
         if last_review:
             raise ValidationError(_("Вы можете оставлять отзывы только раз в 3 часа."))

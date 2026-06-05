@@ -1,16 +1,16 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from wagtail.models import Page
-from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
+from wagtail.fields import RichTextField, StreamField
+from wagtail.models import Page
 
 from cms.blocks.content import RichTextBlock
-from cms.models.seo import SeoAbstract
 from cms.blocks.portfolio import (
-    PortfolioImageBlock,
     PortfolioComparisonBlock,
     PortfolioGalleryBlock,
+    PortfolioImageBlock,
 )
+from cms.models.seo import SeoAbstract
 
 
 class PortfolioIndexPage(SeoAbstract, Page):
@@ -56,9 +56,7 @@ class PortfolioWorkPage(SeoAbstract, Page):
         related_name="+",
         verbose_name=_("Основное изображение"),
     )
-    short_description = models.TextField(
-        blank=True, verbose_name=_("Краткое описание (для карточки)")
-    )
+    short_description = models.TextField(blank=True, verbose_name=_("Краткое описание (для карточки)"))
     full_description = RichTextField(blank=True, verbose_name=_("Полное описание"))
 
     body = StreamField(
@@ -87,10 +85,7 @@ class PortfolioWorkPage(SeoAbstract, Page):
         context = super().get_context(request)
         # Get 3 other live works from the same parent, excluding the current one
         context["other_works"] = (
-            PortfolioWorkPage.objects.live()
-            .descendant_of(self.get_parent())
-            .exclude(id=self.id)
-            .order_by("?")[:3]
+            PortfolioWorkPage.objects.live().descendant_of(self.get_parent()).exclude(id=self.id).order_by("?")[:3]
         )
         return context
 

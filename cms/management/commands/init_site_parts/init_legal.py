@@ -1,10 +1,11 @@
 from wagtail.models import Page
-from cms.models.seo import SeoAbstract
+
 from cms.models import (
     ContactSettings,
-    LegalIndexPage,
     LegalDocumentPage,
+    LegalIndexPage,
 )
+from cms.models.seo import SeoAbstract
 
 
 def init_legal_pages(command, homepage):
@@ -20,14 +21,10 @@ def init_legal_pages(command, homepage):
     operator_email = contact_settings.email or "[Email]"
 
     # 1. Create Legal parent page if it doesn't exist
-    legal_parent = (
-        LegalIndexPage.objects.descendant_of(homepage).filter(slug="legal").first()
-    )
+    legal_parent = LegalIndexPage.objects.descendant_of(homepage).filter(slug="legal").first()
     if not legal_parent:
         # Check if it exists but as a plain Page (from previous init)
-        existing_plain = (
-            Page.objects.descendant_of(homepage).filter(slug="legal").first()
-        )
+        existing_plain = Page.objects.descendant_of(homepage).filter(slug="legal").first()
         if existing_plain:
             command.stdout.write("Deleting existing plain Legal page...")
             existing_plain.delete()
@@ -48,23 +45,13 @@ def init_legal_pages(command, homepage):
         if legal_parent.meta_robots != SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW:
             legal_parent.meta_robots = SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW
             legal_parent.save_revision().publish()
-            command.stdout.write(
-                command.style.SUCCESS("Legal parent page SEO tags updated.")
-            )
+            command.stdout.write(command.style.SUCCESS("Legal parent page SEO tags updated."))
 
     # 2. Create Privacy Policy
-    privacy_policy = (
-        LegalDocumentPage.objects.descendant_of(legal_parent)
-        .filter(slug="privacy-policy")
-        .first()
-    )
+    privacy_policy = LegalDocumentPage.objects.descendant_of(legal_parent).filter(slug="privacy-policy").first()
     if not privacy_policy:
         # Check if it exists as old LegalPage
-        existing_old = (
-            Page.objects.descendant_of(legal_parent)
-            .filter(slug="privacy-policy")
-            .first()
-        )
+        existing_old = Page.objects.descendant_of(legal_parent).filter(slug="privacy-policy").first()
         if existing_old:
             existing_old.delete()
 
@@ -128,23 +115,13 @@ def init_legal_pages(command, homepage):
         if privacy_policy.meta_robots != SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW:
             privacy_policy.meta_robots = SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW
             privacy_policy.save_revision().publish()
-            command.stdout.write(
-                command.style.SUCCESS("Privacy Policy page SEO tags updated.")
-            )
+            command.stdout.write(command.style.SUCCESS("Privacy Policy page SEO tags updated."))
 
     # 3. Create User Agreement
-    user_agreement = (
-        LegalDocumentPage.objects.descendant_of(legal_parent)
-        .filter(slug="user-agreement")
-        .first()
-    )
+    user_agreement = LegalDocumentPage.objects.descendant_of(legal_parent).filter(slug="user-agreement").first()
     if not user_agreement:
         # Check if it exists as old LegalPage
-        existing_old = (
-            Page.objects.descendant_of(legal_parent)
-            .filter(slug="user-agreement")
-            .first()
-        )
+        existing_old = Page.objects.descendant_of(legal_parent).filter(slug="user-agreement").first()
         if existing_old:
             existing_old.delete()
 
@@ -207,33 +184,20 @@ def init_legal_pages(command, homepage):
         if user_agreement.meta_robots != SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW:
             user_agreement.meta_robots = SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW
             user_agreement.save_revision().publish()
-            command.stdout.write(
-                command.style.SUCCESS("User Agreement page SEO tags updated.")
-            )
+            command.stdout.write(command.style.SUCCESS("User Agreement page SEO tags updated."))
 
     # 4. Link in ContactSettings
     updated = False
-    if (
-        not contact_settings.privacy_policy_page
-        or contact_settings.privacy_policy_page.id != privacy_policy.id
-    ):
+    if not contact_settings.privacy_policy_page or contact_settings.privacy_policy_page.id != privacy_policy.id:
         contact_settings.privacy_policy_page = privacy_policy
         updated = True
-    if (
-        not contact_settings.terms_of_service_page
-        or contact_settings.terms_of_service_page.id != user_agreement.id
-    ):
+    if not contact_settings.terms_of_service_page or contact_settings.terms_of_service_page.id != user_agreement.id:
         contact_settings.terms_of_service_page = user_agreement
         updated = True
-    if (
-        not contact_settings.legal_index_page
-        or contact_settings.legal_index_page.id != legal_parent.id
-    ):
+    if not contact_settings.legal_index_page or contact_settings.legal_index_page.id != legal_parent.id:
         contact_settings.legal_index_page = legal_parent
         updated = True
 
     if updated:
         contact_settings.save()
-        command.stdout.write(
-            command.style.SUCCESS("Legal pages linked in Contact Settings.")
-        )
+        command.stdout.write(command.style.SUCCESS("Legal pages linked in Contact Settings."))

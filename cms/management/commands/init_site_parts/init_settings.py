@@ -1,14 +1,13 @@
-from cms.models import HomePage, FormPage
+from django.conf import settings
 
 from cms.models import (
-    SocialMediaSettings,
     ContactSettings,
-    NavigationSettings,
+    FormPage,
+    HomePage,
     MenuItem,
+    NavigationSettings,
+    SocialMediaSettings,
 )
-
-
-from django.conf import settings
 
 
 def init_global_settings(command):
@@ -36,9 +35,7 @@ def init_global_settings(command):
         )
         command.stdout.write(command.style.SUCCESS("Social media settings created."))
     else:
-        command.stdout.write(
-            command.style.WARNING("Social media settings already exist.")
-        )
+        command.stdout.write(command.style.WARNING("Social media settings already exist."))
 
     # Contact Settings
     contact_settings = ContactSettings.load()
@@ -62,15 +59,9 @@ def init_global_settings(command):
             contact_settings.email = settings.ENV_CONTACT_EMAIL
             contact_settings.address = settings.ENV_CONTACT_ADDRESS
             contact_settings.save()
-            command.stdout.write(
-                command.style.SUCCESS("Contact settings updated with new phone number.")
-            )
+            command.stdout.write(command.style.SUCCESS("Contact settings updated with new phone number."))
         else:
-            command.stdout.write(
-                command.style.WARNING(
-                    "Contact settings already exist and differ from old default."
-                )
-            )
+            command.stdout.write(command.style.WARNING("Contact settings already exist and differ from old default."))
 
 
 def init_navigation_settings(command):
@@ -126,10 +117,6 @@ def init_navigation_settings(command):
                 sort_order=4,
             )
 
-        command.stdout.write(
-            command.style.SUCCESS("Navigation settings created with default items.")
-        )
+        command.stdout.write(command.style.SUCCESS("Navigation settings created with default items."))
     else:
-        command.stdout.write(
-            command.style.WARNING("Navigation settings already exist.")
-        )
+        command.stdout.write(command.style.WARNING("Navigation settings already exist."))

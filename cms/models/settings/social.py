@@ -10,9 +10,7 @@ from .base import SettingsPreviewMixin
 
 
 @register_setting
-class SocialMediaSettings(
-    SettingsPreviewMixin, PreviewableMixin, ClusterableModel, BaseGenericSetting
-):
+class SocialMediaSettings(SettingsPreviewMixin, PreviewableMixin, ClusterableModel, BaseGenericSetting):
     panels = [
         InlinePanel(
             "social_media_links",
@@ -37,12 +35,8 @@ class SocialMediaLink(Orderable):
         ("tiktok", "TikTok"),
     ]
 
-    setting = ParentalKey(
-        SocialMediaSettings, related_name="social_media_links", on_delete=models.CASCADE
-    )
-    platform = models.CharField(
-        max_length=20, choices=PLATFORM_CHOICES, verbose_name=_("Платформа")
-    )
+    setting = ParentalKey(SocialMediaSettings, related_name="social_media_links", on_delete=models.CASCADE)
+    platform = models.CharField(max_length=20, choices=PLATFORM_CHOICES, verbose_name=_("Платформа"))
     url = models.URLField(verbose_name=_("Ссылка"))
 
     panels = [
