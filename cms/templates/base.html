@@ -4,12 +4,14 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8"/>
+    {% get_settings %}
+    {% wagtail_site as current_site %}
+
     <title>
         {% block title %}
             {% get_seo_title page %}
         {% endblock %}
         {% block title_suffix %}
-            {% wagtail_site as current_site %}
             {% if current_site and current_site.site_name %}- {{ current_site.site_name }}{% endif %}
         {% endblock %}
     </title>
@@ -46,7 +48,6 @@
         <meta property="article:modified_time" content="{{ modified_date }}"/>
     {% endif %}
 
-    {% wagtail_site as current_site %}
     {% if current_site and current_site.site_name %}
         <meta property="og:site_name" content="{{ current_site.site_name }}"/>
     {% endif %}
@@ -82,8 +83,6 @@
 
     {% block extra_css %}
     {% endblock %}
-    {% get_settings %}
-    {% wagtail_site as current_site %}
 
     {% render_analytics_header %}
     {# Analytics scripts inside <head> (e.g. Google Analytics, Umami) #}

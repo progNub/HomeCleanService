@@ -7,7 +7,6 @@
                     <img src="{% static 'cms/images/logo/logo_64x64.png' %}" alt="Logo" class="me-2"
                          style="width: 48px; height: 48px;">
                     <div class="h3 fw-bold text-primary mb-0">
-                        {% wagtail_site as current_site %}
                         {{ current_site.site_name|default:"HomeCleanService" }}
                     </div>
                 </a>
