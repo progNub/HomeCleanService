@@ -22,6 +22,7 @@ jobs:
             cd HomeCleanService
             git pull origin master
             make prod-down
+            make prod-build
             make prod-start
             make prod-migrate
             make prod-cache-clear
