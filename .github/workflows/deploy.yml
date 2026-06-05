@@ -21,6 +21,7 @@ jobs:
           script: |
             cd HomeCleanService
             git pull origin master
+            make prod-down
             make prod-start
             make prod-migrate
             make prod-cache-clear
