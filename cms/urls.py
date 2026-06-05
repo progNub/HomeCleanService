@@ -1,4 +1,3 @@
-from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
@@ -32,6 +31,7 @@ urlpatterns += i18n_patterns(
 
 
 if settings.DEBUG:
+    from debug_toolbar.toolbar import debug_toolbar_urls
     from django.conf.urls.static import static
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
