@@ -136,7 +136,6 @@ THIRD_PARTY_APPS = [
     "modelcluster",
     "taggit",
     "django_filters",
-    "django_browser_reload",
     "django_bootstrap5",
     "compressor",
     "django_tasks_db",
@@ -180,7 +179,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "wagtailcache.cache.FetchFromCacheMiddleware",
 ]
