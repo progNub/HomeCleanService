@@ -1,5 +1,5 @@
-import logging
 import html
+import logging
 
 
 def escape_html(text):
@@ -64,11 +64,7 @@ class AsyncTelegramHandler(logging.Handler):
             try:
                 user = getattr(request, "user", "Anonymous")
                 meta = request.META
-                ip = (
-                    meta.get("HTTP_X_FORWARDED_FOR", meta.get("REMOTE_ADDR", "unknown"))
-                    .split(",")[0]
-                    .strip()
-                )
+                ip = meta.get("HTTP_X_FORWARDED_FOR", meta.get("REMOTE_ADDR", "unknown")).split(",")[0].strip()
 
                 message_parts.append(
                     f"<b>🌐 Request:</b>\n"
@@ -83,9 +79,7 @@ class AsyncTelegramHandler(logging.Handler):
         # 2. Log message text
         emoji = self._get_level_emoji(record.levelno)
         clean_msg = record.getMessage()
-        message_parts.append(
-            f"{emoji} <b>{record.levelname}</b>\n{escape_html(clean_msg)}"
-        )
+        message_parts.append(f"{emoji} <b>{record.levelname}</b>\n{escape_html(clean_msg)}")
 
         # 3. Traceback
         if record.exc_info:
@@ -93,9 +87,7 @@ class AsyncTelegramHandler(logging.Handler):
             if len(exc_text) > 3000:
                 exc_text = exc_text[:3000] + "\n... [Traceback truncated]"
 
-            message_parts.append(
-                f"<b>📜 Traceback:</b>\n<pre>{escape_html(exc_text)}</pre>"
-            )
+            message_parts.append(f"<b>📜 Traceback:</b>\n<pre>{escape_html(exc_text)}</pre>")
 
         return "\n\n".join(message_parts)
 

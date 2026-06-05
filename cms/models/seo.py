@@ -79,9 +79,7 @@ class SeoAbstract(models.Model):
         blank=True,
         null=True,
         verbose_name=_("Дата публикации"),
-        help_text=_(
-            "Дата и время публикации страницы для поисковых систем (Open Graph)"
-        ),
+        help_text=_("Дата и время публикации страницы для поисковых систем (Open Graph)"),
     )
 
     modified_date = models.DateTimeField(
@@ -103,9 +101,7 @@ class SeoAbstract(models.Model):
         MultiFieldPanel(
             [
                 FieldPanel("seo_title", heading=_("Заголовок страницы (Title)")),
-                FieldPanel(
-                    "search_description", heading=_("Мета-описание (Description)")
-                ),
+                FieldPanel("search_description", heading=_("Мета-описание (Description)")),
                 FieldPanel("og_image"),
                 FieldPanel("og_type"),
                 FieldPanel("meta_robots"),
@@ -114,9 +110,7 @@ class SeoAbstract(models.Model):
                 FieldPanel("modified_date"),
             ],
             heading=_("SEO и Социальные сети"),
-            help_text=_(
-                "Настройте параметры SEO и отображения страницы в социальных сетях."
-            ),
+            help_text=_("Настройте параметры SEO и отображения страницы в социальных сетях."),
         ),
     ]
 
@@ -142,11 +136,7 @@ class SeoAbstract(models.Model):
             except Exception:
                 root_page = None
 
-            if (
-                parent_page
-                and hasattr(parent_page.specific, "og_image")
-                and parent_page.specific.og_image
-            ):
+            if parent_page and hasattr(parent_page.specific, "og_image") and parent_page.specific.og_image:
                 relative_url = get_compressed_image(parent_page.specific.og_image)
             elif root_page and hasattr(root_page, "logo") and root_page.logo:
                 relative_url = get_compressed_image(root_page.logo)

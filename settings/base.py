@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-from pathlib import Path
 import os
+from pathlib import Path
+
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -267,9 +268,7 @@ MEDIA_URL = "/media/"
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
 
-COMPRESS_PRECOMPILERS = (
-    ("text/x-scss", "npx sass --load-path=node_modules {infile} {outfile}"),
-)
+COMPRESS_PRECOMPILERS = (("text/x-scss", "npx sass --load-path=node_modules {infile} {outfile}"),)
 
 # Default storage settings
 # See https://docs.djangoproject.com/en/6.0/ref/settings/#std-setting-STORAGES

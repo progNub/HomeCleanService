@@ -26,9 +26,7 @@ def get_og_image_url(page, request):
         # Check parent page
         parent_page = page.get_parent()
         if parent_page and hasattr(parent_page, "og_image") and parent_page.og_image:
-            return request.build_absolute_uri(
-                get_compressed_image(parent_page.og_image)
-            )
+            return request.build_absolute_uri(get_compressed_image(parent_page.og_image))
 
         # Check root page/site
         if hasattr(page, "get_site"):

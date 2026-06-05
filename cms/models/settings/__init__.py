@@ -1,9 +1,9 @@
 from .base import SettingsPreviewMixin
 from .contact import ContactSettings
-from .social import SocialMediaSettings, SocialMediaLink
-from .navigation import NavigationSettings, MenuItem
-from .robots import RobotsSettings, RobotsDisallowRule
-from .scripts import ScriptSettings, ScriptSnippet, LocationChoices
+from .navigation import MenuItem, NavigationSettings
+from .robots import RobotsDisallowRule, RobotsSettings
+from .scripts import LocationChoices, ScriptSettings, ScriptSnippet
+from .social import SocialMediaLink, SocialMediaSettings
 
 __all__ = [
     "SettingsPreviewMixin",

@@ -1,6 +1,7 @@
 from django.utils.translation import gettext_lazy as _
-from wagtail.admin.views.bulk_action import BulkAction
 from wagtail import hooks
+from wagtail.admin.views.bulk_action import BulkAction
+
 from cms.models.reviews import Review
 
 
@@ -16,9 +17,7 @@ class ApproveBulkAction(BulkAction):
         return True
 
     def execute_action(self, objects, **kwargs):
-        num_approved = Review.objects.filter(pk__in=[obj.pk for obj in objects]).update(
-            is_approved=True
-        )
+        num_approved = Review.objects.filter(pk__in=[obj.pk for obj in objects]).update(is_approved=True)
         return num_approved, 0
 
     def get_success_message(self, num_parent_objects, num_child_objects):

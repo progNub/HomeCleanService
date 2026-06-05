@@ -22,9 +22,7 @@ class RobotsSettings(ClusterableModel, BaseGenericSetting):
 
 
 class RobotsDisallowRule(Orderable):
-    setting = ParentalKey(
-        RobotsSettings, related_name="disallow_rules", on_delete=models.CASCADE
-    )
+    setting = ParentalKey(RobotsSettings, related_name="disallow_rules", on_delete=models.CASCADE)
     path = models.CharField(
         max_length=500,
         verbose_name=_("Путь"),

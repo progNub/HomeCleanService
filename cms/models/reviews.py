@@ -1,11 +1,11 @@
+import logging
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from wagtail.admin.panels import FieldPanel
 from wagtail.snippets.models import register_snippet
 
 from cms.services.telegram.notifications import LeadNotificationService
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -26,9 +26,7 @@ class Review(models.Model):
         verbose_name=_("Согласие на обработку персональных данных"),
     )
 
-    is_approved = models.BooleanField(
-        default=False, verbose_name=_("Одобрено (показывать)")
-    )
+    is_approved = models.BooleanField(default=False, verbose_name=_("Одобрено (показывать)"))
     ip = models.GenericIPAddressField(null=True, blank=True, verbose_name=_("IP-адрес"))
     user_agent = models.TextField(null=True, blank=True, verbose_name=_("User-Agent"))
 

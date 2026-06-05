@@ -4,7 +4,6 @@ from django.utils.safestring import mark_safe
 from cms.models import ScriptSettings
 from cms.models.settings import LocationChoices
 
-
 register = template.Library()
 
 

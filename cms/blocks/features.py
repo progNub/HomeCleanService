@@ -1,5 +1,6 @@
-from wagtail import blocks
 from django.utils.translation import gettext_lazy as _
+from wagtail import blocks
+
 from .base.blocks import BaseStructBlock
 
 

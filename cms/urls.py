@@ -1,26 +1,21 @@
 from django.conf import settings
-from django.urls import include, path
-from django.contrib import admin
 from django.conf.urls.i18n import i18n_patterns
-from django.views.generic import TemplateView, RedirectView
+from django.contrib import admin
 from django.http import HttpResponse
-
-from wagtail.admin import urls as wagtailadmin_urls
+from django.urls import include, path
+from django.views.generic import RedirectView, TemplateView
 from wagtail import urls as wagtail_urls
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
 from cms import views as cms_views
-from wagtail.contrib.sitemaps.views import sitemap
-from debug_toolbar.toolbar import debug_toolbar_urls
-
 
 urlpatterns = [
     path("sitemap.xml", sitemap),
     path(
         "favicon.ico",
-        RedirectView.as_view(
-            url=settings.STATIC_URL + "cms/images/logo/logo_64x64.png", permanent=True
-        ),
+        RedirectView.as_view(url=settings.STATIC_URL + "cms/images/logo/logo_64x64.png", permanent=True),
     ),
     path(
         "robots.txt",
@@ -39,6 +34,7 @@ urlpatterns += i18n_patterns(
 )
 
 if settings.DEBUG:
+    from debug_toolbar.toolbar import debug_toolbar_urls
     from django.conf.urls.static import static
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 

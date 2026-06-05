@@ -1,5 +1,5 @@
-from django.db import models
 from django.core.validators import RegexValidator
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
@@ -7,9 +7,7 @@ class BYPhoneNumberField(models.CharField):
     default_validators = [
         RegexValidator(
             regex=r"^\+375\d{9}$",
-            message=_(
-                "Номер телефона должен быть в формате +375XXXXXXXXX (всего 13 символов)."
-            ),
+            message=_("Номер телефона должен быть в формате +375XXXXXXXXX (всего 13 символов)."),
         )
     ]
 
