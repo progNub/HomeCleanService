@@ -114,7 +114,7 @@ def init_content(command):
                     "cta_text": "Связаться с нами",
                     "cta_page": contact_page,
                     "anchor": "hero",
-                    "padding_vertical": PaddingVerticalChoices.PY_0,
+                    "padding_vertical": PaddingVerticalChoices.PY_5,
                 },
             ),
             (
