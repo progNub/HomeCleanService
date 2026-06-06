@@ -1,14 +1,13 @@
-from cms.models import HomePage, FormPage
+from django.conf import settings
 
 from cms.models import (
-    SocialMediaSettings,
     ContactSettings,
-    NavigationSettings,
+    FormPage,
+    HomePage,
     MenuItem,
+    NavigationSettings,
+    SocialMediaSettings,
 )
-
-
-import os
 
 
 def init_global_settings(command):
@@ -21,8 +20,7 @@ def init_global_settings(command):
         from cms.models import SocialMediaLink
 
         whatsapp_phone = (
-            os.getenv("CONTACT_PHONE", "375296023356")
-            .replace("+", "")
+            settings.ENV_CONTACT_PHONE.replace("+", "")
             .replace(" ", "")
             .replace("-", "")
             .replace("(", "")
@@ -37,41 +35,33 @@ def init_global_settings(command):
         )
         command.stdout.write(command.style.SUCCESS("Social media settings created."))
     else:
-        command.stdout.write(
-            command.style.WARNING("Social media settings already exist.")
-        )
+        command.stdout.write(command.style.WARNING("Social media settings already exist."))
 
     # Contact Settings
     contact_settings = ContactSettings.load()
     if not contact_settings.phone_number or not contact_settings.legal_unp:
-        contact_settings.phone_number = os.getenv("CONTACT_PHONE", "+375296023356")
-        contact_settings.email = os.getenv("CONTACT_EMAIL", "info@homecleanservice.by")
-        contact_settings.address = os.getenv("CONTACT_ADDRESS", "Беларусь")
+        contact_settings.phone_number = settings.ENV_CONTACT_PHONE
+        contact_settings.email = settings.ENV_CONTACT_EMAIL
+        contact_settings.address = settings.ENV_CONTACT_ADDRESS
 
         # Legal info
-        contact_settings.legal_full_name = os.getenv("LEGAL_FULL_NAME")
-        contact_settings.legal_unp = os.getenv("LEGAL_UNP")
-        contact_settings.legal_address = os.getenv("LEGAL_ADDRESS")
-        contact_settings.legal_reg_date = os.getenv("LEGAL_REG_DATE")
+        contact_settings.legal_full_name = settings.ENV_LEGAL_FULL_NAME
+        contact_settings.legal_unp = settings.ENV_LEGAL_UNP
+        contact_settings.legal_address = settings.ENV_LEGAL_ADDRESS
+        contact_settings.legal_reg_date = settings.ENV_LEGAL_REG_DATE
 
         contact_settings.save()
         command.stdout.write(command.style.SUCCESS("Contact settings created/updated."))
     else:
         # Let's update it if it's the old default
         if contact_settings.phone_number == "+7 (900) 123-45-67":
-            contact_settings.phone_number = os.getenv("CONTACT_PHONE", "+375296023356")
-            contact_settings.email = os.getenv("CONTACT_EMAIL", "info@homeservice.by")
-            contact_settings.address = os.getenv("CONTACT_ADDRESS", "Беларусь")
+            contact_settings.phone_number = settings.ENV_CONTACT_PHONE
+            contact_settings.email = settings.ENV_CONTACT_EMAIL
+            contact_settings.address = settings.ENV_CONTACT_ADDRESS
             contact_settings.save()
-            command.stdout.write(
-                command.style.SUCCESS("Contact settings updated with new phone number.")
-            )
+            command.stdout.write(command.style.SUCCESS("Contact settings updated with new phone number."))
         else:
-            command.stdout.write(
-                command.style.WARNING(
-                    "Contact settings already exist and differ from old default."
-                )
-            )
+            command.stdout.write(command.style.WARNING("Contact settings already exist and differ from old default."))
 
 
 def init_navigation_settings(command):
@@ -127,10 +117,6 @@ def init_navigation_settings(command):
                 sort_order=4,
             )
 
-        command.stdout.write(
-            command.style.SUCCESS("Navigation settings created with default items.")
-        )
+        command.stdout.write(command.style.SUCCESS("Navigation settings created with default items."))
     else:
-        command.stdout.write(
-            command.style.WARNING("Navigation settings already exist.")
-        )
+        command.stdout.write(command.style.WARNING("Navigation settings already exist."))

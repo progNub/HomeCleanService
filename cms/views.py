@@ -1,6 +1,7 @@
-from django.shortcuts import redirect
 from django.contrib import messages
+from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
+
 from cms.forms import ReviewForm
 
 
@@ -18,9 +19,7 @@ def post_review(request):
             messages.success(request, _("Ваш отзыв отправлен на модерацию. Спасибо!"))
         else:
             form_errors = _get_prepared_form_errors(form)
-            text_error = form_errors or _(
-                "Произошла ошибка при отправке отзыва. Пожалуйста, проверьте данные."
-            )
+            text_error = form_errors or _("Произошла ошибка при отправке отзыва. Пожалуйста, проверьте данные.")
             messages.error(request, text_error)
 
     redirect_url = request.META.get("HTTP_REFERER", "/")

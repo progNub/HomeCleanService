@@ -1,5 +1,6 @@
-from wagtail import blocks
 from django.utils.translation import gettext_lazy as _
+from wagtail import blocks
+
 from .base.blocks import BaseStructBlock
 
 
@@ -13,9 +14,7 @@ class FAQItemBlock(blocks.StructBlock):
 
 
 class FAQBlock(BaseStructBlock):
-    title = blocks.CharBlock(
-        required=True, label=_("Заголовок"), default=_("Часто задаваемые вопросы")
-    )
+    title = blocks.CharBlock(required=True, label=_("Заголовок"), default=_("Часто задаваемые вопросы"))
     items = blocks.ListBlock(FAQItemBlock(), label=_("Список вопросов"))
 
     class Meta:

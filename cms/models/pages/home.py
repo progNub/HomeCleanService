@@ -1,16 +1,16 @@
 from django.utils.translation import gettext_lazy as _
-from wagtail.models import Page
-from wagtail.fields import StreamField
 from wagtail.admin.panels import FieldPanel
+from wagtail.fields import StreamField
+from wagtail.models import Page
 
-from cms.models.seo import SeoAbstract
-from cms.blocks.hero import HeroBlock
-from cms.blocks.services import ServicesBlock
-from cms.blocks.features import FeaturesBlock
 from cms.blocks.about import AboutBlock
-from cms.blocks.reviews import ReviewsBlock
-from cms.blocks.faq import FAQBlock
 from cms.blocks.content import RichTextBlock
+from cms.blocks.faq import FAQBlock
+from cms.blocks.features import FeaturesBlock
+from cms.blocks.hero import HeroBlock
+from cms.blocks.reviews import ReviewsBlock
+from cms.blocks.services import ServicesBlock
+from cms.models.seo import SeoAbstract
 
 
 class HomePage(SeoAbstract, Page):

@@ -23,6 +23,27 @@ services:
     networks:
       - default
 
+  worker:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: homeservice_worker_dev
+    restart: always
+    volumes:
+      - ..:/app
+    entrypoint: /app/deploy/worker-entrypoint.sh
+    command: python manage.py db_worker --queue-name default,notifications
+    env_file:
+      - ../.env
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      - redis
+      - db
+    networks:
+      - default
+
   umami:
     image: ghcr.io/umami-software/umami:postgresql-latest
     container_name: homeservice_umami_dev
@@ -39,9 +60,33 @@ services:
     networks:
       - default
 
+  dozzle:
+    image: amir20/dozzle:v10.6.3
+    container_name: homeservice_dozzle_dev
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - dozzle_data_dev:/data
+    secrets:
+      - source: dozzle_users
+        target: /data/users.yml
+    environment:
+      - DOZZLE_AUTH_PROVIDER=simple
+    env_file:
+      - ../.env
+    ports:
+      - "8081:8080"
+    networks:
+      - default
+
 networks:
   default:
     name: homeservice_dev_network
 
+secrets:
+  dozzle_users:
+    file: ./dozzle/users.yml
+
 volumes:
   postgres_data_dev:
+  dozzle_data_dev:

@@ -11,17 +11,86 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-from pathlib import Path
 import os
+from pathlib import Path
+
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 PROJECT_DIR = BASE_DIR / "cms"
 
+# ==============================================================================
+# ENVIRONMENT VARIABLES
+# ==============================================================================
+
+# Core settings
+ENV_DJANGO_SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+ENV_ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+ENV_SITE_URL = os.getenv("SITE_URL")
+
+# Database settings
+ENV_DB_NAME = os.getenv("DB_NAME")
+ENV_DB_USER = os.getenv("DB_USER")
+ENV_DB_PASSWORD = os.getenv("DB_PASSWORD")
+ENV_DB_HOST = os.getenv("DB_HOST")
+ENV_DB_PORT = os.getenv("DB_PORT")
+
+# Redis settings
+ENV_REDIS_URL = os.getenv("REDIS_URL")
+
+# Telegram settings
+ENV_TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+ENV_TELEGRAM_LOGS_CHAT_ID = os.getenv("TELEGRAM_LOGS_CHAT_ID")
+ENV_TELEGRAM_NOTIFICATIONS_CHAT_ID = os.getenv("TELEGRAM_NOTIFICATIONS_CHAT_ID")
+
+# Security settings (Production)
+ENV_SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT") == "True"
+ENV_SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE") == "True"
+ENV_CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE") == "True"
+ENV_SECURE_BROWSER_XSS_FILTER = os.getenv("SECURE_BROWSER_XSS_FILTER") == "True"
+ENV_SECURE_CONTENT_TYPE_NOSNIFF = os.getenv("SECURE_CONTENT_TYPE_NOSNIFF") == "True"
+ENV_CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(",")
+
+# Superuser settings (Initial setup)
+ENV_SUPERUSER_USERNAME = os.getenv("SUPERUSER_USERNAME")
+ENV_SUPERUSER_EMAIL = os.getenv("SUPERUSER_EMAIL")
+ENV_SUPERUSER_PASSWORD = os.getenv("SUPERUSER_PASSWORD")
+
+# Contact & Legal settings (Initial setup)
+ENV_CONTACT_PHONE = os.getenv("CONTACT_PHONE")
+ENV_CONTACT_EMAIL = os.getenv("CONTACT_EMAIL")
+ENV_CONTACT_ADDRESS = os.getenv("CONTACT_ADDRESS")
+ENV_CONTACT_FORM_TO_EMAIL = os.getenv("CONTACT_FORM_TO_EMAIL")
+ENV_CONTACT_FORM_FROM_EMAIL = os.getenv("CONTACT_FORM_FROM_EMAIL")
+ENV_LEGAL_FULL_NAME = os.getenv("LEGAL_FULL_NAME")
+ENV_LEGAL_UNP = os.getenv("LEGAL_UNP")
+ENV_LEGAL_ADDRESS = os.getenv("LEGAL_ADDRESS")
+ENV_LEGAL_REG_DATE = os.getenv("LEGAL_REG_DATE")
+
+# ==============================================================================
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
+
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = ENV_DJANGO_SECRET_KEY
+
+# SECURITY WARNING: define the correct hosts in production!
+ALLOWED_HOSTS = ENV_ALLOWED_HOSTS
+
+
+# Security headers and cookies
+SECURE_SSL_REDIRECT = ENV_SECURE_SSL_REDIRECT
+SESSION_COOKIE_SECURE = ENV_SESSION_COOKIE_SECURE
+CSRF_COOKIE_SECURE = ENV_CSRF_COOKIE_SECURE
+SECURE_BROWSER_XSS_FILTER = ENV_SECURE_BROWSER_XSS_FILTER
+SECURE_CONTENT_TYPE_NOSNIFF = ENV_SECURE_CONTENT_TYPE_NOSNIFF
+
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = ENV_CSRF_TRUSTED_ORIGINS
 
 
 # Application definition
@@ -68,9 +137,9 @@ THIRD_PARTY_APPS = [
     "modelcluster",
     "taggit",
     "django_filters",
-    "django_browser_reload",
     "django_bootstrap5",
     "compressor",
+    "django_tasks_db",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + WAGTAIL_APPS + INTERNAL_APPS + THIRD_PARTY_APPS
@@ -111,7 +180,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "wagtailcache.cache.FetchFromCacheMiddleware",
 ]
@@ -151,11 +219,11 @@ WSGI_APPLICATION = "cms.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME", "homeservice"),
-        "USER": os.getenv("DB_USER", "homeservice_user"),
-        "PASSWORD": os.getenv("DB_PASSWORD", "homeservice_pass"),
-        "HOST": os.getenv("DB_HOST", "localhost"),
-        "PORT": os.getenv("DB_PORT", "5433"),
+        "NAME": ENV_DB_NAME,
+        "USER": ENV_DB_USER,
+        "PASSWORD": ENV_DB_PASSWORD,
+        "HOST": ENV_DB_HOST,
+        "PORT": ENV_DB_PORT,
     }
 }
 
@@ -200,9 +268,7 @@ MEDIA_URL = "/media/"
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
 
-COMPRESS_PRECOMPILERS = (
-    ("text/x-scss", "npx sass --load-path=node_modules {infile} {outfile}"),
-)
+COMPRESS_PRECOMPILERS = (("text/x-scss", "npx sass --load-path=node_modules {infile} {outfile}"),)
 
 # Default storage settings
 # See https://docs.djangoproject.com/en/6.0/ref/settings/#std-setting-STORAGES
@@ -246,7 +312,7 @@ WAGTAILIMAGES_FORMAT_CONVERSIONS = {
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
-WAGTAILADMIN_BASE_URL = os.getenv("SITE_URL", "https://homecleanservice.by")
+WAGTAILADMIN_BASE_URL = ENV_SITE_URL
 
 
 # Allowed file extensions for documents in the document library.
@@ -327,6 +393,20 @@ BOOTSTRAP5 = {
         "default": "django_bootstrap5.renderers.FieldRenderer",
     },
 }
+# ==============================================================================
+# DJANGO TASKS (Django 6.0+)
+# ==============================================================================
+
+TELEGRAM_BOT_TOKEN = ENV_TELEGRAM_BOT_TOKEN
+TELEGRAM_LOGS_CHAT_ID = ENV_TELEGRAM_LOGS_CHAT_ID
+TELEGRAM_NOTIFICATIONS_CHAT_ID = ENV_TELEGRAM_NOTIFICATIONS_CHAT_ID
+
+TASKS = {
+    "default": {
+        "BACKEND": "django_tasks_db.DatabaseBackend",
+        "QUEUES": ["default", "notifications"],
+    },
+}
 
 
 LOGGING = {
@@ -342,6 +422,13 @@ LOGGING = {
         "console": {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
+        },
+        "telegram_logs": {
+            "class": "cms.logging.handlers.AsyncTelegramHandler",
+            "level": "ERROR",
+            "token": TELEGRAM_BOT_TOKEN,
+            "chat_id": TELEGRAM_LOGS_CHAT_ID,
+            "timeout": 10,
         },
     },
     "root": {
@@ -362,6 +449,11 @@ LOGGING = {
         "django": {
             "handlers": ["console"],
             "level": "INFO",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console", "telegram_logs"],
+            "level": "ERROR",
             "propagate": False,
         },
     },

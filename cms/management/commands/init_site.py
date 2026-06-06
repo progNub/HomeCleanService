@@ -1,15 +1,15 @@
 from django.core.management.base import BaseCommand
+from dotenv import load_dotenv
+
 from cms.management.commands.init_site_parts import (
     init_content,
-    init_superuser,
-    init_reviews,
-    init_legal_pages,
-    init_portfolio_pages,
-    init_navigation_settings,
     init_global_settings,
+    init_legal_pages,
+    init_navigation_settings,
+    init_portfolio_pages,
+    init_reviews,
+    init_superuser,
 )
-
-from dotenv import load_dotenv
 
 
 class Command(BaseCommand):

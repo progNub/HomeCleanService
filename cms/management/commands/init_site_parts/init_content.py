@@ -1,13 +1,16 @@
-from wagtail.models import Site, Page
-from wagtail.images.models import Image
-from django.core.files import File
-from cms.models import HomePage, FormPage
-from cms.models.seo import SeoAbstract
-from cms.blocks.base.blocks import BackgroundColorChoices, PaddingVerticalChoices
-from .init_forms import init_contact_form_page
-
 import os
 from urllib.parse import urlparse
+
+from django.conf import settings
+from django.core.files import File
+from wagtail.images.models import Image
+from wagtail.models import Page, Site
+
+from cms.blocks.base.blocks import BackgroundColorChoices, PaddingVerticalChoices
+from cms.models import FormPage, HomePage
+from cms.models.seo import SeoAbstract
+
+from .init_forms import init_contact_form_page
 
 
 def get_or_import_image(image_path, title):
@@ -17,24 +20,20 @@ def get_or_import_image(image_path, title):
     image = Image.objects.filter(title=title).first()
     if not image:
         with open(image_path, "rb") as f:
-            image = Image.objects.create(
-                title=title, file=File(f, name=os.path.basename(image_path))
-            )
+            image = Image.objects.create(title=title, file=File(f, name=os.path.basename(image_path)))
     return image
 
 
 def init_content(command):
     # 1. Site configuration from env
-    site_url_env = os.getenv("SITE_URL", "http://localhost:8000")
+    site_url_env = settings.ENV_SITE_URL
     parsed_url = urlparse(site_url_env)
     hostname = parsed_url.hostname or "localhost"
     port = parsed_url.port
     if not port:
         port = 443 if parsed_url.scheme == "https" else 80
 
-    command.stdout.write(
-        f"Configuring site for: {hostname}:{port} (from {site_url_env})"
-    )
+    command.stdout.write(f"Configuring site for: {hostname}:{port} (from {site_url_env})")
 
     # 2. Find or create HomePage
     homepage = HomePage.objects.first()
@@ -89,9 +88,7 @@ def init_content(command):
         if not homepage.show_in_menus:
             homepage.show_in_menus = True
             homepage.save_revision().publish()
-            command.stdout.write(
-                command.style.SUCCESS("HomePage set to show in menus.")
-            )
+            command.stdout.write(command.style.SUCCESS("HomePage set to show in menus."))
 
     # 2.5 Ensure Contact Form Page exists before filling content
     init_contact_form_page(command, homepage)
@@ -101,18 +98,10 @@ def init_content(command):
         contact_page = FormPage.objects.filter(slug="request").first()
 
         # Import services images
-        roof_img = get_or_import_image(
-            "cms/static/cms/images/default/roof_washing.webp", "Мойка крыши"
-        )
-        house_img = get_or_import_image(
-            "cms/static/cms/images/default/house_painting.webp", "Покраска дома"
-        )
-        fence_img = get_or_import_image(
-            "cms/static/cms/images/default/fence_washing.webp", "Мойка забора"
-        )
-        hero_img = get_or_import_image(
-            "cms/static/cms/images/default/hero_1.webp", "Главное изображение"
-        )
+        roof_img = get_or_import_image("cms/static/cms/images/default/roof_washing.webp", "Мойка крыши")
+        house_img = get_or_import_image("cms/static/cms/images/default/house_painting.webp", "Покраска дома")
+        fence_img = get_or_import_image("cms/static/cms/images/default/fence_washing.webp", "Мойка забора")
+        hero_img = get_or_import_image("cms/static/cms/images/default/hero_1.webp", "Главное изображение")
 
         command.stdout.write("Filling HomePage with demo content...")
         homepage.body = [
@@ -225,9 +214,7 @@ def init_content(command):
         command.stdout.write(command.style.SUCCESS("Demo content added to HomePage."))
     else:
         command.stdout.write(
-            command.style.WARNING(
-                "HomePage body is not empty. If you want to update content, use Wagtail admin."
-            )
+            command.style.WARNING("HomePage body is not empty. If you want to update content, use Wagtail admin.")
         )
 
     # 4. Configure Site object
@@ -244,9 +231,7 @@ def init_content(command):
             command.stdout.write(command.style.SUCCESS("Site updated."))
         else:
             command.stdout.write(
-                command.style.WARNING(
-                    f"Site {site.hostname}:{site.port} already correctly configured."
-                )
+                command.style.WARNING(f"Site {site.hostname}:{site.port} already correctly configured.")
             )
     else:
         command.stdout.write("Creating new Site object...")

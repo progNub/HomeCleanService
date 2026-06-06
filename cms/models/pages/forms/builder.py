@@ -1,8 +1,10 @@
+from collections import OrderedDict
+
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.models import FORM_FIELD_CHOICES
-from collections import OrderedDict
+
 from .form_fields import BYPhoneFormField
 
 CUSTOM_FORM_FIELD_CHOICES = FORM_FIELD_CHOICES + (

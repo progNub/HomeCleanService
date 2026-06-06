@@ -1,4 +1,4 @@
-from cms.models import PortfolioIndexPage, NavigationSettings, MenuItem
+from cms.models import MenuItem, NavigationSettings, PortfolioIndexPage
 from cms.models.seo import SeoAbstract
 
 
@@ -23,31 +23,20 @@ def init_portfolio_pages(command, homepage):
         )
         homepage.add_child(instance=portfolio_index)
         portfolio_index.save_revision().publish()
-        command.stdout.write(
-            command.style.SUCCESS("PortfolioIndexPage 'Наши работы' created.")
-        )
+        command.stdout.write(command.style.SUCCESS("PortfolioIndexPage 'Наши работы' created."))
     else:
-        command.stdout.write(
-            command.style.WARNING("PortfolioIndexPage already exists.")
-        )
-        if (
-            portfolio_index.title != "Наши работы"
-            or portfolio_index.slug != "portfolio"
-        ):
+        command.stdout.write(command.style.WARNING("PortfolioIndexPage already exists."))
+        if portfolio_index.title != "Наши работы" or portfolio_index.slug != "portfolio":
             portfolio_index.title = "Наши работы"
             portfolio_index.slug = "portfolio"
             portfolio_index.save_revision().publish()
             command.stdout.write(
-                command.style.SUCCESS(
-                    "PortfolioIndexPage updated to 'Наши работы' with slug 'portfolio'."
-                )
+                command.style.SUCCESS("PortfolioIndexPage updated to 'Наши работы' with slug 'portfolio'.")
             )
 
     # 2. Add to Navigation Menu if not already there
     nav_settings = NavigationSettings.load()
-    if not MenuItem.objects.filter(
-        setting=nav_settings, link_page=portfolio_index
-    ).exists():
+    if not MenuItem.objects.filter(setting=nav_settings, link_page=portfolio_index).exists():
         max_order = MenuItem.objects.filter(setting=nav_settings).count()
         MenuItem.objects.create(
             setting=nav_settings,
@@ -55,8 +44,6 @@ def init_portfolio_pages(command, homepage):
             link_page=portfolio_index,
             sort_order=max_order,
         )
-        command.stdout.write(
-            command.style.SUCCESS("Portfolio added to navigation menu.")
-        )
+        command.stdout.write(command.style.SUCCESS("Portfolio added to navigation menu."))
 
     return portfolio_index

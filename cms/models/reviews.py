@@ -1,7 +1,13 @@
+import logging
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from wagtail.admin.panels import FieldPanel
 from wagtail.snippets.models import register_snippet
+
+from cms.services.telegram.notifications import LeadNotificationService
+
+logger = logging.getLogger(__name__)
 
 
 @register_snippet
@@ -20,9 +26,7 @@ class Review(models.Model):
         verbose_name=_("Согласие на обработку персональных данных"),
     )
 
-    is_approved = models.BooleanField(
-        default=False, verbose_name=_("Одобрено (показывать)")
-    )
+    is_approved = models.BooleanField(default=False, verbose_name=_("Одобрено (показывать)"))
     ip = models.GenericIPAddressField(null=True, blank=True, verbose_name=_("IP-адрес"))
     user_agent = models.TextField(null=True, blank=True, verbose_name=_("User-Agent"))
 
@@ -36,9 +40,25 @@ class Review(models.Model):
         FieldPanel("user_agent", read_only=True),
     ]
 
+    def save(self, *args, **kwargs):
+        is_new = self._state.adding
+        super().save(*args, **kwargs)
+        if is_new:
+            self.notify_new_review()
+
     class Meta:
         verbose_name = _("Отзыв")
         verbose_name_plural = _("Отзывы")
 
     def __str__(self):
         return f"{self.author} - {self.rating}"
+
+    def notify_new_review(self):
+        """
+        Sends notification about new review using LeadNotificationService.
+        """
+        try:
+            service = LeadNotificationService(self)
+            service.send()
+        except Exception:
+            logger.exception(_("Error sending review notification to Telegram"))
