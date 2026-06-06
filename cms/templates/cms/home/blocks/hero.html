@@ -7,7 +7,7 @@
 
 {% block section_pre_container %}
     {% if self.image %}
-        {% image self.image original format-webp as hero_img %}
+        {% image self.image width-1920 format-webp as hero_img %}
         <div class="hero-bg-image" style="background-image: url('{{ hero_img.url }}');"></div>
     {% endif %}
 {% endblock %}
