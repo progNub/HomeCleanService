@@ -1,6 +1,7 @@
 import logging
-import requests
 from io import BytesIO
+
+import requests
 from django.conf import settings
 from django.tasks import task
 
@@ -8,9 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 @task()
-def _send_telegram_message_task(
-    token, chat_id, text, parse_mode, timeout, api_endpoint
-):
+def _send_telegram_message_task(token, chat_id, text, parse_mode, timeout, api_endpoint):
     """
     Background task to send a message to Telegram.
     If the message is too long, it sends it as a document.
@@ -29,9 +28,7 @@ def _send_telegram_message_task(
                 "text": text,
                 "parse_mode": parse_mode,
             }
-            response = requests.post(
-                f"{url_base}/sendMessage", json=payload, timeout=timeout
-            )
+            response = requests.post(f"{url_base}/sendMessage", json=payload, timeout=timeout)
         else:
             # If the message is too long, send it as a document
             caption = text[:1000]
@@ -40,9 +37,7 @@ def _send_telegram_message_task(
                 "chat_id": chat_id,
                 "caption": caption,
             }
-            response = requests.post(
-                f"{url_base}/sendDocument", data=payload, files=files, timeout=timeout
-            )
+            response = requests.post(f"{url_base}/sendDocument", data=payload, files=files, timeout=timeout)
         response.raise_for_status()
     except Exception:
         logger.exception("Error sending Telegram message via task")
@@ -55,13 +50,9 @@ class RawTelegramService:
 
     API_ENDPOINT = "https://api.telegram.org"
 
-    def __init__(
-        self, token=None, chat_id=None, parse_mode="HTML", timeout=10, queue_name=None
-    ):
+    def __init__(self, token=None, chat_id=None, parse_mode="HTML", timeout=10, queue_name=None):
         self.token = token or getattr(settings, "TELEGRAM_BOT_TOKEN", None)
-        self.chat_id = chat_id or getattr(
-            settings, "TELEGRAM_NOTIFICATIONS_CHAT_ID", None
-        )
+        self.chat_id = chat_id or getattr(settings, "TELEGRAM_NOTIFICATIONS_CHAT_ID", None)
         self.parse_mode = parse_mode
         self.timeout = timeout
         self.queue_name = queue_name
@@ -85,8 +76,6 @@ class RawTelegramService:
         }
 
         if self.queue_name:
-            _send_telegram_message_task.using(queue_name=self.queue_name).enqueue(
-                **params
-            )
+            _send_telegram_message_task.using(queue_name=self.queue_name).enqueue(**params)
         else:
             _send_telegram_message_task.enqueue(**params)

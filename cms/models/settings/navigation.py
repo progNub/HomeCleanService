@@ -10,9 +10,7 @@ from .base import SettingsPreviewMixin
 
 
 @register_setting
-class NavigationSettings(
-    SettingsPreviewMixin, PreviewableMixin, ClusterableModel, BaseGenericSetting
-):
+class NavigationSettings(SettingsPreviewMixin, PreviewableMixin, ClusterableModel, BaseGenericSetting):
     panels = [
         InlinePanel(
             "menu_items",
@@ -26,9 +24,7 @@ class NavigationSettings(
 
 
 class MenuItem(Orderable):
-    setting = ParentalKey(
-        NavigationSettings, related_name="menu_items", on_delete=models.CASCADE
-    )
+    setting = ParentalKey(NavigationSettings, related_name="menu_items", on_delete=models.CASCADE)
     label = models.CharField(max_length=255, verbose_name=_("Заголовок"))
     link_page = models.ForeignKey(
         "wagtailcore.Page",

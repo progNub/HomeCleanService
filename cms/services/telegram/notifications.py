@@ -1,6 +1,8 @@
 import logging
+
 from django.conf import settings
 from django.utils.translation import gettext as _
+
 from .base import RawTelegramService
 
 logger = logging.getLogger(__name__)
@@ -19,9 +21,7 @@ class LeadNotificationService:
     @property
     def tg(self):
         if self._tg is None:
-            self._tg = RawTelegramService(
-                chat_id=self.chat_id, parse_mode="HTML", queue_name="notifications"
-            )
+            self._tg = RawTelegramService(chat_id=self.chat_id, parse_mode="HTML", queue_name="notifications")
         return self._tg
 
     def send(self, instance=None):
@@ -50,10 +50,7 @@ class LeadNotificationService:
         if handler:
             return handler(instance)
 
-        logger.error(
-            _("Unsupported model type for Telegram alerts: %(model_name)s")
-            % {"model_name": model_name}
-        )
+        logger.error(_("Unsupported model type for Telegram alerts: %(model_name)s") % {"model_name": model_name})
         return None
 
     def _format_review(self, review):

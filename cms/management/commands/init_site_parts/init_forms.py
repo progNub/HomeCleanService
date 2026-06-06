@@ -1,7 +1,7 @@
-from cms.models import FormPage, FormField
-from cms.models.seo import SeoAbstract
-
 from django.conf import settings
+
+from cms.models import FormField, FormPage
+from cms.models.seo import SeoAbstract
 
 
 def init_contact_form_page(command, homepage):
@@ -9,9 +9,7 @@ def init_contact_form_page(command, homepage):
     Creates a contact form page using Wagtail's AbstractEmailForm
     """
     command.stdout.write("Checking for Contact Form Page...")
-    contact_page = (
-        FormPage.objects.descendant_of(homepage).filter(slug="request").first()
-    )
+    contact_page = FormPage.objects.descendant_of(homepage).filter(slug="request").first()
 
     if not contact_page:
         command.stdout.write("Creating Request Form Page...")
@@ -65,10 +63,7 @@ def init_contact_form_page(command, homepage):
         if contact_page.title == "Контакты":
             contact_page.title = "Оставить заявку"
             updated = True
-        if (
-            not contact_page.seo_title
-            or contact_page.seo_title == "Связаться с нами - HomeCleanService"
-        ):
+        if not contact_page.seo_title or contact_page.seo_title == "Связаться с нами - HomeCleanService":
             contact_page.seo_title = "Оставить заявку - HomeCleanService"
             updated = True
         if not contact_page.search_description:
@@ -85,23 +80,17 @@ def init_contact_form_page(command, homepage):
         if not contact_page.published_date:
             from django.utils import timezone
 
-            contact_page.published_date = (
-                contact_page.first_published_at or timezone.now()
-            )
+            contact_page.published_date = contact_page.first_published_at or timezone.now()
             updated = True
 
         if updated:
             contact_page.save_revision().publish()
-            command.stdout.write(
-                command.style.SUCCESS("Contact Form Page SEO tags updated.")
-            )
+            command.stdout.write(command.style.SUCCESS("Contact Form Page SEO tags updated."))
 
         if not contact_page.show_in_menus:
             contact_page.show_in_menus = True
             contact_page.save_revision().publish()
-            command.stdout.write(
-                command.style.SUCCESS("Contact Form Page set to show in menus.")
-            )
+            command.stdout.write(command.style.SUCCESS("Contact Form Page set to show in menus."))
 
     # Ensure Agreement Checkbox exists
     ensure_agreement_field(command, contact_page)
@@ -112,9 +101,7 @@ def ensure_agreement_field(command, contact_page):
     Adds or updates the agreement checkbox
     """
 
-    agreement_field = contact_page.form_fields.filter(
-        field_type="checkbox_agreement"
-    ).first()
+    agreement_field = contact_page.form_fields.filter(field_type="checkbox_agreement").first()
     if not agreement_field:
         FormField.objects.create(
             page=contact_page,
@@ -128,6 +115,4 @@ def ensure_agreement_field(command, contact_page):
     else:
         agreement_field.save()
         contact_page.save_revision().publish()
-        command.stdout.write(
-            command.style.SUCCESS("Agreement checkbox help_text updated.")
-        )
+        command.stdout.write(command.style.SUCCESS("Agreement checkbox help_text updated."))

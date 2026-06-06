@@ -1,4 +1,4 @@
+from .forms import FormField, FormPage
 from .home import HomePage
-from .forms import FormPage, FormField
-from .legal import LegalIndexPage, LegalDocumentPage
+from .legal import LegalDocumentPage, LegalIndexPage
 from .portfolio import PortfolioIndexPage, PortfolioWorkPage

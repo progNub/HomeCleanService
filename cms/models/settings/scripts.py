@@ -10,9 +10,7 @@ from .base import SettingsPreviewMixin
 
 
 @register_setting
-class ScriptSettings(
-    SettingsPreviewMixin, PreviewableMixin, ClusterableModel, BaseSiteSetting
-):
+class ScriptSettings(SettingsPreviewMixin, PreviewableMixin, ClusterableModel, BaseSiteSetting):
     """
     Settings for external scripts (Analytics, Chat widgets, etc.)
     """
@@ -31,9 +29,7 @@ class ScriptSettings(
         InlinePanel(
             "custom_scripts",
             label=_("Пользовательские скрипты"),
-            help_text=_(
-                "Добавьте дополнительные коды отслеживания (Google Analytics, Яндекс.Метрика и др.)"
-            ),
+            help_text=_("Добавьте дополнительные коды отслеживания (Google Analytics, Яндекс.Метрика и др.)"),
         ),
     ]
 
@@ -48,9 +44,7 @@ class LocationChoices(models.TextChoices):
 
 
 class ScriptSnippet(Orderable):
-    setting = ParentalKey(
-        ScriptSettings, related_name="custom_scripts", on_delete=models.CASCADE
-    )
+    setting = ParentalKey(ScriptSettings, related_name="custom_scripts", on_delete=models.CASCADE)
     name = models.CharField(max_length=255, verbose_name=_("Название скрипта"))
     code = models.TextField(verbose_name=_("Код скрипта"))
     location = models.CharField(

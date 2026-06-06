@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-from pathlib import Path
 import os
+from pathlib import Path
+
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -136,7 +137,6 @@ THIRD_PARTY_APPS = [
     "modelcluster",
     "taggit",
     "django_filters",
-    "django_browser_reload",
     "django_bootstrap5",
     "compressor",
     "django_tasks_db",
@@ -180,7 +180,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "wagtailcache.cache.FetchFromCacheMiddleware",
 ]
@@ -269,9 +268,7 @@ MEDIA_URL = "/media/"
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
 
-COMPRESS_PRECOMPILERS = (
-    ("text/x-scss", "npx sass --load-path=node_modules {infile} {outfile}"),
-)
+COMPRESS_PRECOMPILERS = (("text/x-scss", "npx sass --load-path=node_modules {infile} {outfile}"),)
 
 # Default storage settings
 # See https://docs.djangoproject.com/en/6.0/ref/settings/#std-setting-STORAGES

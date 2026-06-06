@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from wagtail.admin.panels import MultiFieldPanel, FieldPanel, PageChooserPanel
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel, PageChooserPanel
 from wagtail.contrib.settings.models import BaseGenericSetting, register_setting
 from wagtail.models import PreviewableMixin
 
@@ -16,12 +16,8 @@ class ContactSettings(SettingsPreviewMixin, PreviewableMixin, BaseGenericSetting
         verbose_name=_("Номер телефона"),
         help_text=_("Основной номер телефона"),
     )
-    email = models.EmailField(
-        blank=True, null=True, verbose_name=_("Email"), help_text=_("Контактный email")
-    )
-    address = models.TextField(
-        blank=True, null=True, verbose_name=_("Адрес"), help_text=_("Адрес офиса")
-    )
+    email = models.EmailField(blank=True, null=True, verbose_name=_("Email"), help_text=_("Контактный email"))
+    address = models.TextField(blank=True, null=True, verbose_name=_("Адрес"), help_text=_("Адрес офиса"))
     legal_full_name = models.CharField(
         max_length=255,
         blank=True,
