@@ -2,7 +2,7 @@ from django.conf import settings
 from django.urls import include, path
 from django.contrib import admin
 from django.conf.urls.i18n import i18n_patterns
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 from django.http import HttpResponse
 
 from wagtail.admin import urls as wagtailadmin_urls
@@ -13,6 +13,12 @@ from cms import views as cms_views
 from wagtail.contrib.sitemaps.views import sitemap
 
 urlpatterns = [
+    path(
+        "favicon.ico",
+        RedirectView.as_view(
+            url=settings.STATIC_URL + "cms/images/logo/logo_64x64.png", permanent=True
+        ),
+    ),
     path(
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
@@ -29,7 +35,6 @@ urlpatterns += i18n_patterns(
     path("i18n/", include("django.conf.urls.i18n")),
     prefix_default_language=False,
 )
-
 
 if settings.DEBUG:
     from django.conf.urls.static import static
