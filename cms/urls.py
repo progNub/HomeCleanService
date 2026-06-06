@@ -13,6 +13,7 @@ from cms import views as cms_views
 from wagtail.contrib.sitemaps.views import sitemap
 
 urlpatterns = [
+    path("sitemap.xml", sitemap),
     path(
         "favicon.ico",
         RedirectView.as_view(
@@ -28,7 +29,6 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path("django-admin/", admin.site.urls),
-    path("sitemap.xml", sitemap),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("post-review/", cms_views.post_review, name="post_review"),
