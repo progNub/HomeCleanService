@@ -72,6 +72,9 @@ services:
         target: /data/users.yml
     environment:
       - DOZZLE_AUTH_PROVIDER=simple
+      - DOZZLE_ENABLE_ACTIONS=true
+      - DOZZLE_NO_ANALYTICS=true
+
     env_file:
       - ../.env
     ports:

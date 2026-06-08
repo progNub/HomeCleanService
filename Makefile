@@ -120,7 +120,8 @@ prod-start:
 		echo "deploy/dozzle/users.yml not found. Generating with default or provided credentials..."; \
 		$(MAKE) dozzle-gen-pass; \
 	fi
-	$(COMPOSE_PROD) up -d --build
+	$(COMPOSE_PROD) up -d --build --remove-orphans
+	$(COMPOSE_PROD) exec -T nginx nginx -s reload
 
 prod-down:
 	$(COMPOSE_PROD) down
