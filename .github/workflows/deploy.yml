@@ -1,6 +1,8 @@
+# GitHub Actions workflow to automate production deployment
 name: Deploy to Production
 
 on:
+  # Trigger the workflow when a pull request is closed on the master branch
   pull_request:
     types: [closed]
     branches:
@@ -8,11 +10,12 @@ on:
 
 jobs:
   deploy:
+    # Ensure the workflow runs only if the pull request was actually merged (not just closed)
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to Server
+      - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -21,8 +24,15 @@ jobs:
           script: |
             cd HomeCleanService
             git pull origin master
-            make prod-down
-            make prod-build
             make prod-start
             make prod-migrate
             make prod-cache-clear
+
+            # ==============================================================================
+            # POST-DEPLOYMENT CLEANUP
+            # ==============================================================================
+            # Remove "dangling" (<none>:<none>) images left over from the previous build
+            docker image prune -f
+
+            # Clear the BuildKit cache to reclaim disk space from intermediate build stages
+            docker builder prune -f

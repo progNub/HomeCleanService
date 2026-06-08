@@ -76,7 +76,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     {# Global stylesheets #}
-    <link rel="icon" type="image/png" href="{% static 'cms/images/logo/logo_64x64.png' %}">
+    <link rel="icon" href="{% static 'cms/images/logo/logo_64x64.png' %}" type="image/png">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static 'cms/scss/main.scss' %}">
     {% endcompress %}
