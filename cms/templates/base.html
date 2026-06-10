@@ -75,9 +75,17 @@
     {# Bootstrap Icons #}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    {# Global stylesheets #}
-    <link rel="icon" href="{% static 'cms/images/logo/logo_64x64.png' %}" type="image/png">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    {# SEO & Favicons #}
+    {# Google: requires square icon, multiple of 48px (e.g., 96x96, 144x144) #}
+    <link rel="icon" href="{% static 'cms/images/logo/logo_96x96.png' %}" type="image/png" sizes="96x96">
+    {# Additional sizes for various devices and browsers #}
+    <link rel="icon" href="{% static 'cms/images/logo/logo_64x64.png' %}" type="image/png" sizes="64x64">
+    <link rel="icon" href="{% static 'cms/images/logo/logo.png' %}" type="image/png" sizes="1024x1024">
+    {# Apple Touch Icon: for iPhone/Android home screen shortcuts #}
+    <link rel="apple-touch-icon" href="{% static 'cms/images/logo/logo_96x96.png' %}">
+    {# Yandex & Legacy: prefers favicon.ico, especially 48x48 layer for search results #}
+    <link rel="icon" href="{% static 'cms/images/logo/favicon.ico' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'cms/images/logo/favicon.ico' %}" type="image/x-icon">
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static 'cms/scss/main.scss' %}">
     {% endcompress %}
