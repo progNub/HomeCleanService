@@ -38,6 +38,13 @@ def _send_telegram_message_task(token, chat_id, text, parse_mode, timeout, api_e
                 "caption": caption,
             }
             response = requests.post(f"{url_base}/sendDocument", data=payload, files=files, timeout=timeout)
+
+        if not response.ok:
+            logger.error(
+                "Telegram API error: %s - %s",
+                response.status_code,
+                response.text,
+            )
         response.raise_for_status()
     except Exception:
         logger.exception("Error sending Telegram message via task")
