@@ -19,7 +19,7 @@
                     <div class="card h-100 border-0 shadow-sm transition-hover portfolio-card">
                         {% if work.main_image %}
                             <div class="zoom-container">
-                                {% image work.main_image fill-600x600 format-webp class="card-img-top img-fluid transition-scale portfolio-card-img" %}
+                                {% image work.main_image fill-600x600 format-webp class="card-img-top img-fluid transition-scale portfolio-card-img" loading="lazy" %}
                             </div>
                         {% endif %}
                         <div class="card-body p-4">
