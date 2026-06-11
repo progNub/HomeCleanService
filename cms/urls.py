@@ -13,9 +13,10 @@ from cms import views as cms_views
 
 urlpatterns = [
     path("sitemap.xml", sitemap),
+    # Favicon redirection for search engine bots (Google, Yandex, etc.)
     path(
         "favicon.ico",
-        RedirectView.as_view(url=settings.STATIC_URL + "cms/images/logo/logo_64x64.png", permanent=True),
+        RedirectView.as_view(url=settings.STATIC_URL + "cms/images/logo/favicon.ico", permanent=True),
     ),
     path(
         "robots.txt",

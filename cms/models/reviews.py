@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 @register_snippet
 class Review(models.Model):
     author = models.CharField(max_length=255, verbose_name=_("Автор"))
-    text = models.TextField(verbose_name=_("Текст отзыва"))
+    text = models.TextField(verbose_name=_("Текст отзыва"), max_length=2000)
     rating = models.PositiveSmallIntegerField(
         default=5, choices=[(i, str(i)) for i in range(1, 6)], verbose_name=_("Рейтинг")
     )
