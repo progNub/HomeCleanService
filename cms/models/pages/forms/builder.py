@@ -14,6 +14,25 @@ CUSTOM_FORM_FIELD_CHOICES = FORM_FIELD_CHOICES + (
 
 
 class CustomFormBuilder(FormBuilder):
+    ADDITIONAL_FIELD_OPTIONS = {
+        "singleline": {"max_length": 150},
+        "multiline": {"max_length": 2000},
+        "email": {"max_length": 254},
+        "url": {"max_length": 2000},
+        "phonenumber": {"max_length": 30},
+        # Easy to add new defaults in the future, e.g.:
+        # "number": {"min_value": 0},
+    }
+
+    def get_field_options(self, field):
+        options = super().get_field_options(field)
+
+        if field.field_type in self.ADDITIONAL_FIELD_OPTIONS:
+            additional_options = self.ADDITIONAL_FIELD_OPTIONS.get(field.field_type)
+            for key, value in additional_options.items():
+                options.setdefault(key, value)
+        return options
+
     def create_phonenumber_field(self, field, options):
         return BYPhoneFormField(**options)
 
