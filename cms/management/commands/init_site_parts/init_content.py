@@ -35,6 +35,9 @@ def init_content(command):
 
     command.stdout.write(f"Configuring site for: {hostname}:{port} (from {site_url_env})")
 
+    get_or_import_image("cms/static/cms/images/logo/logo.png", "Логотип HomeCleanService")
+    hero_img = get_or_import_image("cms/static/cms/images/default/hero_1.webp", "Главное изображение")
+
     # 2. Find or create HomePage
     homepage = HomePage.objects.first()
     if not homepage:
@@ -48,6 +51,7 @@ def init_content(command):
             slug="home",
             seo_title="Мойка и покраска крыш в Беларуси - HomeCleanService",
             search_description="Профессиональная мойка и покраска крыш, фасадов и заборов. Работаем по всей Беларуси. Качество, гарантия, доступные цены.",
+            og_image=hero_img,
             og_type=SeoAbstract.OgTypeChoices.WEBSITE,
             meta_robots=SeoAbstract.MetaRobotsChoices.INDEX_FOLLOW,
             live=True,
@@ -65,6 +69,9 @@ def init_content(command):
             updated = True
         if not homepage.search_description:
             homepage.search_description = "Профессиональная мойка и покраска крыш, фасадов и заборов. Работаем по всей Беларуси. Качество, гарантия, доступные цены."
+            updated = True
+        if not homepage.og_image and hero_img:
+            homepage.og_image = hero_img
             updated = True
         if not homepage.og_type:
             homepage.og_type = SeoAbstract.OgTypeChoices.WEBSITE
@@ -101,8 +108,6 @@ def init_content(command):
         roof_img = get_or_import_image("cms/static/cms/images/default/roof_washing.webp", "Мойка крыши")
         house_img = get_or_import_image("cms/static/cms/images/default/house_painting.webp", "Покраска дома")
         fence_img = get_or_import_image("cms/static/cms/images/default/fence_washing.webp", "Мойка забора")
-        hero_img = get_or_import_image("cms/static/cms/images/default/hero_1.webp", "Главное изображение")
-
         command.stdout.write("Filling HomePage with demo content...")
         homepage.body = [
             (

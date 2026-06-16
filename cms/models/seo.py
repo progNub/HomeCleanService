@@ -114,34 +114,41 @@ class SeoAbstract(models.Model):
         ),
     ]
 
+    @staticmethod
+    def _get_og_image_url(image):
+        if not image:
+            return ""
+        return image.get_rendition("fill-1200x630|format-webp").url
+
+    @staticmethod
+    def _get_specific_page(page):
+        return page.specific if page else None
+
+    @classmethod
+    def _get_page_og_image(cls, page):
+        page = cls._get_specific_page(page)
+        return getattr(page, "og_image", None)
+
     def get_og_image_url(self, request=None):
         """
-        Get the OG image URL with fallback logic.
+        Get the OG image URL using page, parent page, then site root page.
         Returns absolute URL if request is provided, relative URL otherwise.
         """
+        root_page = None
+        site = self.get_site()
+        if site:
+            root_page = site.root_page
 
-        def get_compressed_image(image):
-            return image.get_rendition("fill-1200x630|format-webp").url
-
-        relative_url = ""
-
-        if self.og_image:
-            relative_url = get_compressed_image(self.og_image)
+        for image in (
+            self.og_image,
+            self._get_page_og_image(self.get_parent()),
+            self._get_page_og_image(root_page),
+        ):
+            relative_url = self._get_og_image_url(image)
+            if relative_url:
+                break
         else:
-            parent_page = self.get_parent()
-            # Пытаемся получить специфическую версию страницы, если это возможно
-            try:
-                site = self.get_site()
-                root_page = site.root_page.specific if site else None
-            except Exception:
-                root_page = None
-
-            if parent_page and hasattr(parent_page.specific, "og_image") and parent_page.specific.og_image:
-                relative_url = get_compressed_image(parent_page.specific.og_image)
-            elif root_page and hasattr(root_page, "logo") and root_page.logo:
-                relative_url = get_compressed_image(root_page.logo)
-            elif hasattr(self, "logo") and self.logo:
-                relative_url = get_compressed_image(self.logo)
+            relative_url = ""
 
         if relative_url and request:
             return request.build_absolute_uri(relative_url)

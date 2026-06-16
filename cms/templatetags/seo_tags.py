@@ -4,44 +4,15 @@ register = template.Library()
 
 
 @register.simple_tag
-def get_og_image_url(page, request):
+def get_og_image_url(page, request=None):
     """
-    Get the appropriate OG image URL for a page.
-    Uses the unified logic from SeoAbstract model if available,
-    otherwise falls back to manual logic.
+    Get the OG image URL for pages that provide SEO metadata.
     """
-    try:
-        # Use the model's method if page inherits from SeoAbstract
-        if hasattr(page, "get_og_image_url"):
-            return page.get_og_image_url(request)
-
-        # Fallback for pages that don't inherit from SeoAbstract
-        def get_compressed_image(image):
-            return image.get_rendition("fill-1200x630|format-webp").url
-
-        # Check if page has og_image
-        if hasattr(page, "og_image") and page.og_image:
-            return request.build_absolute_uri(get_compressed_image(page.og_image))
-
-        # Check parent page
-        parent_page = page.get_parent()
-        if parent_page and hasattr(parent_page, "og_image") and parent_page.og_image:
-            return request.build_absolute_uri(get_compressed_image(parent_page.og_image))
-
-        # Check root page/site
-        if hasattr(page, "get_site"):
-            root_page = page.get_site().root_page.specific
-            if root_page and hasattr(root_page, "logo") and root_page.logo:
-                return request.build_absolute_uri(get_compressed_image(root_page.logo))
-
-        # Check if current page has logo
-        if hasattr(page, "logo") and page.logo:
-            return request.build_absolute_uri(get_compressed_image(page.logo))
-
+    page = getattr(page, "specific", page)
+    get_url = getattr(page, "get_og_image_url", None)
+    if not callable(get_url):
         return ""
-    except Exception:
-        # Return empty string if any error occurs
-        return ""
+    return get_url(request)
 
 
 @register.simple_tag
@@ -49,12 +20,12 @@ def get_page_canonical_url(page, request):
     """
     Get the canonical URL for a page.
     """
-    try:
-        if hasattr(page, "get_url"):
-            return request.build_absolute_uri(page.get_url())
-        return request.build_absolute_uri("/")
-    except Exception:
-        return request.build_absolute_uri("/")
+    if not request:
+        return ""
+
+    get_url = getattr(page, "get_url", None)
+    relative_url = get_url() if callable(get_url) else "/"
+    return request.build_absolute_uri(relative_url or "/")
 
 
 @register.simple_tag
@@ -62,14 +33,7 @@ def get_seo_title(page):
     """
     Get the SEO title for a page, falling back to regular title if not set.
     """
-    try:
-        if hasattr(page, "seo_title") and page.seo_title:
-            return page.seo_title
-        if hasattr(page, "title") and page.title:
-            return page.title
-        return "Untitled Page"
-    except Exception:
-        return "Untitled Page"
+    return getattr(page, "seo_title", "") or getattr(page, "title", "") or "Untitled Page"
 
 
 @register.simple_tag
@@ -77,12 +41,7 @@ def get_seo_description(page):
     """
     Get the SEO description for a page.
     """
-    try:
-        if hasattr(page, "search_description") and page.search_description:
-            return page.search_description
-        return ""
-    except Exception:
-        return ""
+    return getattr(page, "search_description", "") or ""
 
 
 @register.simple_tag
@@ -90,14 +49,8 @@ def get_published_date(page):
     """
     Get the publication date for OG tags.
     """
-    try:
-        if hasattr(page, "published_date") and page.published_date:
-            return page.published_date.isoformat()
-        if hasattr(page, "first_published_at") and page.first_published_at:
-            return page.first_published_at.isoformat()
-        return ""
-    except Exception:
-        return ""
+    published_date = getattr(page, "published_date", None) or getattr(page, "first_published_at", None)
+    return published_date.isoformat() if published_date else ""
 
 
 @register.simple_tag
@@ -105,14 +58,8 @@ def get_modified_date(page):
     """
     Get the modification date for OG tags.
     """
-    try:
-        if hasattr(page, "modified_date") and page.modified_date:
-            return page.modified_date.isoformat()
-        if hasattr(page, "last_published_at") and page.last_published_at:
-            return page.last_published_at.isoformat()
-        return ""
-    except Exception:
-        return ""
+    modified_date = getattr(page, "modified_date", None) or getattr(page, "last_published_at", None)
+    return modified_date.isoformat() if modified_date else ""
 
 
 @register.simple_tag
@@ -123,15 +70,15 @@ def get_og_image_alt(page):
     """
     import re
 
-    try:
-        if hasattr(page, "og_image") and page.og_image:
-            image_title = page.og_image.title or ""
-            if re.search(r"\.(jpg|jpeg|png|gif|webp|svg|bmp)$", image_title.lower()):
-                return page.title if hasattr(page, "title") else ""
-            return image_title or (page.title if hasattr(page, "title") else "")
-        return page.title if hasattr(page, "title") else ""
-    except Exception:
-        return ""
+    page_title = getattr(page, "title", "") or ""
+    image = getattr(page, "og_image", None)
+    if not image:
+        return page_title
+
+    image_title = image.title or ""
+    if re.search(r"\.(jpg|jpeg|png|gif|webp|svg|bmp)$", image_title.lower()):
+        return page_title
+    return image_title or page_title
 
 
 @register.filter
