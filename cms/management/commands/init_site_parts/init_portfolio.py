@@ -26,13 +26,6 @@ def init_portfolio_pages(command, homepage):
         command.stdout.write(command.style.SUCCESS("PortfolioIndexPage 'Наши работы' created."))
     else:
         command.stdout.write(command.style.WARNING("PortfolioIndexPage already exists."))
-        if portfolio_index.title != "Наши работы" or portfolio_index.slug != "portfolio":
-            portfolio_index.title = "Наши работы"
-            portfolio_index.slug = "portfolio"
-            portfolio_index.save_revision().publish()
-            command.stdout.write(
-                command.style.SUCCESS("PortfolioIndexPage updated to 'Наши работы' with slug 'portfolio'.")
-            )
 
     # 2. Add to Navigation Menu if not already there
     nav_settings = NavigationSettings.load()

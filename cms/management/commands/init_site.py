@@ -47,11 +47,15 @@ class Command(BaseCommand):
 
         if run_all or settings_only:
             init_global_settings(self)
+
+        if settings_only:
             init_navigation_settings(self)
 
         if run_all or content_only:
             init_reviews(self)
             homepage = init_content(self)
+            if run_all:
+                init_navigation_settings(self)
             init_legal_pages(self, homepage)
             init_portfolio_pages(self, homepage)
 

@@ -26,8 +26,12 @@ def init_legal_pages(command, homepage):
         # Check if it exists but as a plain Page (from previous init)
         existing_plain = Page.objects.descendant_of(homepage).filter(slug="legal").first()
         if existing_plain:
-            command.stdout.write("Deleting existing plain Legal page...")
-            existing_plain.delete()
+            command.stdout.write(
+                command.style.WARNING(
+                    "Page with slug 'legal' already exists but is not LegalIndexPage. Leaving it unchanged."
+                )
+            )
+            return
 
         command.stdout.write("Creating Legal parent page (LegalIndexPage)...")
         legal_parent = LegalIndexPage(
@@ -53,11 +57,15 @@ def init_legal_pages(command, homepage):
         # Check if it exists as old LegalPage
         existing_old = Page.objects.descendant_of(legal_parent).filter(slug="privacy-policy").first()
         if existing_old:
-            existing_old.delete()
+            command.stdout.write(
+                command.style.WARNING(
+                    "Page with slug 'privacy-policy' already exists but is not LegalDocumentPage. Leaving it unchanged."
+                )
+            )
+        else:
+            command.stdout.write("Creating Privacy Policy page...")
 
-        command.stdout.write("Creating Privacy Policy page...")
-
-        privacy_body = f"""
+            privacy_body = f"""
         <h2>ПОЛИТИКА В ОТНОШЕНИИ ОБРАБОТКИ ПЕРСОНАЛЬНЫХ ДАННЫХ</h2>
         <p><strong>1. ОБЩИЕ ПОЛОЖЕНИЯ</strong></p>
         <p>1.1. Настоящая Политика в отношении обработки персональных данных (далее – Политика) разработана во исполнение требований абз. 3 п. 3 ст. 17 Закона Республики Беларусь от 07.05.2021 № 99-З «О защите персональных данных» (далее – Закон) и действует в отношении всех персональных данных, которые {operator_name} (далее – Оператор) может получить от субъектов персональных данных.</p>
@@ -100,16 +108,16 @@ def init_legal_pages(command, homepage):
         <p>6.2. Настоящая Политика вступает в силу с момента ее опубликования на Сайте.</p>
         """
 
-        privacy_policy = LegalDocumentPage(
-            title="Политика конфиденциальности",
-            slug="privacy-policy",
-            body=privacy_body,
-            meta_robots=SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW,
-            show_in_menus=False,
-        )
-        legal_parent.add_child(instance=privacy_policy)
-        privacy_policy.save_revision().publish()
-        command.stdout.write(command.style.SUCCESS("Privacy Policy page created."))
+            privacy_policy = LegalDocumentPage(
+                title="Политика конфиденциальности",
+                slug="privacy-policy",
+                body=privacy_body,
+                meta_robots=SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW,
+                show_in_menus=False,
+            )
+            legal_parent.add_child(instance=privacy_policy)
+            privacy_policy.save_revision().publish()
+            command.stdout.write(command.style.SUCCESS("Privacy Policy page created."))
     else:
         # Update meta_robots if not set
         if privacy_policy.meta_robots != SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW:
@@ -123,11 +131,15 @@ def init_legal_pages(command, homepage):
         # Check if it exists as old LegalPage
         existing_old = Page.objects.descendant_of(legal_parent).filter(slug="user-agreement").first()
         if existing_old:
-            existing_old.delete()
+            command.stdout.write(
+                command.style.WARNING(
+                    "Page with slug 'user-agreement' already exists but is not LegalDocumentPage. Leaving it unchanged."
+                )
+            )
+        else:
+            command.stdout.write("Creating User Agreement page...")
 
-        command.stdout.write("Creating User Agreement page...")
-
-        terms_body = f"""
+            terms_body = f"""
         <h2>ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</h2>
         <p><strong>1. ОБЩИЕ ПОЛОЖЕНИЯ</strong></p>
         <p>1.1. Настоящее Пользовательское соглашение (далее – Соглашение) определяет условия использования материалов и сервисов Сайта пользователями.</p>
@@ -169,16 +181,16 @@ def init_legal_pages(command, homepage):
         <p>5.3. Владелец сайта вправе в любое время в одностороннем порядке изменять условия настоящего Соглашения.</p>
         """
 
-        user_agreement = LegalDocumentPage(
-            title="Пользовательское соглашение",
-            slug="user-agreement",
-            body=terms_body,
-            meta_robots=SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW,
-            show_in_menus=False,
-        )
-        legal_parent.add_child(instance=user_agreement)
-        user_agreement.save_revision().publish()
-        command.stdout.write(command.style.SUCCESS("User Agreement page created."))
+            user_agreement = LegalDocumentPage(
+                title="Пользовательское соглашение",
+                slug="user-agreement",
+                body=terms_body,
+                meta_robots=SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW,
+                show_in_menus=False,
+            )
+            legal_parent.add_child(instance=user_agreement)
+            user_agreement.save_revision().publish()
+            command.stdout.write(command.style.SUCCESS("User Agreement page created."))
     else:
         # Update meta_robots if not set
         if user_agreement.meta_robots != SeoAbstract.MetaRobotsChoices.NOINDEX_NOFOLLOW:
@@ -188,10 +200,14 @@ def init_legal_pages(command, homepage):
 
     # 4. Link in ContactSettings
     updated = False
-    if not contact_settings.privacy_policy_page or contact_settings.privacy_policy_page.id != privacy_policy.id:
+    if privacy_policy and (
+        not contact_settings.privacy_policy_page or contact_settings.privacy_policy_page.id != privacy_policy.id
+    ):
         contact_settings.privacy_policy_page = privacy_policy
         updated = True
-    if not contact_settings.terms_of_service_page or contact_settings.terms_of_service_page.id != user_agreement.id:
+    if user_agreement and (
+        not contact_settings.terms_of_service_page or contact_settings.terms_of_service_page.id != user_agreement.id
+    ):
         contact_settings.terms_of_service_page = user_agreement
         updated = True
     if not contact_settings.legal_index_page or contact_settings.legal_index_page.id != legal_parent.id:

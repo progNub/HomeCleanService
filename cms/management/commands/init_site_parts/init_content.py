@@ -91,12 +91,6 @@ def init_content(command):
             homepage.save_revision().publish()
             command.stdout.write(command.style.SUCCESS("HomePage SEO tags updated."))
 
-        # Ensure homepage is in menu
-        if not homepage.show_in_menus:
-            homepage.show_in_menus = True
-            homepage.save_revision().publish()
-            command.stdout.write(command.style.SUCCESS("HomePage set to show in menus."))
-
     # 2.5 Ensure Contact Form Page exists before filling content
     init_contact_form_page(command, homepage)
 

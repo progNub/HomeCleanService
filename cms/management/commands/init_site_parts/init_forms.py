@@ -87,11 +87,6 @@ def init_contact_form_page(command, homepage):
             contact_page.save_revision().publish()
             command.stdout.write(command.style.SUCCESS("Contact Form Page SEO tags updated."))
 
-        if not contact_page.show_in_menus:
-            contact_page.show_in_menus = True
-            contact_page.save_revision().publish()
-            command.stdout.write(command.style.SUCCESS("Contact Form Page set to show in menus."))
-
     # Ensure Agreement Checkbox exists
     ensure_agreement_field(command, contact_page)
 
@@ -113,6 +108,4 @@ def ensure_agreement_field(command, contact_page):
         contact_page.save_revision().publish()
         command.stdout.write(command.style.SUCCESS("Agreement checkbox added to form."))
     else:
-        agreement_field.save()
-        contact_page.save_revision().publish()
-        command.stdout.write(command.style.SUCCESS("Agreement checkbox help_text updated."))
+        command.stdout.write(command.style.WARNING("Agreement checkbox already exists."))
