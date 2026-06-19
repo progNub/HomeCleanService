@@ -2,7 +2,6 @@ from django.conf import settings
 
 from cms.models import (
     ContactSettings,
-    FormPage,
     HomePage,
     MenuItem,
     NavigationSettings,
@@ -15,8 +14,7 @@ def init_global_settings(command):
 
     # Social Media Settings
     social_settings = SocialMediaSettings.load()
-    if not social_settings.social_media_links.exists():
-        MenuItem.objects.filter()  # Just to have it in scope if needed, but not really
+    if not social_settings.social_media_links.exists() and settings.ENV_CONTACT_PHONE:
         from cms.models import SocialMediaLink
 
         whatsapp_phone = (
@@ -39,29 +37,31 @@ def init_global_settings(command):
 
     # Contact Settings
     contact_settings = ContactSettings.load()
-    if not contact_settings.phone_number or not contact_settings.legal_unp:
+    updated = False
+
+    for field_name, value in (
+        ("phone_number", settings.ENV_CONTACT_PHONE),
+        ("email", settings.ENV_CONTACT_EMAIL),
+        ("address", settings.ENV_CONTACT_ADDRESS),
+        ("legal_full_name", settings.ENV_LEGAL_FULL_NAME),
+        ("legal_unp", settings.ENV_LEGAL_UNP),
+        ("legal_address", settings.ENV_LEGAL_ADDRESS),
+        ("legal_reg_date", settings.ENV_LEGAL_REG_DATE),
+    ):
+        if value and not getattr(contact_settings, field_name):
+            setattr(contact_settings, field_name, value)
+            updated = True
+
+    # Update legacy demo contact values, but leave real editor changes intact.
+    if contact_settings.phone_number == "+7 (900) 123-45-67" and settings.ENV_CONTACT_PHONE:
         contact_settings.phone_number = settings.ENV_CONTACT_PHONE
-        contact_settings.email = settings.ENV_CONTACT_EMAIL
-        contact_settings.address = settings.ENV_CONTACT_ADDRESS
+        updated = True
 
-        # Legal info
-        contact_settings.legal_full_name = settings.ENV_LEGAL_FULL_NAME
-        contact_settings.legal_unp = settings.ENV_LEGAL_UNP
-        contact_settings.legal_address = settings.ENV_LEGAL_ADDRESS
-        contact_settings.legal_reg_date = settings.ENV_LEGAL_REG_DATE
-
+    if updated:
         contact_settings.save()
         command.stdout.write(command.style.SUCCESS("Contact settings created/updated."))
     else:
-        # Let's update it if it's the old default
-        if contact_settings.phone_number == "+7 (900) 123-45-67":
-            contact_settings.phone_number = settings.ENV_CONTACT_PHONE
-            contact_settings.email = settings.ENV_CONTACT_EMAIL
-            contact_settings.address = settings.ENV_CONTACT_ADDRESS
-            contact_settings.save()
-            command.stdout.write(command.style.SUCCESS("Contact settings updated with new phone number."))
-        else:
-            command.stdout.write(command.style.WARNING("Contact settings already exist and differ from old default."))
+        command.stdout.write(command.style.WARNING("Contact settings already exist."))
 
 
 def init_navigation_settings(command):
@@ -69,7 +69,6 @@ def init_navigation_settings(command):
     nav_settings = NavigationSettings.load()
     if not nav_settings.menu_items.exists():
         homepage = HomePage.objects.first()
-        contact_page = FormPage.objects.filter(slug="request").first()
 
         if homepage:
             MenuItem.objects.create(
@@ -107,14 +106,6 @@ def init_navigation_settings(command):
                 label="FAQ",
                 link_url="#faq",
                 sort_order=5,
-            )
-
-        if contact_page:
-            MenuItem.objects.create(
-                setting=nav_settings,
-                label="Оставить заявку",
-                link_page=contact_page,
-                sort_order=4,
             )
 
         command.stdout.write(command.style.SUCCESS("Navigation settings created with default items."))

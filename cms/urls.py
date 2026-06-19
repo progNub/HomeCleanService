@@ -3,7 +3,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import include, path
-from django.views.generic import RedirectView, TemplateView
+from django.views.generic import TemplateView
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
@@ -13,11 +13,6 @@ from cms import views as cms_views
 
 urlpatterns = [
     path("sitemap.xml", sitemap),
-    # Favicon redirection for search engine bots (Google, Yandex, etc.)
-    path(
-        "favicon.ico",
-        RedirectView.as_view(url=settings.STATIC_URL + "cms/images/logo/favicon.ico", permanent=True),
-    ),
     path(
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
