@@ -5,7 +5,7 @@
     <div class="row align-items-center g-4 g-lg-5">
         <div class="col-lg-6">
             {% if self.image %}
-                {% image self.image original format-webp class="img-fluid rounded-4 shadow-lg" %}
+                {% image self.image original format-webp class="img-fluid p-5 rounded-4 shadow-lg" loading="lazy" %}
             {% else %}
                 <div class="bg-body-secondary rounded-4 d-flex align-items-center justify-content-center shadow-sm" style="min-height: 400px;">
                     <i class="bi bi-building text-primary opacity-25" style="font-size: 10rem;"></i>
