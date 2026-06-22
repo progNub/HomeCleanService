@@ -1,4 +1,4 @@
-{% load static wagtailcore_tags wagtailuserbar wagtailsettings_tags seo_tags analytics_tags compress %}
+{% load static wagtailcore_tags wagtailuserbar wagtailsettings_tags seo_tags scripts_tags compress %}
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -88,14 +88,14 @@
     {% block extra_css %}
     {% endblock %}
 
-    {% render_analytics_header %}
+    {% scripts_header %}
     {# Analytics scripts inside <head> (e.g. Google Analytics, Umami) #}
     {% endwith %}
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
 {# Analytics scripts immediately after <body> tag starts #}
-{% render_analytics_body_top %}
+{% scripts_body_top %}
 
 {# Wagtail Admin Bar #}
 {% wagtailuserbar %}
@@ -148,6 +148,6 @@
 {% endif %}
 
 {# Analytics scripts before <body> tag ends #}
-{% render_analytics_body_bottom %}
+{% scripts_body_bottom %}
 </body>
 </html>

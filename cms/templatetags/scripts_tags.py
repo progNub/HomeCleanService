@@ -31,7 +31,7 @@ def _render_scripts(context, location):
 
 
 @register.simple_tag(takes_context=True)
-def render_analytics_header(context):
+def scripts_header(context):
     """
     Renders analytics scripts intended for the <head> section.
     """
@@ -39,7 +39,7 @@ def render_analytics_header(context):
 
 
 @register.simple_tag(takes_context=True)
-def render_analytics_body_top(context):
+def scripts_body_top(context):
     """
     Renders analytics scripts intended for the top of the <body> section.
     """
@@ -47,7 +47,7 @@ def render_analytics_body_top(context):
 
 
 @register.simple_tag(takes_context=True)
-def render_analytics_body_bottom(context):
+def scripts_body_bottom(context):
     """
     Renders analytics scripts intended for the bottom of the <body> section.
     """
