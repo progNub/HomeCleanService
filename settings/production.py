@@ -28,10 +28,14 @@ if not CSRF_TRUSTED_ORIGINS or CSRF_TRUSTED_ORIGINS == [""]:
 # ==============================================================================
 # CACHING SETTINGS (Redis & Wagtail Cache)
 # ==============================================================================
+CACHE_TIMEOUT = ENV_CACHE_TIMEOUT
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": ENV_REDIS_URL,
+        # TTL for cache entries stored via Django cache API (cache.set, template fragment cache, etc.).
+        "TIMEOUT": CACHE_TIMEOUT,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -43,7 +47,8 @@ WAGTAIL_CACHE = True
 WAGTAIL_CACHE_HEADER = "X-Wagtail-Cache"
 
 # Cache timeout and key prefix
-CACHE_MIDDLEWARE_SECONDS = 60 * 15  # 15 minutes
+# TTL for full-page HTTP responses cached by Update/Fetch cache middleware.
+CACHE_MIDDLEWARE_SECONDS = CACHE_TIMEOUT
 CACHE_MIDDLEWARE_KEY_PREFIX = "homeservice"
 # ==============================================================================
 

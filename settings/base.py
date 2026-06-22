@@ -38,6 +38,7 @@ ENV_DB_PORT = os.getenv("DB_PORT")
 
 # Redis settings
 ENV_REDIS_URL = os.getenv("REDIS_URL")
+ENV_CACHE_TIMEOUT = int(os.getenv("CACHE_TIMEOUT", 60 * 60 * 24))
 
 # Telegram settings
 ENV_TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")

@@ -35,12 +35,16 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
         "LOCATION": "unique-snowflake",
+        # TTL for cache entries stored via Django cache API (cache.set, template fragment cache, etc.).
+        "TIMEOUT": ENV_CACHE_TIMEOUT,
     }
 }
 
 WAGTAIL_CACHE = True
 WAGTAIL_CACHE_HEADER = "X-Wagtail-Cache"
-CACHE_MIDDLEWARE_SECONDS = 600  # 10 minutes
+# TTL for full-page HTTP responses cached by Update/Fetch cache middleware.
+CACHE_MIDDLEWARE_SECONDS = ENV_CACHE_TIMEOUT
+
 # ==============================================================================
 
 
