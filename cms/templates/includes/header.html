@@ -11,8 +11,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="nav navbar-nav ms-auto align-items-lg-center">
-                {% if settings.cms.NavigationSettings.menu_items.all %}
-                    {% for item in settings.cms.NavigationSettings.menu_items.all %}
+                {% with menu_items=settings.cms.NavigationSettings.menu_items.all %}
+                {% if menu_items %}
+                    {% for item in menu_items %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ item.link }}">{{ item.label }}</a>
                         </li>
@@ -28,6 +29,7 @@
                         </li>
                     {% endfor %}
                 {% endif %}
+                {% endwith %}
                 <li class="nav-item ms-lg-3">
                     <button class="btn btn-link nav-link p-2" onclick="toggleTheme()" aria-label="{% trans 'Переключить тему' %}" title="{% trans 'Переключить тему' %}">
                         <i id="theme-icon" class="bi bi-moon-fill"></i>

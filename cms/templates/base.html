@@ -6,16 +6,17 @@
     <meta charset="utf-8"/>
     {% get_settings %}
     {% wagtail_site as current_site %}
+    {% with specific_page=page.specific %}
 
     <title>
         {% block title %}
-            {% get_seo_title page %}
+            {% get_seo_title specific_page %}
         {% endblock %}
         {% block title_suffix %}
             {% if current_site and current_site.site_name %}- {{ current_site.site_name }}{% endif %}
         {% endblock %}
     </title>
-    {% get_seo_description page as meta_description %}
+    {% get_seo_description specific_page as meta_description %}
     {% if meta_description %}
         <meta name="description" content="{{ meta_description }}"/>
     {% endif %}
@@ -27,23 +28,23 @@
         {% endif %}
     {% endblock %}
 
-    {% get_page_canonical_url page request as canonical_url %}
+    {% get_page_canonical_url specific_page request as canonical_url %}
     <link rel="canonical" href="{{ page.canonical_url|default:canonical_url }}"/>
 
     {# Open Graph Meta Tags #}
-    <meta property="og:type" content="{{ page.og_type|default:'website' }}"/>
+    <meta property="og:type" content="{{ specific_page.og_type|default:'website' }}"/>
     <meta property="og:url" content="{{ page.canonical_url|default:canonical_url }}"/>
-    <meta property="og:title" content="{% get_seo_title page %}"/>
+    <meta property="og:title" content="{% get_seo_title specific_page %}"/>
     {% if meta_description %}
         <meta property="og:description" content="{{ meta_description }}"/>
     {% endif %}
 
     {# Publication & Modification Dates #}
-    {% get_published_date page as published_date %}
+    {% get_published_date specific_page as published_date %}
     {% if published_date %}
         <meta property="article:published_time" content="{{ published_date }}"/>
     {% endif %}
-    {% get_modified_date page as modified_date %}
+    {% get_modified_date specific_page as modified_date %}
     {% if modified_date %}
         <meta property="article:modified_time" content="{{ modified_date }}"/>
     {% endif %}
@@ -55,12 +56,12 @@
     <meta property="og:locale" content="{{ request.LANGUAGE_CODE|default:'ru_RU' }}"/>
 
     {# OG Image #}
-    {% get_og_image_url page request as og_image_url %}
+    {% get_og_image_url specific_page request as og_image_url %}
     {% if og_image_url %}
         <meta property="og:image" content="{{ og_image_url }}"/>
         <meta property="og:image:width" content="1200"/>
         <meta property="og:image:height" content="630"/>
-        {% get_og_image_alt page as og_image_alt_text %}
+        {% get_og_image_alt specific_page as og_image_alt_text %}
         <meta property="og:image:alt" content="{{ og_image_alt_text }}"/>
     {% endif %}
 
@@ -89,6 +90,7 @@
 
     {% render_analytics_header %}
     {# Analytics scripts inside <head> (e.g. Google Analytics, Umami) #}
+    {% endwith %}
 </head>
 
 <body class="{% block body_class %}{% endblock %}">

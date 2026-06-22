@@ -47,11 +47,7 @@ class MenuItem(Orderable):
             return self.link_page.url
         elif self.link_url:
             if self.link_url.startswith("#"):
-                from cms.models import HomePage
-
-                homepage = HomePage.objects.first()
-                if homepage:
-                    return f"{homepage.url}{self.link_url}"
+                return f"/{self.link_url}"
             return self.link_url
         return "#"
 

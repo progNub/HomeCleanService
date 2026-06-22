@@ -1,5 +1,6 @@
 {% load wagtailcore_tags i18n static %}
 <footer class="footer-custom py-5 mt-auto">
+    {% with contact=settings.cms.ContactSettings social=settings.cms.SocialMediaSettings %}
     <div class="container">
         <div class="row g-4 mb-4">
             <div class="col-lg-5">
@@ -15,25 +16,25 @@
             <div class="col-sm-6 col-lg-3">
                 <h2 class="h5 fw-bold mb-3">{% trans "Контакты" %}</h2>
                 <ul class="list-unstyled">
-                    {% if settings.cms.ContactSettings.phone_number %}
+                    {% if contact.phone_number %}
                         <li class="mb-2">
-                            <a href="tel:{{ settings.cms.ContactSettings.phone_number }}"
+                            <a href="tel:{{ contact.phone_number }}"
                                class="text-decoration-none">
-                                <i class="bi bi-telephone me-2"></i>{{ settings.cms.ContactSettings.phone_number }}
+                                <i class="bi bi-telephone me-2"></i>{{ contact.phone_number }}
                             </a>
                         </li>
                     {% endif %}
-                    {% if settings.cms.ContactSettings.email %}
+                    {% if contact.email %}
                         <li class="mb-2">
-                            <a href="mailto:{{ settings.cms.ContactSettings.email }}"
+                            <a href="mailto:{{ contact.email }}"
                                class="text-decoration-none">
-                                <i class="bi bi-envelope me-2"></i>{{ settings.cms.ContactSettings.email }}
+                                <i class="bi bi-envelope me-2"></i>{{ contact.email }}
                             </a>
                         </li>
                     {% endif %}
-                    {% if settings.cms.ContactSettings.address %}
+                    {% if contact.address %}
                         <li class="opacity-75">
-                            <i class="bi bi-geo-alt me-2"></i>{{ settings.cms.ContactSettings.address }}
+                            <i class="bi bi-geo-alt me-2"></i>{{ contact.address }}
                         </li>
                     {% endif %}
                 </ul>
@@ -41,7 +42,7 @@
             <div class="col-sm-6 col-lg-4 text-lg-end">
                 <h3 class="h5 fw-bold mb-3">{% trans "Мы в соцсетях" %}</h3>
                 <div class="d-flex gap-2 justify-content-lg-end flex-wrap">
-                    {% for item in settings.cms.SocialMediaSettings.social_media_links.all %}
+                    {% for item in social.social_media_links.all %}
                         <a href="{{ item.url }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3"
                            target="_blank">{{ item.get_platform_display }}</a>
                     {% endfor %}
@@ -50,26 +51,27 @@
         </div>
         <hr class="opacity-25">
         <div class="text-center small pt-3">
-            {% if settings.cms.ContactSettings.legal_full_name %}
-                <p class="mb-1">{{ settings.cms.ContactSettings.legal_full_name }}</p>
+            {% if contact.legal_full_name %}
+                <p class="mb-1">{{ contact.legal_full_name }}</p>
             {% endif %}
             <p class="mb-1">
-                {% if settings.cms.ContactSettings.legal_unp %}
-                    {% trans "УНП" %}: {{ settings.cms.ContactSettings.legal_unp }}
+                {% if contact.legal_unp %}
+                    {% trans "УНП" %}: {{ contact.legal_unp }}
                 {% endif %}
             </p>
             <p class="mb-1">
-                {% if settings.cms.ContactSettings.legal_address %}
-                    {{ settings.cms.ContactSettings.legal_address }}
+                {% if contact.legal_address %}
+                    {{ contact.legal_address }}
                 {% endif %}
             </p>
                     <div class="mt-2">
-                {% if settings.cms.ContactSettings.legal_index_page %}
-                    <a href="{% pageurl settings.cms.ContactSettings.legal_index_page %}" class="mx-2">
-                        {{ settings.cms.ContactSettings.legal_index_page.title }}
+                {% if contact.legal_index_page %}
+                    <a href="{% pageurl contact.legal_index_page %}" class="mx-2">
+                        {{ contact.legal_index_page.title }}
                     </a>
                 {% endif %}
             </div>
         </div>
     </div>
+    {% endwith %}
 </footer>
