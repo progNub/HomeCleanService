@@ -40,6 +40,17 @@ class CustomFormBuilder(FormBuilder):
         options.update({"required": True})
         return forms.BooleanField(**options)
 
+    def create_date_field(self, field, options):
+        # Override default input type 'text' to 'date'
+        options.setdefault("widget", forms.DateInput(attrs={"type": "date"}))
+        return forms.DateField(**options)
+
+    def create_datetime_field(self, field, options):
+        # Override default input type 'text' to 'datetime-local'
+        options.setdefault("widget", forms.DateTimeInput(attrs={"type": "datetime-local"}))
+        field = forms.DateTimeField(**options)
+        return field
+
     @property
     def formfields(self):
         """
