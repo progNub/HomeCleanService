@@ -2,15 +2,18 @@
 {% load wagtailcore_tags wagtailimages_tags i18n wagtailsettings_tags django_bootstrap5 agreement_tags %}
 
 {% block block_content %}
-    <h2 class="text-center fw-bold mb-5 fs-1">{{ self.title }}</h2>
-    <div class="reviews-slider-container position-relative mb-5">
-        <div class="reviews-slider d-flex overflow-x-auto pb-4 px-2" style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;">
-            {% for review in reviews_list %}
-                {% if review.is_approved %}
-                    <div class="review-slide flex-shrink-0 col-11 col-md-5 col-lg-4 px-2" style="scroll-snap-align: start;">
+    {% if reviews %}
+        <h2 class="text-center fw-bold mb-5 fs-1">{{ self.title }}</h2>
+        <div class="reviews-slider-container position-relative mb-5">
+            <div class="reviews-slider d-flex overflow-x-auto pb-4 px-2"
+                 style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;">
+                {% for review in reviews %}
+                    <div class="review-slide flex-shrink-0 col-11 col-md-5 col-lg-4 px-2"
+                         style="scroll-snap-align: start;">
                         <div class="card h-100 border-0 shadow-sm p-4 rounded-4">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+                                     style="width: 50px; height: 50px;">
                                     <i class="bi bi-person-fill fs-4"></i>
                                 </div>
                                 <div>
@@ -28,20 +31,37 @@
                             </div>
                         </div>
                     </div>
-                {% endif %}
-            {% endfor %}
-        </div>
+                {% endfor %}
+            </div>
 
-        {# Кнопки навигации (опционально, для десктопа) #}
-        <div class="d-none d-md-flex justify-content-center gap-3 mt-3">
-            <button class="btn btn-outline-primary rounded-circle p-2 lh-1" onclick="document.querySelector('.reviews-slider').scrollBy({left: -300, behavior: 'smooth'})" aria-label="{% trans 'Предыдущий отзыв' %}">
-                <i class="bi bi-chevron-left"></i>
-            </button>
-            <button class="btn btn-outline-primary rounded-circle p-2 lh-1" onclick="document.querySelector('.reviews-slider').scrollBy({left: 300, behavior: 'smooth'})" aria-label="{% trans 'Следующий отзыв' %}">
-                <i class="bi bi-chevron-right"></i>
-            </button>
+            {# Кнопки навигации (опционально, для десктопа) #}
+            <div class="d-none d-md-flex justify-content-center gap-3 mt-3">
+                <button class="btn btn-outline-primary rounded-circle p-2 lh-1"
+                        onclick="document.querySelector('.reviews-slider').scrollBy({left: -300, behavior: 'smooth'})"
+                        aria-label="{% trans 'Предыдущий отзыв' %}">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="btn btn-outline-primary rounded-circle p-2 lh-1"
+                        onclick="document.querySelector('.reviews-slider').scrollBy({left: 300, behavior: 'smooth'})"
+                        aria-label="{% trans 'Следующий отзыв' %}">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
         </div>
-    </div>
+    {% else %}
+        {# Блок отсутствия отзывов#}
+        <div class="text-center pt-5 pb-4">
+            <h2 class="fw-bold mb-2">{% trans 'Отзывов пока нет' %}</h2>
+            <i class="bi bi-chat-square-heart text-secondary display-3 d-block mb-3"></i>
+            <p class="text-secondary lead mx-auto mb-0 col-md-6">
+                {% blocktrans trimmed %}
+                    Мы только запустили этот раздел. Поделитесь своим мнением о нашей работе —
+                    <span class="text-body fw-semibold">ваш отзыв может стать первым!</span>
+                {% endblocktrans %}
+            </p>
+        </div>
+    {% endif %}
+
 
     {# Форма добавления отзыва #}
     <div class="row justify-content-center mt-5">
@@ -51,9 +71,11 @@
                 {% if messages %}
                     {% for message in messages %}
                         {% if "success" in message.tags or "error" in message.tags %}
-                            <div class="alert alert-{% if "success" in message.tags %}success{% else %}danger{% endif %} alert-dismissible fade show" role="alert">
+                            <div class="alert alert-{% if "success" in message.tags %}success{% else %}danger{% endif %} alert-dismissible fade show"
+                                 role="alert">
                                 {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
                             </div>
                         {% endif %}
                     {% endfor %}

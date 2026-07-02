@@ -51,7 +51,8 @@ class Review(models.Model):
         verbose_name_plural = _("Отзывы")
 
     def __str__(self):
-        return f"{self.author} - {self.rating}"
+        is_approved_msg = _("Одобрено") if self.is_approved else _("Не одобрено")
+        return f"{self.author} - {self.rating} ({is_approved_msg})"
 
     def notify_new_review(self):
         """

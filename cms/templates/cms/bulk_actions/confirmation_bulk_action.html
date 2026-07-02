@@ -1,0 +1,19 @@
+{% extends 'wagtailadmin/bulk_actions/confirmation/base.html' %}
+{% load i18n wagtailadmin_tags %}
+
+{% block header %}
+    {% include "wagtailadmin/shared/header.html" with title=action_title subtitle=model_opts.verbose_name_plural|capfirst icon=header_icon only %}
+{% endblock header %}
+
+{% block items_with_access %}
+    <h2>{{ confirm_text }}</h2>
+    <ul>
+        {% for item in items %}
+            <li>{{ item.item }}</li>
+        {% endfor %}
+    </ul>
+{% endblock items_with_access %}
+
+{% block form_section %}
+    {% include 'wagtailadmin/bulk_actions/confirmation/form.html' with action_button_text=yes_text no_action_button_text=no_text action_button_class=action_button_class %}
+{% endblock form_section %}
