@@ -183,7 +183,6 @@ def init_content(command):
                     "title": "Отзывы наших клиентов",
                     "anchor": "reviews",
                     "background_color": BackgroundColorChoices.SECONDARY,
-                    "reviews": [],
                 },
             ),
             (
