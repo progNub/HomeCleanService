@@ -28,8 +28,7 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
 
 # Install Node.js (needed for Sass/Bootstrap compilation)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g npm@latest
+    && apt-get install -y nodejs
 
 # Install the application server and uv for python dependency management
 RUN pip install "gunicorn==20.0.4" uv
