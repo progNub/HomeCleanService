@@ -12,8 +12,13 @@ class ReviewsBlock(BaseStructBlock):
         from cms.forms import ReviewForm
         from cms.models.reviews import Review
 
-        context["reviews"] = Review.objects.filter(is_approved=True).order_by("-date", "-id")
-        context["review_form"] = ReviewForm()
+        context["reviews"] = Review.objects.filter(is_approved=True).order_by("-date", "-id")[:30]
+        request = context.get("request")
+        data = request.session.pop("review_form_data", None) if request and hasattr(request, "session") else None
+        context["review_form"] = ReviewForm(data=data, request=request)
+        if data is not None:
+            request._wagtailcache_update = False
+            request._wagtailcache_skip = True
         return context
 
     class Meta:

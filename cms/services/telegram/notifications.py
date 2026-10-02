@@ -1,4 +1,5 @@
 import logging
+from html import escape
 
 from django.conf import settings
 from django.utils.translation import gettext as _
@@ -60,9 +61,9 @@ class LeadNotificationService:
 
         return (
             f"🌟 <b>{_('Новый отзыв на сайте!')}</b>\n\n"
-            f"👤 <b>{_('Автор')}:</b> {getattr(review, 'author', _('Аноним'))}\n"
-            f"⭐ <b>{_('Рейтинг')}:</b> {getattr(review, 'rating', '?')}/5\n"
-            f"📝 <b>{_('Текст')}:</b> <i>{truncated_text}</i>"
+            f"👤 <b>{_('Автор')}:</b> {escape(str(getattr(review, 'author', _('Аноним'))))}\n"
+            f"⭐ <b>{_('Рейтинг')}:</b> {escape(str(getattr(review, 'rating', '?')))}/5\n"
+            f"📝 <b>{_('Текст')}:</b> <i>{escape(truncated_text)}</i>"
         )
 
     def _format_formsubmission(self, submission):
@@ -71,7 +72,7 @@ class LeadNotificationService:
         form_data = getattr(submission, "form_data", {})
         title = getattr(page, "title", _("с формы"))
 
-        message = f"📋 <b>{_('Новая заявка')}: {title}</b>\n\n"
+        message = f"📋 <b>{_('Новая заявка')}: {escape(str(title))}</b>\n\n"
 
         if page and hasattr(page, "form_fields"):
             for field in page.form_fields.all():
@@ -79,9 +80,9 @@ class LeadNotificationService:
                 if value:
                     if isinstance(value, list):
                         value = ", ".join(map(str, value))
-                    message += f"🔹 <b>{field.label}:</b> {value}\n"
+                    message += f"🔹 <b>{escape(str(field.label))}:</b> {escape(str(value))}\n"
         else:
             for key, value in form_data.items():
-                message += f"🔹 <b>{key}:</b> {value}\n"
+                message += f"🔹 <b>{escape(str(key))}:</b> {escape(str(value))}\n"
 
         return message

@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
-from django.http import HttpResponse
 from django.urls import include, path
 from django.views.generic import TemplateView
 from wagtail import urls as wagtail_urls
@@ -10,6 +9,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
 from cms import views as cms_views
+from cms.health import health, ready
 
 urlpatterns = [
     path("sitemap.xml", sitemap),
@@ -17,7 +17,8 @@ urlpatterns = [
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
     ),
-    path("health/", lambda r: HttpResponse("OK"), name="health_check"),
+    path("health/", health, name="health_check"),
+    path("ready/", ready, name="readiness_check"),
 ]
 
 urlpatterns += i18n_patterns(

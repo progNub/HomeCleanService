@@ -17,8 +17,18 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / ".env")
+if os.getenv("DJANGO_LOAD_DOTENV", "1") == "1" and os.getenv("DJANGO_SETTINGS_MODULE") not in {
+    "settings.test",
+    "settings.build",
+}:
+    load_dotenv(BASE_DIR / ".env")
 PROJECT_DIR = BASE_DIR / "cms"
+RELEASE_REVISION = os.getenv("RELEASE_REVISION", "development")
+
+
+def env_list(name, default=""):
+    return [value.strip() for value in os.getenv(name, default).split(",") if value.strip()]
+
 
 # ==============================================================================
 # ENVIRONMENT VARIABLES
@@ -26,15 +36,15 @@ PROJECT_DIR = BASE_DIR / "cms"
 
 # Core settings
 ENV_DJANGO_SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
-ENV_ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+ENV_ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "localhost,127.0.0.1")
 ENV_SITE_URL = os.getenv("SITE_URL")
 
 # Database settings
 ENV_DB_NAME = os.getenv("DB_NAME")
 ENV_DB_USER = os.getenv("DB_USER")
 ENV_DB_PASSWORD = os.getenv("DB_PASSWORD")
-ENV_DB_HOST = os.getenv("DB_HOST")
-ENV_DB_PORT = os.getenv("DB_PORT")
+ENV_DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
+ENV_DB_PORT = os.getenv("DB_PORT", "5433")
 
 # Redis settings
 ENV_REDIS_URL = os.getenv("REDIS_URL")
@@ -49,9 +59,9 @@ ENV_TELEGRAM_NOTIFICATIONS_CHAT_ID = os.getenv("TELEGRAM_NOTIFICATIONS_CHAT_ID")
 ENV_SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT") == "True"
 ENV_SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE") == "True"
 ENV_CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE") == "True"
-ENV_SECURE_BROWSER_XSS_FILTER = os.getenv("SECURE_BROWSER_XSS_FILTER") == "True"
-ENV_SECURE_CONTENT_TYPE_NOSNIFF = os.getenv("SECURE_CONTENT_TYPE_NOSNIFF") == "True"
-ENV_CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(",")
+ENV_SECURE_CONTENT_TYPE_NOSNIFF = True
+ENV_CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
+TRUSTED_PROXY_CIDRS = env_list("TRUSTED_PROXY_CIDRS")
 
 # Superuser settings (Initial setup)
 ENV_SUPERUSER_USERNAME = os.getenv("SUPERUSER_USERNAME")
@@ -87,7 +97,6 @@ ALLOWED_HOSTS = ENV_ALLOWED_HOSTS
 SECURE_SSL_REDIRECT = ENV_SECURE_SSL_REDIRECT
 SESSION_COOKIE_SECURE = ENV_SESSION_COOKIE_SECURE
 CSRF_COOKIE_SECURE = ENV_CSRF_COOKIE_SECURE
-SECURE_BROWSER_XSS_FILTER = ENV_SECURE_BROWSER_XSS_FILTER
 SECURE_CONTENT_TYPE_NOSNIFF = ENV_SECURE_CONTENT_TYPE_NOSNIFF
 
 # CSRF settings
@@ -139,7 +148,6 @@ THIRD_PARTY_APPS = [
     "taggit",
     "django_filters",
     "django_bootstrap5",
-    "compressor",
     "django_tasks_db",
 ]
 
@@ -254,7 +262,6 @@ AUTH_PASSWORD_VALIDATORS = [
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    "compressor.finders.CompressorFinder",
 ]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -262,14 +269,6 @@ STATIC_URL = "/static/"
 
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
-
-# ==============================================================================
-# DJANGO COMPRESSOR
-# ==============================================================================
-COMPRESS_ENABLED = True
-COMPRESS_OFFLINE = False
-
-COMPRESS_PRECOMPILERS = (("text/x-scss", "npx sass --load-path=node_modules {infile} {outfile}"),)
 
 # Default storage settings
 # See https://docs.djangoproject.com/en/6.0/ref/settings/#std-setting-STORAGES
@@ -455,6 +454,11 @@ LOGGING = {
         "django.request": {
             "handlers": ["console", "telegram_logs"],
             "level": "ERROR",
+            "propagate": False,
+        },
+        "cms.services.telegram": {
+            "handlers": ["console"],
+            "level": "INFO",
             "propagate": False,
         },
     },

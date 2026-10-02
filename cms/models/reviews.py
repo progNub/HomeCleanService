@@ -62,4 +62,4 @@ class Review(models.Model):
             service = LeadNotificationService(self)
             service.send()
         except Exception:
-            logger.exception(_("Error sending review notification to Telegram"))
+            logger.error("Review notification could not be prepared")

@@ -1,4 +1,25 @@
 # Django project
+/.env
+/.env.*
+/.git
+/.venv
+/.agents
+/.codex
+/.ruff_cache
+/.runtime
+/.pytest_cache
+/staticfiles
+/backups
+/pictures
+/server
+/deploy/dozzle/users.yml
+/Makefile.config
+/settings/local.py
+/docs/IMPROVEMENT_PLAN.md
+/locustfile.py
+/rate_limit.py
+/cms/management/commands/populate_works.py
+/cms/static/cms/dist
 /media/
 /static/
 *.sqlite3

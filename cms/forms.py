@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from cms.models.reviews import Review
+from cms.request_utils import get_client_ip
 
 
 class ReviewForm(forms.ModelForm):
@@ -35,16 +36,14 @@ class ReviewForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        ip = self.request.META.get("REMOTE_ADDR")
-        user_agent = self.request.META.get("HTTP_USER_AGENT", "")
+        ip = get_client_ip(self.request)
+        user_agent = self.request.META.get("HTTP_USER_AGENT", "")[:512] if self.request else ""
 
         # Проверка: один отзыв в 3 часа от одного пользователя (IP + UserAgent)
         cooldown_hours = 3
         cooldown_time = timezone.now() - timedelta(hours=cooldown_hours)
 
-        last_review = (
-            Review.objects.filter(ip=ip, user_agent=user_agent, date__gte=cooldown_time).order_by("-date").first()
-        )
+        last_review = ip and Review.objects.filter(ip=ip, user_agent=user_agent, date__gte=cooldown_time).exists()
         if last_review:
             raise ValidationError(_("Вы можете оставлять отзывы только раз в 3 часа."))
 
@@ -53,8 +52,8 @@ class ReviewForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         if self.request:
-            instance.ip = self.request.META.get("REMOTE_ADDR")
-            instance.user_agent = self.request.META.get("HTTP_USER_AGENT", "")
+            instance.ip = get_client_ip(self.request)
+            instance.user_agent = self.request.META.get("HTTP_USER_AGENT", "")[:512]
         if commit:
             instance.save()
         return instance

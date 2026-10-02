@@ -26,7 +26,7 @@ def get_or_import_image(image_path, title):
 
 def init_content(command):
     # 1. Site configuration from env
-    site_url_env = settings.ENV_SITE_URL
+    site_url_env = settings.ENV_SITE_URL or "http://localhost"
     parsed_url = urlparse(site_url_env)
     hostname = parsed_url.hostname or "localhost"
     port = parsed_url.port
@@ -42,9 +42,11 @@ def init_content(command):
     homepage = HomePage.objects.first()
     if not homepage:
         command.stdout.write("HomePage not found, creating...")
-        root_page = Page.objects.get(id=1)
-        # Remove default "Home" page if it exists
-        Page.objects.filter(slug="home").delete()
+        root_page = Page.get_first_root_node()
+        # Only remove Wagtail's placeholder under this root, never another site's
+        # page with the same slug. Deletion updates the parent's cached numchild.
+        root_page.get_children().filter(slug="home", content_type__model="page").delete()
+        root_page.refresh_from_db()
 
         homepage = HomePage(
             title="Главная",

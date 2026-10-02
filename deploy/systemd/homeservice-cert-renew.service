@@ -1,0 +1,11 @@
+[Unit]
+Description=HomeService certificate renewal
+Requires=docker.service
+After=docker.service network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/homeservice
+EnvironmentFile=/etc/homeservice/operations.env
+ExecStart=/usr/bin/bash /opt/homeservice/deploy/certbot/cert-manage.sh renew
+UMask=0077

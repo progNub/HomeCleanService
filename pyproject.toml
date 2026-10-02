@@ -4,17 +4,18 @@ version = "0.1.0"
 description = "Сервис для домашних услуг на базе Wagtail CMS"
 requires-python = ">=3.12"
 dependencies = [
+    "django>=6.0.3,<6.1",
     "python-dotenv>=1.2.2",
     "wagtail>=7.3.1",
     "wagtail-localize>=1.13",
     "django-bootstrap5>=26.2",
-    "django-compressor>=4.5.1",
     "gunicorn>=25.3.0",
     "django-redis>=6.0.0",
     "redis>=5.3.1",
     "wagtail-cache>=3.0.0",
     "psycopg[binary]>=3.2.4",
     "django-tasks-db>=0.12.0",
+    "requests>=2.33.1",
 ]
 
 [dependency-groups]

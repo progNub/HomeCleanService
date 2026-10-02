@@ -1,0 +1,7 @@
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        RELEASE_REVISION: ${RELEASE_REVISION:-development}

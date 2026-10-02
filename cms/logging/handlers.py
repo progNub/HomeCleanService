@@ -1,6 +1,8 @@
 import html
 import logging
 
+from cms.request_utils import get_client_ip
+
 
 def escape_html(text):
     return html.escape(str(text), quote=False)
@@ -63,12 +65,11 @@ class AsyncTelegramHandler(logging.Handler):
         if request:
             try:
                 user = getattr(request, "user", "Anonymous")
-                meta = request.META
-                ip = meta.get("HTTP_X_FORWARDED_FOR", meta.get("REMOTE_ADDR", "unknown")).split(",")[0].strip()
+                ip = get_client_ip(request) or "unknown"
 
                 message_parts.append(
                     f"<b>🌐 Request:</b>\n"
-                    f"🔹 <b>URL:</b> {escape_html(request.build_absolute_uri())}\n"
+                    f"🔹 <b>Path:</b> {escape_html(request.path)}\n"
                     f"🔹 <b>Method:</b> {request.method}\n"
                     f"🔹 <b>User:</b> {escape_html(str(user))}\n"
                     f"🔹 <b>IP:</b> <code>{ip}</code>"
@@ -78,12 +79,13 @@ class AsyncTelegramHandler(logging.Handler):
 
         # 2. Log message text
         emoji = self._get_level_emoji(record.levelno)
-        clean_msg = record.getMessage()
+        clean_msg = self._redact(record.getMessage())
         message_parts.append(f"{emoji} <b>{record.levelname}</b>\n{escape_html(clean_msg)}")
 
         # 3. Traceback
         if record.exc_info:
-            exc_text = logging.Formatter().formatException(record.exc_info)
+            # Application traceback text may include request data and secrets.
+            exc_text = f"{record.exc_info[0].__name__}: inspect server logs for details"
             if len(exc_text) > 3000:
                 exc_text = exc_text[:3000] + "\n... [Traceback truncated]"
 
@@ -92,8 +94,14 @@ class AsyncTelegramHandler(logging.Handler):
         return "\n\n".join(message_parts)
 
     def emit(self, record):
+        if record.name.startswith(("cms.services.telegram", "django_tasks", "django_tasks_db")):
+            return
         try:
             formatted_message = self.format_message(record)
             self.tg.send_raw(formatted_message)
         except Exception:
-            self.handleError(record)
+            # handleError prints raw record/traceback and can leak request data.
+            return
+
+    def _redact(self, message):
+        return message.replace(self.token, "[redacted]") if self.token else message

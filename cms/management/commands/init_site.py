@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from dotenv import load_dotenv
+from django.db import transaction
 
 from cms.management.commands.init_site_parts import (
     init_content,
@@ -13,7 +13,7 @@ from cms.management.commands.init_site_parts import (
 
 
 class Command(BaseCommand):
-    help = "Initializes the site: configures HomePage, Site object, superuser and global settings based on .env"
+    help = "Initializes the site using the configured Django settings"
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -32,9 +32,8 @@ class Command(BaseCommand):
             help="Only initialize global settings (SocialMedia and Contact)",
         )
 
+    @transaction.atomic
     def handle(self, *args, **options):
-        load_dotenv()
-
         admin_only = options["admin_only"]
         content_only = options["content_only"]
         settings_only = options["settings_only"]

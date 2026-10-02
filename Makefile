@@ -13,7 +13,8 @@ DB_USER ?= homeservice_user
 
 # Docker Compose commands
 COMPOSE_DEV = docker compose -p $(PROJECT_DEV) -f deploy/docker-compose.dev.yml
-COMPOSE_PROD = docker compose -p $(PROJECT_PROD) -f deploy/docker-compose.yml
+HOMESERVICE_ENV_FILE ?= $(CURDIR)/.env
+COMPOSE_PROD = docker compose --env-file $(HOMESERVICE_ENV_FILE) -p $(PROJECT_PROD) -f deploy/docker-compose.yml
 COMPOSE_SSL = docker compose -p $(PROJECT_PROD) -f deploy/certbot/docker-compose.yml
 
 # Python and Local Virtual Environment
@@ -30,22 +31,29 @@ DOCKER_EXEC = $(COMPOSE_PROD) exec web
 help:
 	@echo "Available commands:"
 	@echo "  Development (Infrastructure in Docker + App locally):"
-	@echo "    make dev-up            - Start containers and follow logs"
-	@echo "    make dev-start         - Start containers in background (detach)"
+	@echo "    make dev-up            - Start DB/Redis and follow logs"
+	@echo "    make dev-start         - Start DB/Redis in background"
 	@echo "    make dev-down          - Stop development infrastructure"
 	@echo "    make dev-logs          - Follow development infrastructure logs"
 	@echo "    make run               - Run Django development server locally"
+	@echo "    make assets            - Install locked npm dependencies and build static assets"
+	@echo "    make check             - Check lockfile, Python style and Django configuration"
+	@echo "    make test              - Run isolated application and operations tests"
 	@echo ""
 	@echo "  Production (Full stack in Docker):"
-	@echo "    make prod-up           - Build, start stack and follow logs"
-	@echo "    make prod-start        - Build and start stack in background (detach)"
+	@echo "    make prod-up           - Deploy APP_IMAGE with backup/checks, then follow logs"
+	@echo "    make prod-start        - Deploy tested APP_IMAGE digest (maintenance window)"
+	@echo "    make prod-init         - Bootstrap empty installation; content/TLS remain explicit"
+	@echo "    make prod-smoke        - Verify external HTTPS readiness, homepage and assets"
+	@echo "    make prod-rollback     - Restore compatible old image; ROLLBACK_DB_COMPATIBLE=1 required"
 	@echo "    make prod-down         - Stop production stack"
 	@echo "    make prod-logs         - Follow all production logs"
 	@echo "    make prod-logs-web     - Follow only web container logs"
-	@echo "    make prod-logs-dozzle  - Follow only dozzle (log viewer) logs"
-	@echo "    make dozzle-gen-pass   - Generate bcrypt hash for Dozzle (usage: make dozzle-gen-pass USER=admin PASS=admin)"
-	@echo "    make prod-build        - Rebuild production web image"
-	@echo "    make prod-migrate      - Run migrations inside production container"
+	@echo "    make prod-logs-dozzle   - Follow only Dozzle logs"
+	@echo "    make prod-tools        - Start private loopback Dozzle with existing credentials"
+	@echo "    make dozzle-gen-pass   - Write users.yml; set DOZZLE_USER and explicit DOZZLE_PASS"
+	@echo "    make prod-build        - Build homeservice:local for explicit local testing"
+	@echo "    make prod-migrate      - Manually run release migrations/assets job; stop writers first"
 	@echo "    make prod-superuser    - Create superuser inside production container"
 	@echo "    make prod-cache-clear  - Clear Wagtail cache inside production container"
 	@echo "    make prod-shell        - Open Django shell inside production container"
@@ -57,10 +65,13 @@ help:
 	@echo "    make dev-db-refresh    - DJANGO ONLY RESET: Recreate Django DB locally, keeping Umami data"
 	@echo ""
 	@echo "  Backup & Maintenance:"
-	@echo "    make prod-db-backup    - Create a database backup (SQL dump)"
+	@echo "    make prod-db-backup    - Back up DB/media with required encryption and off-host upload"
+	@echo "    make prod-backup-local - Create local snapshot (not a disaster-recovery backup)"
 	@echo ""
 	@echo "  SSL/HTTPS:"
-	@echo "    make cert              - Get or renew SSL certificates"
+	@echo "    make cert              - Renew existing managed TLS certificate"
+	@echo "    make cert-init         - Explicit first TLS issuance after DNS/Nginx setup"
+	@echo "    make cert-dry-run      - Test renewal without replacing live certificate"
 	@echo ""
 	@echo "  Shared Management (Uses local .venv):"
 	@echo "    make migrate           - Apply migrations locally"
@@ -78,10 +89,6 @@ dev-up: dev-start
 	$(MAKE) dev-logs
 
 dev-start:
-	@if [ ! -f deploy/dozzle/users.yml ]; then \
-		echo "deploy/dozzle/users.yml not found. Generating with default or provided credentials..."; \
-		$(MAKE) dozzle-gen-pass; \
-	fi
 	$(COMPOSE_DEV) up -d
 
 dev-down:
@@ -116,12 +123,7 @@ prod-up: prod-start
 	$(MAKE) prod-logs
 
 prod-start:
-	@if [ ! -f deploy/dozzle/users.yml ]; then \
-		echo "deploy/dozzle/users.yml not found. Generating with default or provided credentials..."; \
-		$(MAKE) dozzle-gen-pass; \
-	fi
-	$(COMPOSE_PROD) up -d --build --remove-orphans
-	$(COMPOSE_PROD) exec -T nginx nginx -s reload
+	COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/scripts/release.sh
 
 prod-down:
 	$(COMPOSE_PROD) down
@@ -136,10 +138,10 @@ prod-logs-dozzle:
 	$(COMPOSE_PROD) logs -f dozzle
 
 prod-build:
-	$(COMPOSE_PROD) build
+	APP_IMAGE=homeservice:local RELEASE_REVISION=$$(git rev-parse HEAD) $(COMPOSE_PROD) -f deploy/docker-compose.build.yml build web
 
 prod-migrate:
-	$(DOCKER_EXEC) python manage.py migrate
+	$(COMPOSE_PROD) run --rm release
 
 prod-superuser:
 	$(DOCKER_EXEC) python manage.py createsuperuser
@@ -159,7 +161,7 @@ prod-db-refresh:
 prod-reset:
 	$(call confirm_action,FULL PRODUCTION RESET (ALL DATA WILL BE LOST))
 	$(COMPOSE_PROD) down -v --remove-orphans
-	$(COMPOSE_PROD) up -d --build
+	COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/scripts/release.sh init
 	@echo "Full production reset complete."
 
 # ==============================================================================
@@ -167,35 +169,42 @@ prod-reset:
 # ==============================================================================
 
 prod-db-backup:
-	@mkdir -p backups
-	$(COMPOSE_PROD) exec db pg_dump -U $(DB_USER) $(DB_NAME) > backups/db_backup_$$(date +%Y%m%d_%H%M%S).sql
-	@echo "Backup created in backups/ directory."
+	COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/scripts/backup.sh
 
 # ==============================================================================
 # SSL / HTTPS
 # ==============================================================================
 
 cert:
-	@bash deploy/certbot/cert-manage.sh
+	@COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/certbot/cert-manage.sh renew
+
+cert-init:
+	@COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/certbot/cert-manage.sh init
+
+cert-dry-run:
+	@COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/certbot/cert-manage.sh dry-run
 
 # ==============================================================================
 # LOG MANAGEMENT & SECURITY (DOZZLE)
 
 # Generates a bcrypt-hashed users.yml file for Dozzle basic auth.
-# If USER and PASS are omitted, defaults to admin/admin.
-# The resulting file is saved directly to the deploy/ directory.
-# Generate with docker run -it --rm amir20/dozzle generate admin --password password --email me@email.net --name "Admin"
+# An explicit password is required; defaults never create production users.
+# The resulting file is saved to deploy/dozzle/users.yml.
+# Read a strong DOZZLE_PASS interactively and export it; see docs/LOGS.md.
 # ==============================================================================
 DOZZLE_USER ?= admin
-DOZZLE_PASS ?= admin
+DOZZLE_PASS ?=
 DOZZLE_EMAIL ?= admin@gmail.com
 DOZZLE_NAME ?= admin_user
 
 dozzle-gen-pass:
+	@test -n "$(DOZZLE_PASS)" && test "$(DOZZLE_PASS)" != admin || (echo "Set DOZZLE_PASS to a strong password"; exit 1)
 	@mkdir -p deploy/dozzle
+	@chmod 700 deploy/dozzle
 	@docker run --rm amir20/dozzle:v10.6.3 generate "$(DOZZLE_USER)"  --password "$(DOZZLE_PASS)" --email "$(DOZZLE_EMAIL)" --name "$(DOZZLE_NAME)" > deploy/dozzle/users.yml
+	@chmod 600 deploy/dozzle/users.yml
 	@echo "Success! Authorization file generated and saved to deploy/dozzle/users.yml"
-	@echo "Important: Restart the stack to apply changes (e.g., make prod-up or make dev-up)"
+	@echo "Restart only Dozzle after credential changes; see docs/LOGS.md"
 
 # ==============================================================================
 # LOCAL MANAGEMENT
@@ -213,3 +222,34 @@ cache-clear:
 db-init-umami:
 	@echo "Initializing Umami database in Dev container..."
 	$(COMPOSE_DEV) exec db /docker-entrypoint-initdb.d/init-db.sh
+
+.PHONY: assets test check cert-init cert-dry-run prod-init prod-smoke prod-rollback prod-backup-local prod-tools
+assets:
+	npm ci
+	npm run build
+
+test:
+	PYTHONDONTWRITEBYTECODE=1 $(MANAGE) test cms.tests --settings=settings.test
+	$(PYTHON) -m unittest discover -s tests -v
+
+check:
+	uv lock --check
+	$(VENV)/bin/ruff check .
+	$(VENV)/bin/ruff format --check .
+	$(MANAGE) check --settings=settings.test
+
+prod-init:
+	COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/scripts/release.sh init
+
+prod-smoke:
+	HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/scripts/smoke.sh
+
+prod-rollback:
+	COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/scripts/release.sh rollback
+
+prod-backup-local:
+	COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/scripts/backup.sh --local
+
+prod-tools:
+	@test -s deploy/dozzle/users.yml || (echo 'Create Dozzle users explicitly first'; exit 1)
+	$(COMPOSE_PROD) --profile tools up -d dozzle
