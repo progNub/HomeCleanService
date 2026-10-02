@@ -36,7 +36,7 @@ class PortfolioIndexPage(SeoAbstract, Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-        context["works"] = PortfolioWorkPage.objects.child_of(self).live()
+        context["works"] = PortfolioWorkPage.objects.child_of(self).live().select_related("main_image").order_by("path")
         return context
 
     class Meta:
@@ -85,7 +85,11 @@ class PortfolioWorkPage(SeoAbstract, Page):
         context = super().get_context(request)
         # Get 3 other live works from the same parent, excluding the current one
         context["other_works"] = (
-            PortfolioWorkPage.objects.live().descendant_of(self.get_parent()).exclude(id=self.id).order_by("?")[:3]
+            PortfolioWorkPage.objects.live()
+            .child_of(self.get_parent())
+            .exclude(id=self.id)
+            .select_related("main_image")
+            .order_by("-first_published_at", "-id")[:3]
         )
         return context
 

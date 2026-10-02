@@ -1,6 +1,8 @@
 import logging
 
 from django.db import models
+from django.template.response import TemplateResponse
+from django.utils.cache import add_never_cache_headers
 from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
@@ -29,6 +31,25 @@ class FormField(AbstractFormField):
 class FormPage(SeoAbstract, AbstractEmailForm):
     form_builder = CustomFormBuilder
 
+    def serve(self, request, *args, **kwargs):
+        form = self.get_form(
+            request.POST if request.method == "POST" else None,
+            request.FILES if request.method == "POST" else None,
+            page=self,
+            user=request.user,
+            request=request,
+        )
+        if request.method == "POST" and form.is_valid():
+            submission = self.process_form_submission(form)
+            response = self.render_landing_page(request, submission, *args, **kwargs)
+        else:
+            context = self.get_context(request)
+            context["form"] = form
+            response = TemplateResponse(request, self.get_template(request), context)
+        if request.method == "POST":
+            add_never_cache_headers(response)
+        return response
+
     intro = RichTextField(
         blank=True,
         verbose_name=_("Вступление"),
@@ -55,7 +76,7 @@ class FormPage(SeoAbstract, AbstractEmailForm):
             notification_service = LeadNotificationService(submission)
             notification_service.send()
         except Exception:
-            logger.exception(_("Error sending notification to Telegram"))
+            logger.error("Lead notification could not be prepared")
 
         # We return the submission object to allow Wagtail to show the success message,
         return submission

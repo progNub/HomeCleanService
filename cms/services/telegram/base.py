@@ -3,20 +3,29 @@ from io import BytesIO
 
 import requests
 from django.conf import settings
+from django.db import transaction
 from django.tasks import task
 
 logger = logging.getLogger(__name__)
 
 
+class TelegramDeliveryError(Exception):
+    """Safe error persisted by the task backend without provider URLs or payloads."""
+
+
 @task()
-def _send_telegram_message_task(token, chat_id, text, parse_mode, timeout, api_endpoint):
+def _send_telegram_message_task(
+    token=None, chat_id=None, text="", parse_mode="HTML", timeout=10, api_endpoint="https://api.telegram.org"
+):
     """
     Background task to send a message to Telegram.
     If the message is too long, it sends it as a document.
     """
+    # The optional token argument preserves compatibility with already queued jobs.
+    # New jobs resolve credentials at execution and never persist them in kwargs.
+    token = getattr(settings, "TELEGRAM_BOT_TOKEN", None) or token
     if not token:
-        logger.error("Telegram bot token is missing")
-        return
+        raise TelegramDeliveryError("Telegram credentials are not configured")
 
     url_base = f"{api_endpoint}/bot{token}"
     max_len = 4096
@@ -40,14 +49,12 @@ def _send_telegram_message_task(token, chat_id, text, parse_mode, timeout, api_e
             response = requests.post(f"{url_base}/sendDocument", data=payload, files=files, timeout=timeout)
 
         if not response.ok:
-            logger.error(
-                "Telegram API error: %s - %s",
-                response.status_code,
-                response.text,
-            )
-        response.raise_for_status()
-    except Exception:
-        logger.exception("Error sending Telegram message via task")
+            raise TelegramDeliveryError(f"Telegram delivery failed (HTTP {response.status_code})")
+        if response.json().get("ok") is not True:
+            raise TelegramDeliveryError("Telegram rejected delivery")
+    except (requests.RequestException, ValueError):
+        # Suppress chained requests exceptions: their text contains the bot token URL.
+        raise TelegramDeliveryError("Telegram transport or response failure") from None
 
 
 class RawTelegramService:
@@ -74,7 +81,6 @@ class RawTelegramService:
             return
 
         params = {
-            "token": self.token,
             "chat_id": target_chat_id,
             "text": str(text),
             "parse_mode": self.parse_mode,
@@ -82,7 +88,14 @@ class RawTelegramService:
             "api_endpoint": self.API_ENDPOINT,
         }
 
-        if self.queue_name:
-            _send_telegram_message_task.using(queue_name=self.queue_name).enqueue(**params)
-        else:
-            _send_telegram_message_task.enqueue(**params)
+        def enqueue():
+            try:
+                task_to_send = _send_telegram_message_task
+                if self.queue_name:
+                    task_to_send = task_to_send.using(queue_name=self.queue_name)
+                task_to_send.enqueue(**params)
+            except Exception:
+                # Notification failure must not discard an already saved lead.
+                logger.error("Telegram notification could not be queued; inspect saved submissions")
+
+        transaction.on_commit(enqueue)

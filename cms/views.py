@@ -1,32 +1,33 @@
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_POST
 
 from cms.forms import ReviewForm
 
 
-def _get_prepared_form_errors(form):
-    if not form.errors:
-        return ""
-    return " ".join([error for errors in form.errors.values() for error in errors])
-
-
+@never_cache
+@require_POST
 def post_review(request):
-    if request.method == "POST":
-        form = ReviewForm(request.POST, request=request)
-        if form.is_valid():
-            form.save(commit=True)
-            messages.success(request, _("Ваш отзыв отправлен на модерацию. Спасибо!"))
-        else:
-            form_errors = _get_prepared_form_errors(form)
-            text_error = form_errors or _("Произошла ошибка при отправке отзыва. Пожалуйста, проверьте данные.")
-            messages.error(request, text_error)
+    form = ReviewForm(request.POST, request=request)
+    if form.is_valid():
+        form.save(commit=True)
+        request.session.pop("review_form_data", None)
+        messages.success(request, _("Ваш отзыв отправлен на модерацию. Спасибо!"))
+    else:
+        # Only retain bounded, expected fields in the server-side session.
+        # Preserve one extra character so max-length errors survive the redirect.
+        limits = {"author": 256, "text": 2001, "rating": 10, "accept_privacy": 10}
+        request.session["review_form_data"] = {
+            field: request.POST.get(field, "")[:limit] for field, limit in limits.items()
+        }
+        messages.error(request, _("Пожалуйста, исправьте ошибки в форме отзыва."))
 
-    redirect_url = request.META.get("HTTP_REFERER", "/")
-    # Простейшая очистка от старых якорей и добавление нужного
-    if "#" in redirect_url:
-        redirect_url = redirect_url.split("#")[0]
-
-    redirect_url += "#reviews"
-
-    return redirect(redirect_url)
+    redirect_url = request.POST.get("next") or request.META.get("HTTP_REFERER", "/")
+    if not url_has_allowed_host_and_scheme(
+        redirect_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()
+    ):
+        redirect_url = "/"
+    return redirect(redirect_url.split("#", 1)[0] + "#reviews")
