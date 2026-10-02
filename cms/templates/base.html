@@ -79,7 +79,7 @@
     <link rel="stylesheet" href="{% static 'cms/dist/bootstrap-icons.css' %}">
 
     {# SEO & Favicons #}
-    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="{% static 'cms/images/logo/favicon.ico' %}" sizes="any">
     <link rel="icon" href="{% static 'cms/images/logo/logo_96x96.png' %}" type="image/png" sizes="96x96">
     <link rel="apple-touch-icon" href="{% static 'cms/images/logo/logo_96x96.png' %}">
     <link rel="stylesheet" href="{% static 'cms/dist/main.css' %}">
@@ -137,10 +137,6 @@
 {% block extra_js %}
     {# Override this in templates to add extra javascript #}
 {% endblock %}
-
-{% if debug %}
-    <script src="{% static 'django-browser-reload/reload-listener.js' %}"></script>
-{% endif %}
 
 {# Analytics scripts before <body> tag ends #}
 {% scripts_body_bottom %}

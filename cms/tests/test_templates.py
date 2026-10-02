@@ -41,6 +41,9 @@ class PublicTemplateTests(TestCase):
         self.assertNotIn("cdn.jsdelivr.net", html)
         self.assertNotIn("text/x-scss", html)
         self.assertNotIn("onclick=", html)
+        self.assertIn("/static/cms/images/logo/favicon.ico", html)
+        # The development middleware injects its own configured reload listener.
+        self.assertNotIn("django-browser-reload/reload-listener.js", html)
         self.assertLess(html.index("cms/js/theme-switcher.js"), html.index("cms/dist/main.css"))
 
     def test_hero_has_responsive_high_priority_image(self):

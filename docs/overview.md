@@ -1,24 +1,36 @@
-# HomeService Project Overview
+# HomeService overview
 
-This project is a website based on **Django** and **Wagtail CMS** for providing home care services.
+HomeService is a small Django/Wagtail website for home-care services. Wagtail
+pages and StreamField blocks own content; Django templates render HTML.
+Bootstrap, SCSS and a few JavaScript files provide responsive UI and interactions.
+There is no separate frontend application or production Node process.
 
-### Core Components:
-- **Wagtail CMS**: Used for easy content management (pages, images, settings).
-- **Bootstrap 5**: The project uses the Bootstrap framework for styling and interface responsiveness.
-- **Django I18N**: Internationalization system supporting multiple languages (Russian and English).
-- **init_site.py**: A command for automatic initialization of base content and settings.
+PostgreSQL stores content, submissions and database-backed background tasks.
+The task worker sends notifications. Redis provides production caching; local
+development uses an in-memory cache. Nginx terminates HTTPS and serves static and
+uploaded files. Umami is a separate analytics container on the same Docker host.
 
-### Documentation:
-The project includes the following guides:
-- [Localization Guide](../locale/README.md) — how to change and add translations.
-- [Deployment Guide](DEPLOYMENT.md) — how to launch the project in production.
-- [Analytics (Umami)](../deploy/docs/umami.md) — setting up the analytics system.
-- [Log Viewer (Dozzle)](LOGS.md) — viewing real-time logs of the project.
-- [Robots.txt](ROBOTS_TXT.md) — managing indexing.
-- **Data Models**: Described in `cms/models/` (settings, pages) and `home/models/` (home page).
+| Area | Location |
+| --- | --- |
+| Pages, blocks and settings | cms/models/, cms/blocks/ |
+| Forms and request validation | cms/forms.py, cms/views.py, cms/models/pages/forms/ |
+| Integrations and queued logging | cms/services/, cms/logging/ |
+| Templates, SCSS and JS | cms/templates/, cms/static/cms/ |
+| Asset build | scripts/build-assets.mjs, package-lock.json |
+| Runtime configuration | settings/ |
+| Production and operations | deploy/ |
 
-### How to Start the Project:
-1. Install dependencies.
-2. Apply migrations: `python manage.py migrate`.
-3. Initialize the site: `python manage.py init_site`.
-4. Start the server: `python manage.py runserver`.
+Dependencies install from uv.lock and package-lock.json. The image contains
+precompiled/collected static files. Startup launches only its process; deployment
+runs migrations once, and init_site explicitly initializes content on first
+installation. Production uses an image digest plus matching Git revision, a short
+maintenance window, backup and HTTPS checks.
+
+- [Development and checks](../README.md)
+- [Deployment and rollback](DEPLOYMENT.md)
+- [Backups and recovery](../deploy/docs/backups.md)
+- [Certificates](../deploy/docs/ssl.md)
+- [Private log viewer](LOGS.md)
+- [Analytics](../deploy/docs/umami.md)
+- [Localization](../locale/README.md)
+- [Robots.txt](ROBOTS_TXT.md)

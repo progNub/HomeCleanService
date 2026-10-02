@@ -22,8 +22,8 @@ def init_contact_form_page(command, homepage):
             meta_robots=SeoAbstract.MetaRobotsChoices.INDEX_FOLLOW,
             intro="<p>Пожалуйста, заполните форму ниже, и мы свяжемся с вами в ближайшее время.</p>",
             thank_you_text="<p>Спасибо за вашу заявку! Мы свяжемся с вами скоро.</p>",
-            to_address=settings.ENV_CONTACT_FORM_TO_EMAIL,
-            from_address=settings.ENV_CONTACT_FORM_FROM_EMAIL,
+            to_address=getattr(settings, "ENV_CONTACT_FORM_TO_EMAIL", "") or "",
+            from_address=getattr(settings, "ENV_CONTACT_FORM_FROM_EMAIL", "") or "",
             subject="Новая заявка с сайта",
             show_in_menus=True,
         )
