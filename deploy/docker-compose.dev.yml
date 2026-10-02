@@ -4,7 +4,7 @@ services:
     container_name: homeservice_db_dev
     restart: always
     ports:
-      - "5433:5432"
+      - "127.0.0.1:5433:5432"
     environment:
       - POSTGRES_DB=${DB_NAME:-homeservice}
       - POSTGRES_USER=${DB_USER:-homeservice_user}
@@ -19,11 +19,12 @@ services:
     container_name: homeservice_redis_dev
     restart: always
     ports:
-      - "6380:6379"
+      - "127.0.0.1:6380:6379"
     networks:
       - default
 
   worker:
+    profiles: [worker]
     build:
       context: ..
       dockerfile: Dockerfile
@@ -36,6 +37,7 @@ services:
     env_file:
       - ../.env
     environment:
+      - DJANGO_SETTINGS_MODULE=settings.dev_worker
       - DB_HOST=db
       - DB_PORT=5432
     depends_on:
@@ -45,6 +47,7 @@ services:
       - default
 
   umami:
+    profiles: [analytics]
     image: ghcr.io/umami-software/umami:postgresql-latest
     container_name: homeservice_umami_dev
     restart: always
@@ -56,11 +59,12 @@ services:
     depends_on:
       - db
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     networks:
       - default
 
   dozzle:
+    profiles: [tools]
     image: amir20/dozzle:v10.6.3
     container_name: homeservice_dozzle_dev
     restart: always
@@ -72,13 +76,13 @@ services:
         target: /data/users.yml
     environment:
       - DOZZLE_AUTH_PROVIDER=simple
-      - DOZZLE_ENABLE_ACTIONS=true
+      - DOZZLE_ENABLE_ACTIONS=false
       - DOZZLE_NO_ANALYTICS=true
 
     env_file:
       - ../.env
     ports:
-      - "8081:8080"
+      - "127.0.0.1:8081:8080"
     networks:
       - default
 

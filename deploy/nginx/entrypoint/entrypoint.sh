@@ -1,22 +1,33 @@
 #!/bin/bash
-set -e
+set -Eeuo pipefail
+umask 077
 
-DOMAIN="homecleanservice.by"
-CERT_DIR="/etc/letsencrypt/live/$DOMAIN"
-CERT_FILE="$CERT_DIR/fullchain.pem"
-KEY_FILE="$CERT_DIR/privkey.pem"
-
-if [ ! -f "$CERT_FILE" ]; then
-    echo "--> SSL certificates not found. Generating dummy certificates to allow Nginx to start..."
-    mkdir -p "$CERT_DIR"
-    openssl req -x509 -nodes -newkey rsa:2048 -days 1 \
-        -keyout "$KEY_FILE" \
-        -out "$CERT_FILE" \
-        -subj "/CN=localhost"
-    echo "--> Dummy certificates generated."
+CERT_DIR=/etc/letsencrypt/live/homecleanservice.by
+BOOTSTRAP_DIR=/etc/letsencrypt/bootstrap/homecleanservice.by
+ACTIVE=/run/homeservice-tls
+if [[ -s "$CERT_DIR/fullchain.pem" && -s "$CERT_DIR/privkey.pem" ]]; then
+    TARGET=$CERT_DIR
+elif [[ "${1:-}" == --refresh-certificates ]]; then
+    echo 'Issued certificate/key missing; keeping current Nginx configuration.' >&2
+    exit 1
 else
-    echo "--> SSL certificates found."
+    mkdir -p "$BOOTSTRAP_DIR"
+    if [[ ! -s "$BOOTSTRAP_DIR/fullchain.pem" || ! -s "$BOOTSTRAP_DIR/privkey.pem" ]]; then
+        openssl req -x509 -nodes -newkey rsa:2048 -days 7 \
+            -keyout "$BOOTSTRAP_DIR/privkey.pem" -out "$BOOTSTRAP_DIR/fullchain.pem" \
+            -subj '/CN=localhost'
+    fi
+    TARGET=$BOOTSTRAP_DIR
+    echo 'Using bootstrap TLS certificate; run make cert-init to issue a trusted one.'
 fi
-
-echo "--> Starting Nginx..."
-exec nginx -g "daemon off;"
+PREVIOUS=$(readlink "$ACTIVE" || true)
+ln -sfn "$TARGET" "$ACTIVE"
+if ! nginx -t; then
+    [[ -z "$PREVIOUS" ]] || ln -sfn "$PREVIOUS" "$ACTIVE"
+    exit 1
+fi
+if [[ "${1:-}" == --refresh-certificates ]]; then
+    nginx -s reload
+else
+    exec nginx -g 'daemon off;'
+fi

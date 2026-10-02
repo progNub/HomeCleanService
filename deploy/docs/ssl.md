@@ -1,45 +1,67 @@
-# SSL Configuration Guide (HTTPS)
+# HTTPS certificates
 
-Now SSL setup is as simple as possible. The entire Nginx configuration already supports HTTPS, and a single command in the `Makefile` is used to obtain certificates.
+The production Nginx serves HTTP-01 challenges from the shared `webroot` volume.
+Point every name in `CERTBOT_DOMAINS` to this host and allow inbound TCP 80/443.
+The default names are `homecleanservice.by`, `www.homecleanservice.by`,
+`stats.homecleanservice.by`, and `logs.homecleanservice.by`; remove unused names
+before issuance. Set `CERTBOT_EMAIL` and optionally comma-separated
+`CERTBOT_DOMAINS` in the production `.env` (simple values, optionally quoted).
 
-## 1. Preparation
+## First issuance and renewal
 
-Ensure that:
-1. Your server is accessible from the internet.
-2. The domains `homecleanservice.by`, `www.homecleanservice.by`, and `stats.homecleanservice.by` are pointed to your server's IP.
-3. Your email is specified in the `.env` file: `CERTBOT_EMAIL=your-email@example.com`.
-
-## 2. Initializing Certificates
-
-To obtain certificates for the first time, run a single command from the project root:
+Start production Nginx, then run:
 
 ```bash
-make cert
+bash deploy/certbot/cert-manage.sh init
+bash deploy/certbot/cert-manage.sh dry-run
 ```
 
-**What this command does:**
-1. Checks if certificates already exist.
-2. If not, it runs Certbot to obtain real certificates from Let's Encrypt via HTTP-01 challenge.
-3. If certificates exist, it attempts to renew them.
-4. Reloads Nginx to apply the certificates.
-
-**Important:** Nginx is configured to automatically create temporary (self-signed) certificates on the first run if real ones haven't been obtained yet. This allows the server to always start successfully and correctly handle Certbot validation requests.
-
-## 3. Manual Renewal
-
-You can renew certificates at any time by running the same command:
+`init` obtains/expands the named lineage. `renew` only renews an existing lineage;
+it fails if renewal metadata is absent. `dry-run` uses Certbot's staging renewal
+test and does not reload Nginx. Normal renewal:
 
 ```bash
-make cert
+bash deploy/certbot/cert-manage.sh renew
 ```
 
-Automatic renewal via Cron was not configured as per preference for manual control.
+Scripts discover the checkout root, use `.runtime/cert.lock` to avoid overlapping
+runs and default to project `homeservice-prod`. For another installation export
+`COMPOSE_PROJECT_NAME` and an absolute `HOMESERVICE_ENV_FILE`. Keep the same project
+name used to create the existing certificate volumes.
 
-## 4. How It Works (Technical Details)
+Bootstrap self-signed certificates are stored separately at
+`/etc/letsencrypt/bootstrap/homecleanservice.by`. Nginx uses a runtime symlink
+`/run/homeservice-tls` to either bootstrap files or the existing real lineage
+`/etc/letsencrypt/live/homecleanservice.by`. Refresh switches the symlink, tests
+the Nginx configuration and only then reloads; a failed test restores the previous
+symlink. The running Nginx process keeps its loaded certificate if renewal fails.
 
-*   **Single Config:** We use only one file `deploy/nginx/default.conf`. This prevents conflicts during `git pull`.
-*   **Security:** All traffic is automatically redirected from HTTP to HTTPS.
-*   **Files:**
-    *   `deploy/certbot/docker-compose.yml`: Certbot service configuration.
-    *   `deploy/certbot/cert-manage.sh`: Logic for certificate acquisition and renewal.
-*   **Logs:** You can check Certbot's output during execution in the console.
+## Existing dummy or damaged lineages
+
+The scripts never delete `live`, `archive`, or `renewal` files. If an old version
+put dummy certificates into `live/homecleanservice.by` without renewal metadata,
+`init` stops rather than guessing. Back up the entire certificate volume first,
+inspect certificate subject/issuer/dates and the renewal metadata, and check
+`certbot certificates`. For a confirmed old dummy only, move the conflicting
+directory to a timestamped recovery location inside the volume before retrying
+`init`. Preserve all real or uncertain lineages, including `-0001` suffixed ones;
+repair them from the backup or select their correct metadata manually. Never
+delete a lineage to resolve an issuance error.
+
+## Optional schedule
+
+The files in `deploy/systemd/` are templates, not automatically installed.
+Adjust `/opt/homeservice` in the services to the deployment checkout and create
+root-owned `/etc/homeservice/operations.env` with mode `0600`:
+
+```dotenv
+COMPOSE_PROJECT_NAME=homeservice-prod
+HOMESERVICE_ENV_FILE=/opt/homeservice/.env
+```
+
+After a successful manual `dry-run`, install the certificate service/timer into
+`/etc/systemd/system`, run `systemctl daemon-reload`, then enable
+`homeservice-cert-renew.timer`. It runs twice daily with random delay and catches
+missed runs after reboot. Monitor service failures and certificate expiry through
+your existing monitoring; a timer alone does not notify an operator. Inspect
+`journalctl -u homeservice-cert-renew.service` and `systemctl list-timers`.

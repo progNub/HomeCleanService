@@ -1,0 +1,11 @@
+[Unit]
+Description=HomeService encrypted offsite backup
+Requires=docker.service
+After=docker.service network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/homeservice
+EnvironmentFile=/etc/homeservice/operations.env
+ExecStart=/usr/bin/bash /opt/homeservice/deploy/scripts/backup.sh
+UMask=0077

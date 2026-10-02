@@ -1,6 +1,6 @@
 services:
   certbot:
-    image: certbot/certbot
+    image: certbot/certbot:v5.8.0
     volumes:
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
@@ -11,13 +11,13 @@ services:
 volumes:
   certbot-etc:
     external: true
-    name: homeservice-prod_certbot-etc
+    name: ${COMPOSE_PROJECT_NAME:-homeservice-prod}_certbot-etc
   certbot-var:
     external: true
-    name: homeservice-prod_certbot-var
+    name: ${COMPOSE_PROJECT_NAME:-homeservice-prod}_certbot-var
   webroot:
     external: true
-    name: homeservice-prod_webroot
+    name: ${COMPOSE_PROJECT_NAME:-homeservice-prod}_webroot
 
 networks:
   homeservice_network:
