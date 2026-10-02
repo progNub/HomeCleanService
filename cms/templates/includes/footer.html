@@ -4,9 +4,9 @@
     <div class="container">
         <div class="row g-4 mb-4">
             <div class="col-lg-5">
-                <a href="/" class="text-decoration-none d-flex align-items-center mb-3">
-                    <img src="{% static 'cms/images/logo/logo_64x64.png' %}" alt="Logo" class="me-2"
-                         style="width: 48px; height: 48px;">
+                <a href="{% pageurl current_site.root_page %}" class="text-decoration-none d-flex align-items-center mb-3">
+                    <img src="{% static 'cms/images/logo/logo_64x64.png' %}" alt="" class="me-2"
+                         width="48" height="48" loading="lazy">
                     <div class="h3 fw-bold text-primary mb-0">
                         {{ current_site.site_name|default:"HomeCleanService" }}
                     </div>
@@ -44,7 +44,7 @@
                 <div class="d-flex gap-2 justify-content-lg-end flex-wrap">
                     {% for item in social.social_media_links.all %}
                         <a href="{{ item.url }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3"
-                           target="_blank">{{ item.get_platform_display }}</a>
+                           target="_blank" rel="noopener noreferrer">{{ item.get_platform_display }}</a>
                     {% endfor %}
                 </div>
             </div>

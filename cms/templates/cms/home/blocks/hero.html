@@ -7,8 +7,15 @@
 
 {% block section_pre_container %}
     {% if self.image %}
-        {% image self.image width-1920 format-webp as hero_img %}
-        <div class="hero-bg-image" style="background-image: url('{{ hero_img.url }}');"></div>
+        {% image self.image width-640 format-webp as hero_small %}
+        {% image self.image width-1280 format-webp as hero_medium %}
+        {% image self.image width-1920 format-webp as hero_large %}
+        <picture class="hero-bg-image" aria-hidden="true">
+            <img src="{{ hero_medium.url }}"
+                 srcset="{{ hero_small.url }} {{ hero_small.width }}w{% if hero_medium.width > hero_small.width %}, {{ hero_medium.url }} {{ hero_medium.width }}w{% endif %}{% if hero_large.width > hero_medium.width %}, {{ hero_large.url }} {{ hero_large.width }}w{% endif %}"
+                 sizes="100vw" width="{{ hero_medium.width }}" height="{{ hero_medium.height }}"
+                 alt="" loading="eager" fetchpriority="high">
+        </picture>
     {% endif %}
 {% endblock %}
 

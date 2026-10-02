@@ -2,8 +2,8 @@
 
 <nav class="navbar navbar-expand-lg shadow-sm py-3 navbar-custom">
     <div class="container">
-        <a class="navbar-brand fw-bold text-primary fs-3 d-flex align-items-center" href="/">
-            <img src="{% static 'cms/images/logo/logo_64x64.png' %}" alt="Logo" class="me-2" style="width: 32px; height: 32px;" loading="lazy">
+        <a class="navbar-brand fw-bold text-primary fs-3 d-flex align-items-center" href="{% pageurl current_site.root_page %}">
+            <img src="{% static 'cms/images/logo/logo_64x64.png' %}" alt="" class="me-2" width="32" height="32">
             {{ current_site.site_name|default:"HomeCleanService" }}
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,7 +21,7 @@
                 {% else %}
                     {# Fallback if menu is not configured #}
                     <li class="nav-item">
-                        <a class="nav-link" href="/">{% trans "Главная" %}</a>
+                        <a class="nav-link" href="{% pageurl current_site.root_page %}">{% trans "Главная" %}</a>
                     </li>
                     {% for menuitem in current_site.root_page.get_children.live.in_menu %}
                         <li class="nav-item">
@@ -31,8 +31,8 @@
                 {% endif %}
                 {% endwith %}
                 <li class="nav-item ms-lg-3">
-                    <button class="btn btn-link nav-link p-2" onclick="toggleTheme()" aria-label="{% trans 'Переключить тему' %}" title="{% trans 'Переключить тему' %}">
-                        <i id="theme-icon" class="bi bi-moon-fill"></i>
+                    <button type="button" class="btn btn-link nav-link p-2" data-theme-toggle aria-label="{% trans 'Переключить тему' %}" title="{% trans 'Переключить тему' %}">
+                        <i data-theme-icon class="bi bi-circle-half" aria-hidden="true"></i>
                     </button>
                 </li>
             </ul>

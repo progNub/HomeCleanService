@@ -19,6 +19,7 @@
 
                             <form action="{% pageurl page %}" method="POST" id="request-form">
                                 {% csrf_token %}
+                                {% bootstrap_form_errors form type='non_fields' %}
                                 {% for field in form %}
                                     <div>
                                         {% bootstrap_field field %}

@@ -23,6 +23,7 @@ if os.getenv("DJANGO_LOAD_DOTENV", "1") == "1" and os.getenv("DJANGO_SETTINGS_MO
 }:
     load_dotenv(BASE_DIR / ".env")
 PROJECT_DIR = BASE_DIR / "cms"
+RELEASE_REVISION = os.getenv("RELEASE_REVISION", "development")
 
 
 def env_list(name, default=""):
@@ -147,7 +148,6 @@ THIRD_PARTY_APPS = [
     "taggit",
     "django_filters",
     "django_bootstrap5",
-    "compressor",
     "django_tasks_db",
 ]
 
@@ -262,7 +262,6 @@ AUTH_PASSWORD_VALIDATORS = [
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    "compressor.finders.CompressorFinder",
 ]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -270,14 +269,6 @@ STATIC_URL = "/static/"
 
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
-
-# ==============================================================================
-# DJANGO COMPRESSOR
-# ==============================================================================
-COMPRESS_ENABLED = True
-COMPRESS_OFFLINE = False
-
-COMPRESS_PRECOMPILERS = (("text/x-scss", "npx sass --load-path=node_modules {infile} {outfile}"),)
 
 # Default storage settings
 # See https://docs.djangoproject.com/en/6.0/ref/settings/#std-setting-STORAGES

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
+{% load i18n wagtailcore_tags %}
 {% block title %}{% trans "Страница не найдена" %}{% endblock %}
 
 {% block body_class %}template-404{% endblock %}
@@ -12,7 +12,7 @@
             <h1 class="display-1 fw-bold">404</h1>
             <h2 class="mb-4">{% trans "Страница не найдена" %}</h2>
             <p class="lead mb-5">{% trans "К сожалению, мы не смогли найти страницу, которую вы ищете." %}</p>
-            <a href="/" class="btn btn-primary btn-lg">{% trans "На главную" %}</a>
+            <a href="{% pageurl current_site.root_page %}" class="btn btn-primary btn-lg">{% trans "На главную" %}</a>
         </div>
     </div>
 </div>

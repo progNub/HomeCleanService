@@ -46,13 +46,17 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-size: cover;
-    background-position: center;
     z-index: 0;
     opacity: 0.8;
     pointer-events: none;
     filter: blur(8px);
     transform: scale(1.1); // Scale up more to hide blurred edges with 8px blur
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 
   // Dark overlay to improve text readability - only when image is present
@@ -77,6 +81,7 @@
 // Reviews Slider
 // --------------------------------------------------------------------------
 .reviews-slider {
+  scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -ms-overflow-style: none;
 
@@ -86,11 +91,42 @@
 }
 
 .review-slide {
+  scroll-snap-align: start;
   transition: transform $transition-base;
 
   &:hover {
     transform: translateY(-5px);
   }
+}
+
+.review-avatar {
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+}
+
+.service-image-placeholder {
+  height: 200px;
+}
+
+.about-image-placeholder {
+  min-height: 400px;
+
+  .bi {
+    font-size: 10rem;
+  }
+}
+
+.form-success-icon {
+  font-size: 4rem;
+}
+
+.gallery-item-wrapper {
+  background-color: rgba(var(--bs-tertiary-bg-rgb), 0.5);
+}
+
+.comparison-caption {
+  max-width: 800px;
 }
 
 // --------------------------------------------------------------------------

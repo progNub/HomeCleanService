@@ -43,6 +43,7 @@ SECURE_REDIRECT_EXEMPT = [r"^health/$", r"^ready/$"]
 # (e.g. after a Wagtail upgrade).
 # See https://docs.djangoproject.com/en/6.0/ref/contrib/staticfiles/#manifeststaticfilesstorage
 STORAGES["staticfiles"]["BACKEND"] = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+STORAGES["staticfiles"]["OPTIONS"] = {"location": "/opt/homeservice/static"}
 
 # SECURITY SETTINGS
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/

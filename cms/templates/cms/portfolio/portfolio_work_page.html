@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtailimages_tags i18n static %}
+{% load wagtailcore_tags wagtailimages_tags i18n static navigation_tags %}
 
 {% block body_class %}template-portfolioworkpage{% endblock %}
 
@@ -20,6 +20,8 @@
                 </div>
 
                 {# CTA Block #}
+                {% request_page as request_page %}
+                {% if request_page %}
                 <div class="card border-0 shadow-sm bg-body-tertiary mb-5 portfolio-cta-card">
                     <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
                         <div class="mb-3 mb-md-0">
@@ -27,10 +29,11 @@
                             <p class="text-secondary mb-0">{% trans "Оставьте заявку, и мы проконсультируем вас бесплатно." %}</p>
                         </div>
                         <div class="flex-shrink-0 ms-md-4">
-                            <a href="/request/" class="btn btn-primary px-4">{% trans "Заказать расчет" %}</a>
+                            <a href="{% pageurl request_page %}" class="btn btn-primary px-4">{% trans "Заказать расчет" %}</a>
                         </div>
                     </div>
                 </div>
+                {% endif %}
 
                 {# Content Blocks #}
                 <div class="portfolio-content mb-5">
