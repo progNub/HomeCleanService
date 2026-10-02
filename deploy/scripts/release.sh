@@ -64,12 +64,19 @@ else
     "${COMPOSE[@]}" run --rm --no-deps --entrypoint sh release -ec 'cp -R /opt/homeservice/static/. /app/staticfiles/; python manage.py clear_wagtail_cache'
 fi
 "${COMPOSE[@]}" up -d --no-deps --wait --wait-timeout 120 web worker
+# Preserve existing credentials; never generate a default public login.
+if [[ -s "$ROOT/deploy/dozzle/users.yml" ]]; then
+    "${COMPOSE[@]}" --profile tools up -d --no-deps dozzle
+fi
 "${COMPOSE[@]}" up -d umami nginx
 # Docker DNS can retain the old web address until Nginx reloads.
 "${COMPOSE[@]}" exec -T nginx nginx -t
 "${COMPOSE[@]}" exec -T nginx nginx -s reload
 if [[ "$MODE" != init ]]; then
     EXPECTED_REVISION="$IMAGE_REVISION" bash "$ROOT/deploy/scripts/smoke.sh"
+    if [[ -s "$ROOT/deploy/dozzle/users.yml" ]]; then
+        bash "$ROOT/deploy/scripts/logs-smoke.sh"
+    fi
 fi
 printf '%s\n' "$PREVIOUS_IMAGE" >"$STATE/previous-image"
 printf '%s\n' "$APP_IMAGE" >"$STATE/current-image"

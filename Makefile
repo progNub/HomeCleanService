@@ -50,7 +50,7 @@ help:
 	@echo "    make prod-logs         - Follow all production logs"
 	@echo "    make prod-logs-web     - Follow only web container logs"
 	@echo "    make prod-logs-dozzle   - Follow only Dozzle logs"
-	@echo "    make prod-tools        - Start private loopback Dozzle with existing credentials"
+	@echo "    make prod-tools        - Start authenticated Dozzle behind logs HTTPS endpoint"
 	@echo "    make dozzle-gen-pass   - Write users.yml; set DOZZLE_USER and explicit DOZZLE_PASS"
 	@echo "    make prod-build        - Build homeservice:local for explicit local testing"
 	@echo "    make prod-migrate      - Manually run release migrations/assets job; stop writers first"

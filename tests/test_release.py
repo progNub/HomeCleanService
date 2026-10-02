@@ -19,7 +19,7 @@ class ReleaseTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         (self.root / "deploy/scripts").mkdir(parents=True)
         (self.root / "bin").mkdir()
-        for name in ("release.sh", "smoke.sh"):
+        for name in ("release.sh", "smoke.sh", "logs-smoke.sh"):
             shutil.copy(ROOT / "deploy/scripts" / name, self.root / "deploy/scripts" / name)
         (self.root / ".env").write_text("SITE_URL=https://example.test\n")
         (self.root / "deploy/scripts/backup.sh").write_text(
@@ -47,6 +47,8 @@ if [[ -n "${FAIL_CURL_MATCH:-}" && "$*" == *"$FAIL_CURL_MATCH"* ]]; then exit 22
 if [[ "$*" == *'/ready/'* ]]; then
     printf '{"status":"%s","revision":"%s"}' "${READY_STATUS:-ok}" "$CURL_REVISION"
 fi
+if [[ "$*" == *'/login'* ]]; then printf '%s' "${LOGS_LOGIN_STATUS:-200}"; fi
+if [[ "$*" == *'/api/events/stream'* ]]; then printf '%s' "${LOGS_STREAM_STATUS:-401}"; fi
 """,
         )
         self.env = os.environ.copy()
@@ -80,6 +82,33 @@ fi
 
     def commands(self):
         return self.log.read_text() if self.log.exists() else ""
+
+    def test_configured_dozzle_is_updated_and_anonymous_stream_is_checked(self):
+        users = self.root / "deploy/dozzle/users.yml"
+        users.parent.mkdir()
+        users.write_text("synthetic fixture")
+        result = self.run_script()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("--profile tools up -d --no-deps dozzle", self.commands())
+        self.assertIn("/api/events/stream", self.commands())
+
+    def test_unconfigured_dozzle_is_not_started(self):
+        result = self.run_script()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("--profile tools", self.commands())
+        self.assertNotIn("/api/events/stream", self.commands())
+
+    def test_logs_smoke_rejects_unprotected_stream_and_missing_login(self):
+        self.write_stub("sleep", "#!/bin/bash\nexit 0\n")
+        for env in ({"LOGS_STREAM_STATUS": "200"}, {"LOGS_LOGIN_STATUS": "404"}):
+            with self.subTest(env=env):
+                result = self.run_script("logs-smoke.sh", **env)
+                self.assertNotEqual(result.returncode, 0)
+
+    def test_logs_smoke_requires_https(self):
+        result = self.run_script("logs-smoke.sh", LOGS_SMOKE_URL="http://example.test")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(self.commands(), "")
 
     def test_success_orders_checks_stop_backup_migrate_start_smoke(self):
         result = self.run_script()

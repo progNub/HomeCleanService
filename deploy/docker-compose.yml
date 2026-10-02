@@ -109,6 +109,7 @@ services:
     environment:
       DOZZLE_AUTH_PROVIDER: simple
       DOZZLE_ENABLE_ACTIONS: "false"
+      DOZZLE_ENABLE_SHELL: "false"
       DOZZLE_NO_ANALYTICS: "true"
     ports: ["127.0.0.1:8081:8080"]
     networks: [homeservice_network]

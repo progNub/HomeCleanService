@@ -187,7 +187,9 @@ env/permissions; normal release smoke requires trusted HTTPS.
 Install backup/certificate timers only after manual tests and adjusting paths in
 deploy/systemd/. No timers are installed automatically. Monitor failed jobs,
 certificate expiry, backup age and disk space; periodically restore a backup.
-Dozzle is optional and private: [SSH access instructions](LOGS.md).
+Dozzle uses an authenticated HTTPS endpoint: [log access instructions](LOGS.md).
+Releases start/update it when deploy/dozzle/users.yml exists, then verify that
+the login page works and anonymous log streaming returns 401.
 
 The main site's CSP enforces basic framing/object restrictions; its detailed
 resource policy is Report-Only while CMS analytics and Wagtail flows are checked.
