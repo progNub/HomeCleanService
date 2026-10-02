@@ -117,8 +117,8 @@ prod-up: prod-start
 
 prod-start:
 	@if [ ! -f deploy/dozzle/users.yml ]; then \
-		echo "deploy/dozzle/users.yml not found. Generating with default or provided credentials..."; \
-		$(MAKE) dozzle-gen-pass; \
+		echo "Create deploy/dozzle/users.yml with an explicit strong password before production startup."; \
+		exit 1; \
 	fi
 	$(COMPOSE_PROD) up -d --build --remove-orphans
 	$(COMPOSE_PROD) exec -T nginx nginx -s reload
@@ -187,11 +187,12 @@ cert:
 # Generate with docker run -it --rm amir20/dozzle generate admin --password password --email me@email.net --name "Admin"
 # ==============================================================================
 DOZZLE_USER ?= admin
-DOZZLE_PASS ?= admin
+DOZZLE_PASS ?=
 DOZZLE_EMAIL ?= admin@gmail.com
 DOZZLE_NAME ?= admin_user
 
 dozzle-gen-pass:
+	@test -n "$(DOZZLE_PASS)" && test "$(DOZZLE_PASS)" != admin || (echo "Set DOZZLE_PASS to a strong password"; exit 1)
 	@mkdir -p deploy/dozzle
 	@docker run --rm amir20/dozzle:v10.6.3 generate "$(DOZZLE_USER)"  --password "$(DOZZLE_PASS)" --email "$(DOZZLE_EMAIL)" --name "$(DOZZLE_NAME)" > deploy/dozzle/users.yml
 	@echo "Success! Authorization file generated and saved to deploy/dozzle/users.yml"

@@ -2,6 +2,10 @@ from .base import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+SECRET_KEY = ENV_DJANGO_SECRET_KEY or "django-insecure-local-development-only"
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 
 ALLOWED_HOSTS = ["*"]
@@ -40,7 +44,7 @@ CACHES = {
     }
 }
 
-WAGTAIL_CACHE = True
+WAGTAIL_CACHE = False
 WAGTAIL_CACHE_HEADER = "X-Wagtail-Cache"
 # TTL for full-page HTTP responses cached by Update/Fetch cache middleware.
 CACHE_MIDDLEWARE_SECONDS = ENV_CACHE_TIMEOUT

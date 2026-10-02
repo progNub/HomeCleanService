@@ -47,7 +47,7 @@ services:
       - homeservice_network
 
   db:
-    image: postgres:16-alpine
+    image: postgres:16-alpine@sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685
     container_name: homeservice_db_prod
     restart: always
     healthcheck:
@@ -61,14 +61,14 @@ services:
     environment:
       - POSTGRES_DB=${DB_NAME:-homeservice}
       - POSTGRES_USER=${DB_USER:-homeservice_user}
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-homeservice_pass}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:?DB_PASSWORD is required}
     env_file:
       - ../.env
     networks:
       - homeservice_network
 
   redis:
-    image: redis:alpine
+    image: redis:alpine@sha256:ad0a6eff0a40304ab1ab4f50f0dc192d82b071e1094eac961bcb6106092f8a4e
     container_name: homeservice_redis_prod
     restart: always
     expose:
@@ -77,13 +77,13 @@ services:
       - homeservice_network
 
   umami:
-    image: ghcr.io/umami-software/umami:postgresql-latest
+    image: ghcr.io/umami-software/umami@sha256:e3f80c0625aad7179b49da27d475357cabb1068b8cacd9a792cfd6966888b123
     container_name: homeservice_umami
     restart: always
     environment:
-      - DATABASE_URL=postgresql://${DB_USER:-homeservice_user}:${DB_PASSWORD:-homeservice_pass}@db:5432/umami
+      - DATABASE_URL=postgresql://${DB_USER:-homeservice_user}:${DB_PASSWORD:?DB_PASSWORD is required}@db:5432/umami
       - DATABASE_TYPE=postgresql
-      - APP_SECRET=${UMAMI_APP_SECRET:-replace-with-a-random-string}
+      - APP_SECRET=${UMAMI_APP_SECRET:?UMAMI_APP_SECRET is required}
       - TRACKER_SCRIPT_NAME=stats
     depends_on:
       - db
@@ -93,7 +93,7 @@ services:
       - homeservice_network
 
   dozzle:
-    image: amir20/dozzle:v10.6.3
+    image: amir20/dozzle:v10.6.3@sha256:3d42f4c7b27f475117004f8524b52b6ea2cc1cdc39a508892d6b81ffb2883160
     container_name: homeservice_dozzle
     restart: always
     volumes:
@@ -104,7 +104,7 @@ services:
         target: /data/users.yml
     environment:
       - DOZZLE_AUTH_PROVIDER=simple
-      - DOZZLE_ENABLE_ACTIONS=true
+      - DOZZLE_ENABLE_ACTIONS=false
       - DOZZLE_NO_ANALYTICS=true
     env_file:
       - ../.env
@@ -114,7 +114,7 @@ services:
       - homeservice_network
 
   nginx:
-    image: nginx:latest
+    image: nginx@sha256:5aca99593157f4ae539a5dec1092a0ad8762f8e2eb1789085a13a0f5622369f6
     container_name: homeservice_nginx_prod
     restart: always
     ports:

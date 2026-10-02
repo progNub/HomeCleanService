@@ -101,3 +101,8 @@ Makefile.config
 
 # Ruff
 .ruff_cache/
+
+# Generated frontend and local release/backup artifacts
+/cms/static/cms/dist/
+/backups/
+/deploy/.release/
