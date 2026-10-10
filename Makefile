@@ -198,13 +198,13 @@ prod-db-backup:
 # ==============================================================================
 
 cert:
-	@COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/certbot/cert-manage.sh renew
+	@COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/certbot/cert-task-runner.sh renew
 
 cert-init:
 	@COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/certbot/cert-manage.sh init
 
 cert-dry-run:
-	@COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/certbot/cert-manage.sh dry-run
+	@COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/certbot/cert-task-runner.sh dry-run
 
 # ==============================================================================
 # LOG MANAGEMENT & SECURITY (DOZZLE)

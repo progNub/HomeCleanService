@@ -19,7 +19,11 @@ class OperationsTests(unittest.TestCase):
             (self.root / name).mkdir(parents=True)
         for name in ("backup.sh", "restore.sh"):
             shutil.copy(ROOT / "deploy/scripts" / name, self.root / "deploy/scripts" / name)
-        shutil.copy(ROOT / "deploy/certbot/cert-manage.sh", self.root / "deploy/certbot")
+        for name in ("cert-manage.sh", "cert-task-runner.sh"):
+            shutil.copy(ROOT / "deploy/certbot" / name, self.root / "deploy/certbot" / name)
+        release_state = self.root / "deploy/.release"
+        release_state.mkdir()
+        (release_state / "current-image").write_text("registry.example.test/app:current\n")
         (self.root / ".env").write_text("CERTBOT_EMAIL=ops@example.test\n")
         (self.root / "media/photo.txt").write_text("fixture media")
         self.log = self.root / "docker.log"
@@ -29,6 +33,9 @@ class OperationsTests(unittest.TestCase):
             '[[ -z "${EXPECT_APP_IMAGE:-}" || "${APP_IMAGE:-}" == "$EXPECT_APP_IMAGE" ]] || exit 88\n'
             'printf "%s\\n" "$*" >> "$DOCKER_LOG"\n'
             'case "$*" in\n'
+            '  *"ps --status running --services"*) printf "web\\n";;\n'
+            '  *"certificate_task enqueue"*) printf "00000000-0000-0000-0000-000000000001\\n";;\n'
+            '  *"certificate_task finish"*) cat >"$TASK_OUTPUT";;\n'
             '  *pg_dump*) [[ "${FAIL_DUMP:-0}" != 1 ]] || exit 1; printf "PGDMPfixture";;\n'
             '  *createdb*) [[ "${DB_EXISTS:-0}" != 1 ]] || exit 1;;\n'
             '  *pg_restore*) cat >/dev/null; [[ "${FAIL_RESTORE:-0}" != 1 ]] || exit 1;;\n'
@@ -40,7 +47,12 @@ class OperationsTests(unittest.TestCase):
         self.env = os.environ.copy()
         for name in ("BACKUP_GPG_RECIPIENT", "BACKUP_REMOTE_DIR", "HOMESERVICE_ENV_FILE", "MEDIA_DIR", "BACKUP_DIR"):
             self.env.pop(name, None)
-        self.env.update(PATH=f"{self.root / 'bin'}:{self.env['PATH']}", DOCKER_LOG=str(self.log))
+        self.task_output = self.root / "task-output.log"
+        self.env.update(
+            PATH=f"{self.root / 'bin'}:{self.env['PATH']}",
+            DOCKER_LOG=str(self.log),
+            TASK_OUTPUT=str(self.task_output),
+        )
 
     def run_script(self, name, *args, **env):
         return subprocess.run(
@@ -67,7 +79,7 @@ class OperationsTests(unittest.TestCase):
 
     def test_maintenance_reuses_last_release_image_but_explicit_override_wins(self):
         state = self.root / "deploy/.release"
-        state.mkdir()
+        state.mkdir(exist_ok=True)
         (state / "current-image").write_text("registry.example.test/app:last-release\n")
         for image in ("", "registry.example.test/app:explicit"):
             with self.subTest(explicit=bool(image)):
@@ -195,6 +207,23 @@ class OperationsTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("--dry-run", self.log.read_text())
         self.assertNotIn("--refresh-certificates", self.log.read_text())
+
+    def test_tracked_certificate_runner_records_success(self):
+        result = self.run_script("certbot/cert-task-runner.sh", "renew")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        commands = self.log.read_text()
+        self.assertIn("certificate_task enqueue --mode renew", commands)
+        self.assertIn("certificate_task claim", commands)
+        self.assertIn("certificate_task finish", commands)
+        self.assertIn("--status successful", commands)
+        self.assertIn("Certificate operation completed: renew", self.task_output.read_text())
+
+    def test_tracked_certificate_runner_records_failure(self):
+        result = self.run_script("certbot/cert-task-runner.sh", "renew", FAIL_RENEW="1")
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("--status failed", self.log.read_text())
 
     def test_nginx_rejects_bad_config_before_reload_and_restores_symlink(self):
         tls = self.root / "letsencrypt/live/homecleanservice.by"

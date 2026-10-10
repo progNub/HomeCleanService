@@ -17,7 +17,12 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 TELEGRAM_BOT_TOKEN = None
 TELEGRAM_LOGS_CHAT_ID = None
 TELEGRAM_NOTIFICATIONS_CHAT_ID = None
-TASKS = {"default": {"BACKEND": "django.tasks.backends.dummy.DummyBackend", "QUEUES": ["default", "notifications"]}}
+TASKS = {
+    "default": {
+        "BACKEND": "django.tasks.backends.dummy.DummyBackend",
+        "QUEUES": ["default", "notifications", "maintenance"],
+    }
+}
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 LOGGING = {
     "version": 1,

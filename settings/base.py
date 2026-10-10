@@ -407,7 +407,10 @@ TELEGRAM_NOTIFICATIONS_CHAT_ID = ENV_TELEGRAM_NOTIFICATIONS_CHAT_ID
 TASKS = {
     "default": {
         "BACKEND": "django_tasks_db.DatabaseBackend",
-        "QUEUES": ["default", "notifications"],
+        # The regular application worker intentionally does not consume
+        # ``maintenance``. Host operations such as certificate renewal are
+        # claimed by a narrow systemd runner instead of exposing Docker to Django.
+        "QUEUES": ["default", "notifications", "maintenance"],
     },
 }
 
