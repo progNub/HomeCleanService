@@ -8,104 +8,771 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-05 13:10+0000\n"
+"POT-Creation-Date: 2026-10-10 16:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: cms/models.py:8
-msgid "Facebook"
-msgstr "Facebook"
+#: cms/apps.py:8
+msgid "Настройки системы"
+msgstr "System settings"
 
-#: cms/models.py:8
-msgid "Ссылка на Facebook"
-msgstr "Facebook link"
+#: cms/blocks/about.py:9
+msgid "Значение (напр. 10+)"
+msgstr "Value (e.g. 10+)"
 
-#: cms/models.py:9
-msgid "Instagram"
-msgstr "Instagram"
+#: cms/blocks/about.py:10
+msgid "Подпись (напр. лет опыта)"
+msgstr "Label (e.g. years of experience)"
 
-#: cms/models.py:9
-msgid "Ссылка на Instagram"
-msgstr "Instagram link"
+#: cms/blocks/about.py:14 cms/blocks/faq.py:17 cms/blocks/features.py:13
+#: cms/blocks/hero.py:11 cms/blocks/reviews.py:8 cms/blocks/services.py:17
+#: cms/models/settings/navigation.py:28
+msgid "Заголовок"
+msgstr "Title"
 
-#: cms/models.py:10
-msgid "YouTube"
-msgstr "YouTube"
+#: cms/blocks/about.py:15 cms/blocks/content.py:8
+msgid "Содержимое"
+msgstr "Content"
 
-#: cms/models.py:10
-msgid "Ссылка на YouTube"
-msgstr "YouTube link"
+#: cms/blocks/about.py:16 cms/blocks/hero.py:21
+#: cms/blocks/portfolio/blocks.py:9 cms/blocks/portfolio/blocks.py:14
+#: cms/blocks/portfolio/blocks.py:33 cms/blocks/services.py:11
+msgid "Изображение"
+msgstr "Image"
 
-#: cms/models.py:11
-msgid "Telegram"
-msgstr "Telegram"
+#: cms/blocks/about.py:17
+msgid "Показатели/Статистика"
+msgstr "Stats/Metrics"
 
-#: cms/models.py:11
-msgid "Ссылка на Telegram"
-msgstr "Telegram link"
+#: cms/blocks/about.py:20
+msgid "О нас"
+msgstr "About Us"
 
-#: cms/models.py:12
-msgid "WhatsApp"
-msgstr "WhatsApp"
+#: cms/blocks/base/blocks.py:7
+msgid "По умолчанию (цвет страницы)"
+msgstr "Default (page background)"
 
-#: cms/models.py:12
-msgid "Ссылка на WhatsApp"
-msgstr "WhatsApp link"
+#: cms/blocks/base/blocks.py:8
+msgid "Вторичный (минимальный контраст)"
+msgstr "Secondary (minimal contrast)"
 
-#: cms/models.py:21
-msgid "Социальные сети"
-msgstr "Social Media"
+#: cms/blocks/base/blocks.py:9
+msgid "Третичный (легкий серый / графитовый)"
+msgstr "Tertiary (light grey / graphite)"
 
-#: cms/models.py:25
-msgid "Настройки соцсетей"
-msgstr "Social Media Settings"
+#: cms/blocks/base/blocks.py:13
+msgid "Без отступов"
+msgstr "No padding"
 
-#: cms/models.py:30 contacts/models.py:15
-#: home/templates/home/blocks/contact_form.html:24
+#: cms/blocks/base/blocks.py:14
+msgid "Минимальный (1)"
+msgstr "Minimal (1)"
+
+#: cms/blocks/base/blocks.py:15
+msgid "Маленький (2)"
+msgstr "Small (2)"
+
+#: cms/blocks/base/blocks.py:16
+msgid "Средний (3)"
+msgstr "Medium (3)"
+
+#: cms/blocks/base/blocks.py:17
+msgid "Большой (4)"
+msgstr "Large (4)"
+
+#: cms/blocks/base/blocks.py:18
+msgid "Максимальный (5)"
+msgstr "Maximum (5)"
+
+#: cms/blocks/base/blocks.py:24
+msgid "Якорь (ID)"
+msgstr "Anchor (ID)"
+
+#: cms/blocks/base/blocks.py:25
+msgid "Уникальный идентификатор для перехода по ссылке (например, 'services')"
+msgstr "Unique identifier for anchor links (for example, 'services')"
+
+#: cms/blocks/base/blocks.py:31
+msgid "Цвет фона"
+msgstr "Background color"
+
+#: cms/blocks/base/blocks.py:37
+msgid "Вертикальные отступы"
+msgstr "Vertical padding"
+
+#: cms/blocks/base/blocks.py:38
+msgid "Управляет свободным пространством сверху и снизу блока"
+msgstr "Controls the space above and below the block"
+
+#: cms/blocks/content.py:11
+msgid "Основной текст"
+msgstr "Rich text"
+
+#: cms/blocks/faq.py:8
+msgid "Вопрос"
+msgstr "Question"
+
+#: cms/blocks/faq.py:9
+msgid "Ответ"
+msgstr "Answer"
+
+#: cms/blocks/faq.py:12
+msgid "Вопрос-ответ"
+msgstr "Question and answer"
+
+#: cms/blocks/faq.py:17
+msgid "Часто задаваемые вопросы"
+msgstr "Frequently asked questions"
+
+#: cms/blocks/faq.py:18
+msgid "Список вопросов"
+msgstr "Questions list"
+
+#: cms/blocks/faq.py:21
+msgid "Блок FAQ"
+msgstr "FAQ block"
+
+#: cms/blocks/features.py:8
+msgid "Заголовок преимущества"
+msgstr "Feature title"
+
+#: cms/blocks/features.py:9
+msgid "Текст преимущества"
+msgstr "Feature text"
+
+#: cms/blocks/features.py:14 cms/blocks/features.py:17
+msgid "Преимущества"
+msgstr "Features"
+
+#: cms/blocks/hero.py:12
+msgid "Заголовок баннера"
+msgstr "Banner title"
+
+#: cms/blocks/hero.py:16 cms/blocks/hero.py:17
+msgid "Подзаголовок"
+msgstr "Subtitle"
+
+#: cms/blocks/hero.py:22
+msgid "Фоновое изображение"
+msgstr "Background image"
+
+#: cms/blocks/hero.py:26
+msgid "Текст кнопки"
+msgstr "Button text"
+
+#: cms/blocks/hero.py:27
+msgid "Рассчитать стоимость"
+msgstr "Calculate cost"
+
+#: cms/blocks/hero.py:31
+msgid "Целевая страница"
+msgstr "Target page"
+
+#: cms/blocks/hero.py:32
+msgid "Выберите страницу, на которую ведет кнопка"
+msgstr "Select the page the button links to"
+
+#: cms/blocks/hero.py:36
+msgid "Главный баннер"
+msgstr "Hero banner"
+
+#: cms/blocks/portfolio/blocks.py:10 cms/blocks/portfolio/blocks.py:34
+msgid "Подпись"
+msgstr "Caption"
+
+#: cms/blocks/portfolio/blocks.py:19
+msgid "Изображение ДО"
+msgstr "Before image"
+
+#: cms/blocks/portfolio/blocks.py:20
+msgid "Изображение ПОСЛЕ"
+msgstr "After image"
+
+#: cms/blocks/portfolio/blocks.py:21 cms/blocks/services.py:10
+#: cms/models/pages/legal.py:20 cms/models/pages/portfolio.py:27
+msgid "Описание"
+msgstr "Description"
+
+#: cms/blocks/portfolio/blocks.py:25
+msgid "Сравнение (До/После)"
+msgstr "Before/after comparison"
+
+#: cms/blocks/portfolio/blocks.py:37
+msgid "Галерея"
+msgstr "Gallery"
+
+#: cms/blocks/portfolio/blocks.py:42
+msgid "Сетка изображений"
+msgstr "Image grid"
+
+#: cms/blocks/reviews.py:8
+msgid "Отзывы наших клиентов"
+msgstr "Customer reviews"
+
+#: cms/blocks/reviews.py:25
+msgid "Блок отзывов"
+msgstr "Reviews block"
+
+#: cms/blocks/services.py:9
+msgid "Название услуги"
+msgstr "Service name"
+
+#: cms/blocks/services.py:18
+msgid "Наши услуги"
+msgstr "Our services"
+
+#: cms/blocks/services.py:20
+msgid "Список услуг"
+msgstr "Services list"
+
+#: cms/blocks/services.py:23
+msgid "Блок услуг"
+msgstr "Services block"
+
+#: cms/fields/phone.py:10
+msgid ""
+"Номер телефона должен быть в формате +375XXXXXXXXX (всего 13 символов)."
+msgstr ""
+"The phone number must be in +375XXXXXXXXX format (13 characters in total)."
+
+#: cms/fields/phone.py:21
+msgid "Введите корректный номер телефона."
+msgstr "Enter a valid phone number."
+
+#: cms/forms.py:33
+msgid ""
+"Вы должны подтвердить согласие на обработку данных для отправки отзыва."
+msgstr "You must consent to data processing before submitting a review."
+
+#: cms/forms.py:48
+msgid "Вы можете оставлять отзывы только раз в 3 часа."
+msgstr "You can submit a review only once every 3 hours."
+
+#: cms/models/pages/forms/builder.py:29
+msgid "Не удалось отправить форму. Пожалуйста, попробуйте ещё раз."
+msgstr "Failed to submit the form. Please try again."
+
+#: cms/models/pages/forms/builder.py:50
+msgid "Слишком много заявок. Пожалуйста, попробуйте позже."
+msgstr "Too many requests. Please try again later."
+
+#: cms/models/pages/forms/builder.py:55 cms/models/settings/contact.py:16
 msgid "Номер телефона"
 msgstr "Phone number"
 
-#: cms/models.py:30
+#: cms/models/pages/forms/builder.py:56
+msgid "Чекбокс согласия"
+msgstr "Consent checkbox"
+
+#: cms/models/pages/forms/form_fields.py:10
+msgid "Формат: 375XXXXXXXXX"
+msgstr "Format: 375XXXXXXXXX"
+
+#: cms/models/pages/forms/models.py:24
+msgid "Поле формы"
+msgstr "Form field"
+
+#: cms/models/pages/forms/models.py:25
+msgid "Поля формы"
+msgstr "Form fields"
+
+#: cms/models/pages/forms/models.py:28
+msgid "field type"
+msgstr "Field type"
+
+#: cms/models/pages/forms/models.py:55
+msgid "Вступление"
+msgstr "Introduction"
+
+#: cms/models/pages/forms/models.py:56
+msgid "Текст, который отображается перед полями формы"
+msgstr "Text displayed before the form fields"
+
+#: cms/models/pages/forms/models.py:60
+msgid "Текст после отправки"
+msgstr "Text after submission"
+
+#: cms/models/pages/forms/models.py:61
+msgid "Сообщение, которое увидит пользователь после успешной заполнения формы"
+msgstr "Message shown after the form is submitted successfully"
+
+#: cms/models/pages/forms/models.py:85
+msgid "Страница с формой"
+msgstr "Form page"
+
+#: cms/models/pages/forms/models.py:86
+msgid "Страницы с формами"
+msgstr "Form pages"
+
+#: cms/models/pages/forms/models.py:94
+msgid "Конструктор полей"
+msgstr "Field builder"
+
+#: cms/models/pages/forms/models.py:95
+msgid "Добавьте поля, которые должен заполнить пользователь"
+msgstr "Add the fields the user must complete"
+
+#: cms/models/pages/forms/models.py:108
+msgid "Настройки уведомлений (Email)"
+msgstr "Notification settings (Email)"
+
+#: cms/models/pages/home.py:32 cms/models/pages/portfolio.py:72
+msgid "Контент страницы"
+msgstr "Page content"
+
+#: cms/models/pages/home.py:42
+msgid "Главная страница"
+msgstr "Home page"
+
+#: cms/models/pages/legal.py:21
+msgid "Текст перед списком документов"
+msgstr "Text before the documents list"
+
+#: cms/models/pages/legal.py:36
+msgid "Список юридических документов"
+msgstr "Legal documents index"
+
+#: cms/models/pages/legal.py:37
+msgid "Списки юридических документов"
+msgstr "Legal documents indexes"
+
+#: cms/models/pages/legal.py:50
+msgid "Содержание страницы"
+msgstr "Page content"
+
+#: cms/models/pages/legal.py:51
+msgid "Основной текст юридического документа"
+msgstr "Main text of the legal document"
+
+#: cms/models/pages/legal.py:61
+msgid "Юридический документ"
+msgstr "Legal document"
+
+#: cms/models/pages/legal.py:62 cms/models/settings/contact.py:96
+msgid "Юридические документы"
+msgstr "Legal documents"
+
+#: cms/models/pages/portfolio.py:28
+msgid "Текст перед списком работ"
+msgstr "Text before the portfolio list"
+
+#: cms/models/pages/portfolio.py:43 cms/models/pages/portfolio.py:44
+msgid "Наши работы"
+msgstr "Our work"
+
+#: cms/models/pages/portfolio.py:57
+msgid "Основное изображение"
+msgstr "Main image"
+
+#: cms/models/pages/portfolio.py:59
+msgid "Краткое описание (для карточки)"
+msgstr "Short description (for the card)"
+
+#: cms/models/pages/portfolio.py:60
+msgid "Полное описание"
+msgstr "Full description"
+
+#: cms/models/pages/portfolio.py:97
+msgid "Работа"
+msgstr "Work"
+
+#: cms/models/pages/portfolio.py:98
+msgid "Работы"
+msgstr "Works"
+
+#: cms/models/reviews.py:15
+msgid "Автор"
+msgstr "Author"
+
+#: cms/models/reviews.py:16
+msgid "Текст отзыва"
+msgstr "Review text"
+
+#: cms/models/reviews.py:18
+msgid "Рейтинг"
+msgstr "Rating"
+
+#: cms/models/reviews.py:20
+msgid "Дата и время"
+msgstr "Date and time"
+
+#: cms/models/reviews.py:26
+msgid "Согласие на обработку персональных данных"
+msgstr "Consent to personal data processing"
+
+#: cms/models/reviews.py:29
+msgid "Одобрено (показывать)"
+msgstr "Approved (display)"
+
+#: cms/models/reviews.py:30
+msgid "IP-адрес"
+msgstr "IP address"
+
+#: cms/models/reviews.py:31
+msgid "User-Agent"
+msgstr "User-Agent"
+
+#: cms/models/reviews.py:50
+msgid "Отзыв"
+msgstr "Review"
+
+#: cms/models/reviews.py:51
+msgid "Отзывы"
+msgstr "Reviews"
+
+#: cms/models/reviews.py:54
+msgid "Одобрено"
+msgstr "Approved"
+
+#: cms/models/reviews.py:54
+msgid "Не одобрено"
+msgstr "Not approved"
+
+#: cms/models/seo.py:15
+msgid "Индексировать, переходить по ссылкам (Index, Follow)"
+msgstr "Index, follow"
+
+#: cms/models/seo.py:19
+msgid "Не индексировать, переходить по ссылкам (Noindex, Follow)"
+msgstr "Noindex, follow"
+
+#: cms/models/seo.py:23
+msgid "Индексировать, не переходить по ссылкам (Index, Nofollow)"
+msgstr "Index, nofollow"
+
+#: cms/models/seo.py:27
+msgid "Не индексировать, не переходить по ссылкам (Noindex, Nofollow)"
+msgstr "Noindex, nofollow"
+
+#: cms/models/seo.py:31
+msgid "Веб-сайт (Website)"
+msgstr "Website"
+
+#: cms/models/seo.py:32
+msgid "Статья (Article)"
+msgstr "Article"
+
+#: cms/models/seo.py:33
+msgid "Товар (Product)"
+msgstr "Product"
+
+#: cms/models/seo.py:34
+msgid "Профиль (Profile)"
+msgstr "Profile"
+
+#: cms/models/seo.py:35
+msgid "Видео (Video)"
+msgstr "Video"
+
+#: cms/models/seo.py:43
+msgid "Изображение Open Graph"
+msgstr "Open Graph image"
+
+#: cms/models/seo.py:45
+msgid ""
+"Загрузите кастомное изображение OG для соцсетей. Рекомендуемый размер: "
+"1200x630px. Если не указано, будет использовано изображение родительской "
+"страницы или логотип сайта."
+msgstr ""
+"Upload a custom Open Graph image for social media. Recommended size: "
+"1200x630 px. If omitted, the parent page image or site logo will be used."
+
+#: cms/models/seo.py:56
+msgid "Тег Robots"
+msgstr "Robots tag"
+
+#: cms/models/seo.py:57
+msgid "Управление тем, как поисковые системы индексируют эту страницу"
+msgstr "Controls how search engines index this page"
+
+#: cms/models/seo.py:65
+msgid "Тип Open Graph"
+msgstr "Open Graph type"
+
+#: cms/models/seo.py:66
+msgid "Тип объекта в Open Graph (website, article и т.д.)"
+msgstr "Open Graph object type (website, article, etc.)"
+
+#: cms/models/seo.py:72
+msgid "Канонический URL"
+msgstr "Canonical URL"
+
+#: cms/models/seo.py:74
+msgid ""
+"Если оставить пустым, будет использован текущий URL страницы. Используйте, "
+"если контент дублируется на другой странице."
+msgstr ""
+"If left blank, the current page URL will be used. Set this when the content "
+"is duplicated on another page."
+
+#: cms/models/seo.py:81
+msgid "Дата публикации"
+msgstr "Publication date"
+
+#: cms/models/seo.py:82
+msgid "Дата и время публикации страницы для поисковых систем (Open Graph)"
+msgstr "Page publication date and time for search engines (Open Graph)"
+
+#: cms/models/seo.py:88
+msgid "Дата изменения"
+msgstr "Modified date"
+
+#: cms/models/seo.py:90
+msgid ""
+"Дата и время последнего изменения страницы для поисковых систем (Open "
+"Graph). Если не указано, будет использовано системное время изменения."
+msgstr ""
+"Page last-modified date and time for search engines (Open Graph). If "
+"omitted, the system modification time will be used."
+
+#: cms/models/seo.py:99
+msgid "URL-адрес страницы (Slug)"
+msgstr "Page URL (slug)"
+
+#: cms/models/seo.py:103
+msgid "Заголовок страницы (Title)"
+msgstr "Page title"
+
+#: cms/models/seo.py:104
+msgid "Мета-описание (Description)"
+msgstr "Meta description"
+
+#: cms/models/seo.py:112
+msgid "SEO и Социальные сети"
+msgstr "SEO and social media"
+
+#: cms/models/seo.py:113
+msgid "Настройте параметры SEO и отображения страницы в социальных сетях."
+msgstr "Configure SEO and how the page appears on social media."
+
+#: cms/models/settings/contact.py:17
 msgid "Основной номер телефона"
 msgstr "Main phone number"
 
-#: cms/models.py:31 contacts/models.py:18
+#: cms/models/settings/contact.py:19
 msgid "Email"
 msgstr "Email"
 
-#: cms/models.py:31
+#: cms/models/settings/contact.py:19
 msgid "Контактный email"
 msgstr "Contact email"
 
-#: cms/models.py:32
+#: cms/models/settings/contact.py:20
 msgid "Адрес"
 msgstr "Address"
 
-#: cms/models.py:32
+#: cms/models/settings/contact.py:20
 msgid "Адрес офиса"
 msgstr "Office address"
 
-#: cms/models.py:39
+#: cms/models/settings/contact.py:25
+msgid "Юридическое ФИО"
+msgstr "Legal full name"
+
+#: cms/models/settings/contact.py:26
+msgid "Полное ФИО индивидуального предпринимателя"
+msgstr "Full name of the sole proprietor"
+
+#: cms/models/settings/contact.py:32 cms/templates/includes/footer.html:59
+msgid "УНП"
+msgstr "Taxpayer identification number"
+
+#: cms/models/settings/contact.py:33
+msgid "Учетный номер плательщика"
+msgstr "Taxpayer identification number"
+
+#: cms/models/settings/contact.py:38
+msgid "Юридический адрес"
+msgstr "Registered address"
+
+#: cms/models/settings/contact.py:39
+msgid "Адрес регистрации"
+msgstr "Registration address"
+
+#: cms/models/settings/contact.py:44
+msgid "Дата регистрации"
+msgstr "Registration date"
+
+#: cms/models/settings/contact.py:45
+msgid "Дата государственной регистрации"
+msgstr "State registration date"
+
+#: cms/models/settings/contact.py:53
+msgid "Страница политики конфиденциальности"
+msgstr "Privacy policy page"
+
+#: cms/models/settings/contact.py:61
+msgid "Страница пользовательского соглашения"
+msgstr "Terms of use page"
+
+#: cms/models/settings/contact.py:69
+msgid "Главная юридическая страница"
+msgstr "Main legal page"
+
+#: cms/models/settings/contact.py:79
 msgid "Контактная информация"
 msgstr "Contact Information"
 
-#: cms/models.py:43
+#: cms/models/settings/contact.py:88
+msgid "Юридическая информация"
+msgstr "Legal information"
+
+#: cms/models/settings/contact.py:101
 msgid "Контактные данные"
 msgstr "Contact Details"
 
-#: cms/templates/404.html:4 cms/templates/404.html:9
+#: cms/models/settings/navigation.py:17
+msgid "Пункты меню"
+msgstr "Menu items"
+
+#: cms/models/settings/navigation.py:18
+msgid "Настройте ссылки в навигационной панели"
+msgstr "Configure the links in the navigation bar"
+
+#: cms/models/settings/navigation.py:23
+msgid "Настройки навигации"
+msgstr "Navigation settings"
+
+#: cms/models/settings/navigation.py:35
+msgid "Ссылка на страницу"
+msgstr "Page link"
+
+#: cms/models/settings/navigation.py:40
+msgid "Внешняя ссылка или якорь"
+msgstr "External link or anchor"
+
+#: cms/models/settings/navigation.py:41
+msgid "Используйте для внешних ссылок или якорей (например, #services)"
+msgstr "Use for external links or anchors (for example, #services)"
+
+#: cms/models/settings/robots.py:15 cms/models/settings/robots.py:36
+msgid "Запрещённые пути"
+msgstr "Disallowed paths"
+
+#: cms/models/settings/robots.py:16
+msgid "Пути, которые поисковые роботы не должны индексировать"
+msgstr "Paths that search engine crawlers must not index"
+
+#: cms/models/settings/robots.py:21
+msgid "Настройки robots.txt"
+msgstr "robots.txt settings"
+
+#: cms/models/settings/robots.py:28
+msgid "Путь"
+msgstr "Path"
+
+#: cms/models/settings/robots.py:29
+msgid "Например: /admin/ или /private/"
+msgstr "For example: /admin/ or /private/"
+
+#: cms/models/settings/robots.py:35
+msgid "Запрещённый путь"
+msgstr "Disallowed path"
+
+#: cms/models/settings/scripts.py:31 cms/models/settings/scripts.py:67
+msgid "Пользовательские скрипты"
+msgstr "Custom scripts"
+
+#: cms/models/settings/scripts.py:32
+msgid ""
+"Добавьте дополнительные коды отслеживания (Google Analytics, Яндекс.Метрика "
+"и др.)"
+msgstr "Add additional tracking code (Google Analytics, Yandex Metrica, etc.)"
+
+#: cms/models/settings/scripts.py:37
+msgid "Настройки скриптов"
+msgstr "Script settings"
+
+#: cms/models/settings/scripts.py:41
+msgid "Внутри <head>"
+msgstr "Inside <head>"
+
+#: cms/models/settings/scripts.py:42
+msgid "После начала <body>"
+msgstr "After the opening <body>"
+
+#: cms/models/settings/scripts.py:43
+msgid "Перед концом </body>"
+msgstr "Before the closing </body>"
+
+#: cms/models/settings/scripts.py:48
+msgid "Название скрипта"
+msgstr "Script name"
+
+#: cms/models/settings/scripts.py:49
+msgid "Код скрипта"
+msgstr "Script code"
+
+#: cms/models/settings/scripts.py:54
+msgid "Место размещения"
+msgstr "Placement"
+
+#: cms/models/settings/scripts.py:56
+msgid "Активен"
+msgstr "Active"
+
+#: cms/models/settings/scripts.py:66
+msgid "Пользовательский скрипт"
+msgstr "Custom script"
+
+#: cms/models/settings/social.py:17 cms/models/settings/social.py:49
+msgid "Ссылки на соцсети"
+msgstr "Social media links"
+
+#: cms/models/settings/social.py:18
+msgid "Добавьте ссылки на ваши профили в социальных сетях"
+msgstr "Add links to your social media profiles"
+
+#: cms/models/settings/social.py:23
+msgid "Настройки соцсетей"
+msgstr "Social Media Settings"
+
+#: cms/models/settings/social.py:39
+msgid "Платформа"
+msgstr "Platform"
+
+#: cms/models/settings/social.py:40
+msgid "Ссылка"
+msgstr "Link"
+
+#: cms/models/settings/social.py:48
+msgid "Ссылка на соцсеть"
+msgstr "Social media link"
+
+#: cms/services/telegram/notifications.py:35
+msgid "No instance provided for notification."
+msgstr "No instance provided for notification."
+
+#: cms/services/telegram/notifications.py:39
+msgid "TELEGRAM_NOTIFICATIONS_CHAT_ID is not configured."
+msgstr "TELEGRAM_NOTIFICATIONS_CHAT_ID is not configured."
+
+#: cms/services/telegram/notifications.py:54
+#, python-format
+msgid "Unsupported model type for Telegram alerts: %(model_name)s"
+msgstr "Unsupported model type for Telegram alerts: %(model_name)s"
+
+#: cms/services/telegram/notifications.py:73
+msgid "с формы"
+msgstr "from the form"
+
+#: cms/templates/404.html:4 cms/templates/404.html:13
 msgid "Страница не найдена"
 msgstr "Page not found"
 
-#: cms/templates/404.html:11
-msgid "К сожалению, мы не смогли найти эту страницу."
-msgstr "Unfortunately, we could not find this page."
+#: cms/templates/404.html:14
+msgid "К сожалению, мы не смогли найти страницу, которую вы ищете."
+msgstr "Unfortunately, we could not find the page you are looking for."
+
+#: cms/templates/404.html:15 cms/templates/cms/form_page_landing.html:26
+msgid "На главную"
+msgstr "Home"
 
 #: cms/templates/500.html:6 cms/templates/500.html:10
 msgid "Внутренняя ошибка сервера"
@@ -115,285 +782,426 @@ msgstr "Internal server error"
 msgid "Извините, произошла ошибка. Пожалуйста, попробуйте еще раз позже."
 msgstr "Sorry, an error occurred. Please try again later."
 
-#: cms/templates/includes/footer.html:7
+#: cms/templates/cms/background_tasks_inspect.html:8
+msgid "Execution"
+msgstr "Execution"
+
+#: cms/templates/cms/background_tasks_inspect.html:29
+msgid "Input"
+msgstr "Input"
+
+#: cms/templates/cms/background_tasks_inspect.html:41
+msgid "Result"
+msgstr "Result"
+
+#: cms/templates/cms/background_tasks_inspect.html:54
+msgid "Error"
+msgstr "Error"
+
+#: cms/templates/cms/form_page.html:32
+msgid "Отправить"
+msgstr "Submit"
+
+#: cms/templates/cms/form_page_landing.html:22
+msgid "Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время."
+msgstr "Thank you for your message! We will contact you shortly."
+
+#: cms/templates/cms/home/blocks/reviews.html:39
+msgid "Предыдущий отзыв"
+msgstr "Previous review"
+
+#: cms/templates/cms/home/blocks/reviews.html:44
+msgid "Следующий отзыв"
+msgstr "Next review"
+
+#: cms/templates/cms/home/blocks/reviews.html:52
+msgid "Отзывов пока нет"
+msgstr "No reviews yet"
+
+#: cms/templates/cms/home/blocks/reviews.html:55
+msgid ""
+"Мы только запустили этот раздел. Поделитесь своим мнением о нашей работе — "
+"<span class=\"text-body fw-semibold\">ваш отзыв может стать первым!</span>"
+msgstr ""
+"We have just launched this section. Share your experience with us — <span "
+"class=\"text-body fw-semibold\">your review could be the first!</span>"
+
+#: cms/templates/cms/home/blocks/reviews.html:68
+msgid "Оставить отзыв"
+msgstr "Leave a review"
+
+#: cms/templates/cms/home/blocks/reviews.html:82
+msgid "Отправить отзыв"
+msgstr "Submit review"
+
+#: cms/templates/cms/home/blocks/reviews.html:84
+msgid "Все отзывы проходят премодерацию перед публикацией."
+msgstr "All reviews are moderated before publication."
+
+#: cms/templates/cms/home/blocks/services.html:15
+msgid "Нет фото"
+msgstr "No photo"
+
+#: cms/templates/cms/legal/legal_document_page.html:16
+msgid "Последнее обновление"
+msgstr "Last updated"
+
+#: cms/templates/cms/legal/legal_document_page.html:27
+#: cms/templates/cms/legal/legal_index_page.html:37
+msgid "Вернуться на главную"
+msgstr "Return to home"
+
+#: cms/templates/cms/legal/legal_index_page.html:30
+msgid "Документы пока не добавлены"
+msgstr "No documents have been added yet"
+
+#: cms/templates/cms/portfolio/blocks/comparison.html:17
+msgid "До"
+msgstr "Before"
+
+#: cms/templates/cms/portfolio/blocks/comparison.html:23
+msgid "После"
+msgstr "After"
+
+#: cms/templates/cms/portfolio/portfolio_index_page.html:37
+msgid "Работ пока нет."
+msgstr "No work has been added yet."
+
+#: cms/templates/cms/portfolio/portfolio_work_page.html:28
+msgid "Интересует подобная работа?"
+msgstr "Interested in similar work?"
+
+#: cms/templates/cms/portfolio/portfolio_work_page.html:29
+msgid "Оставьте заявку, и мы проконсультируем вас бесплатно."
+msgstr "Send us a request and we will advise you free of charge."
+
+#: cms/templates/cms/portfolio/portfolio_work_page.html:32
+msgid "Заказать расчет"
+msgstr "Request an estimate"
+
+#: cms/templates/cms/portfolio/portfolio_work_page.html:45
+msgid "Другие работы"
+msgstr "Other work"
+
+#: cms/templates/cms/tags/agreement_text.html:6
+msgid "в соответствии с"
+msgstr "in accordance with"
+
+#: cms/templates/cms/tags/agreement_text.html:12
+msgid "и"
+msgstr "and"
+
+#: cms/templates/includes/footer.html:14
 msgid ""
 "Профессиональные услуги по уходу за вашим домом. Мы ценим качество и ваше "
 "время."
 msgstr ""
 "Professional services for your home care. We value quality and your time."
 
-#: cms/templates/includes/footer.html:10
+#: cms/templates/includes/footer.html:17
 msgid "Контакты"
 msgstr "Contacts"
 
-#: cms/templates/includes/footer.html:34
+#: cms/templates/includes/footer.html:43
 msgid "Мы в соцсетях"
 msgstr "Social media"
 
-#: cms/templates/includes/footer.html:53
-msgid "Все права защищены."
-msgstr "All rights reserved."
-
-#: cms/templates/includes/header.html:11
+#: cms/templates/includes/header.html:24
 msgid "Главная"
 msgstr "Home"
 
-#: cms/templates/includes/header.html:14 home/models.py:54
-msgid "О нас"
-msgstr "About Us"
+#: cms/templates/includes/header.html:34
+msgid "Переключить тему"
+msgstr "Switch theme"
 
-#: cms/templates/includes/header.html:17
-msgid "Услуги"
-msgstr "Services"
+#: cms/views.py:18
+msgid "Ваш отзыв отправлен на модерацию. Спасибо!"
+msgstr "Your review has been submitted for moderation. Thank you!"
 
-#: cms/templates/includes/header.html:20
-msgid "Заказать"
-msgstr "Order"
+#: cms/views.py:26
+msgid "Пожалуйста, исправьте ошибки в форме отзыва."
+msgstr "Please correct the errors in the review form."
 
-#: contacts/forms.py:10 home/templates/home/blocks/contact_form.html:20
-#: home/templates/home/blocks/contact_form.html:21
-msgid "Ваше имя"
-msgstr "Your name"
+#: cms/wagtail_hooks/confirm_bulk_action.py:8
+msgid "Подтвердите действие"
+msgstr "Confirm action"
 
-#: contacts/forms.py:11
-msgid "Номер телефона (например, +375...)"
-msgstr "Phone number (e.g. +375...)"
+#: cms/wagtail_hooks/confirm_bulk_action.py:9
+msgid "Вы уверены, что хотите применить это действие к выбранным объектам?"
+msgstr "Are you sure you want to apply this action to the selected items?"
 
-#: contacts/forms.py:12 home/templates/home/blocks/contact_form.html:29
-msgid "Ваш Email (необязательно)"
-msgstr "Your Email (optional)"
+#: cms/wagtail_hooks/confirm_bulk_action.py:10
+msgid "Да, продолжить"
+msgstr "Yes, continue"
 
-#: contacts/forms.py:13 home/templates/home/blocks/contact_form.html:33
-msgid "Дополнительный комментарий"
-msgstr "Additional comment"
+#: cms/wagtail_hooks/confirm_bulk_action.py:11
+msgid "Отмена"
+msgstr "Cancel"
 
-#: contacts/models.py:7
-msgid "Имя"
-msgstr "Name"
+#: cms/wagtail_hooks/confirm_bulk_action.py:31
+#, python-brace-format
+msgid "Успешно обработано объектов: {num}"
+msgstr "Items processed successfully: {num}"
 
-#: contacts/models.py:10
-msgid ""
-"Номер телефона должен быть в формате: '+999999999'. Допускается до 15 цифр."
-msgstr ""
-"Phone number must be entered in the format: '+999999999'. Up to 15 digits "
-"allowed."
+#: cms/wagtail_hooks/review.py:10
+msgid "Одобрить"
+msgstr "Approve"
 
-#: contacts/models.py:16
-msgid "Укажите номер с кодом страны (например, +375...)"
-msgstr "Enter number with country code (e.g. +375...)"
+#: cms/wagtail_hooks/review.py:12
+msgid "Одобрить выбранные отзывы"
+msgstr "Approve selected reviews"
 
-#: contacts/models.py:18
-msgid "Ваш контактный email"
-msgstr "Your contact email"
+#: cms/wagtail_hooks/review.py:13
+msgid "Вы уверены, что хотите одобрить следующие отзывы?"
+msgstr "Are you sure you want to approve the following reviews?"
 
-#: contacts/models.py:19
-msgid "Комментарий"
-msgstr "Comment"
+#: cms/wagtail_hooks/review.py:14
+msgid "Да, одобрить"
+msgstr "Yes, approve"
 
-#: contacts/models.py:20
-msgid "Дата создания"
-msgstr "Created at"
+#: cms/wagtail_hooks/review.py:23
+#, python-brace-format
+msgid "Успешно одобрено отзывов: {num}"
+msgstr "Reviews approved successfully: {num}"
 
-#: contacts/models.py:28
-msgid "Информация о заявке"
-msgstr "Request info"
+#: cms/wagtail_hooks/review.py:28
+msgid "Отклонить"
+msgstr "Unapprove"
 
-#: contacts/models.py:32
-msgid "Заявка на связь"
-msgstr "Contact request"
+#: cms/wagtail_hooks/review.py:30
+msgid "Отклонить выбранные отзывы"
+msgstr "Unapprove selected reviews"
 
-#: contacts/models.py:33
-msgid "Заявки на связь"
-msgstr "Contact requests"
+#: cms/wagtail_hooks/review.py:31
+msgid "Вы уверены, что хотите отклонить следующие отзывы?"
+msgstr "Are you sure you want to unapprove the following reviews?"
 
-#: contacts/views.py:14
-msgid "Спасибо! Ваша заявка принята, мы свяжемся с вами."
-msgstr "Thank you! Your request has been received, we will contact you."
+#: cms/wagtail_hooks/review.py:32
+msgid "Да, отклонить"
+msgstr "Yes, unapprove"
 
-#: contacts/views.py:16
-msgid "Пожалуйста, исправьте ошибки в форме."
-msgstr "Please correct the errors in the form."
+#: cms/wagtail_hooks/review.py:41
+#, python-brace-format
+msgid "Успешно снято с публикации отзывов: {num}"
+msgstr "Reviews unpublished successfully: {num}"
 
-#: contacts/wagtail_hooks.py:9
-msgid "Заявки"
-msgstr "Requests"
+#: cms/wagtail_hooks/tasks.py:22
+msgid "Queued"
+msgstr "Queued"
 
-#: home/models.py:14 home/models.py:25 home/models.py:34 home/models.py:47
-msgid "Заголовок"
-msgstr "Title"
+#: cms/wagtail_hooks/tasks.py:23
+msgid "Running"
+msgstr "Running"
 
-#: home/models.py:14
-msgid "Заголовок баннера"
-msgstr "Banner title"
+#: cms/wagtail_hooks/tasks.py:24
+msgid "Failed"
+msgstr "Failed"
 
-#: home/models.py:15
-msgid "Подзаголовок"
-msgstr "Subtitle"
+#: cms/wagtail_hooks/tasks.py:25
+msgid "Successful"
+msgstr "Successful"
 
-#: home/models.py:16 home/models.py:29 home/models.py:49
-msgid "Изображение"
-msgstr "Image"
+#: cms/wagtail_hooks/tasks.py:33
+msgid "[redacted]"
+msgstr "[redacted]"
 
-#: home/models.py:16
-msgid "Фоновое изображение"
-msgstr "Background image"
+#: cms/wagtail_hooks/tasks.py:107 cms/wagtail_hooks/tasks.py:120
+#: cms/wagtail_hooks/tasks.py:127
+msgid "Value"
+msgstr "Value"
 
-#: home/models.py:19
-msgid "Текст кнопки"
-msgstr "Button text"
+#: cms/wagtail_hooks/tasks.py:150 cms/wagtail_hooks/tasks.py:205
+msgid "Background tasks"
+msgstr "Background tasks"
 
-#: home/models.py:20
-msgid "Рассчитать стоимость"
-msgstr "Calculate cost"
+#: cms/wagtail_hooks/tasks.py:155
+msgid "Background task"
+msgstr "Background task"
 
-#: home/models.py:22
-msgid "Главный баннер"
-msgstr "Hero banner"
+#: cms/wagtail_hooks/tasks.py:171
+msgid "Task ID"
+msgstr "Task ID"
 
-#: home/models.py:25
-msgid "Наши услуги"
-msgstr "Our services"
+#: cms/wagtail_hooks/tasks.py:172 cms/wagtail_hooks/tasks.py:216
+msgid "Task"
+msgstr "Task"
 
-#: home/models.py:27
-msgid "Название услуги"
-msgstr "Service name"
+#: cms/wagtail_hooks/tasks.py:173
+msgid "Task path"
+msgstr "Task path"
 
-#: home/models.py:28
-msgid "Описание"
-msgstr "Description"
+#: cms/wagtail_hooks/tasks.py:174 cms/wagtail_hooks/tasks.py:221
+msgid "Queue"
+msgstr "Queue"
 
-#: home/models.py:30
-msgid "Список услуг"
-msgstr "Services list"
+#: cms/wagtail_hooks/tasks.py:175
+msgid "Backend"
+msgstr "Backend"
 
-#: home/models.py:31
-msgid "Блок услуг"
-msgstr "Services block"
+#: cms/wagtail_hooks/tasks.py:176
+msgid "Priority"
+msgstr "Priority"
 
-#: home/models.py:36
-msgid "Заголовок преимущества"
-msgstr "Feature title"
+#: cms/wagtail_hooks/tasks.py:177 cms/wagtail_hooks/tasks.py:222
+msgid "Enqueued"
+msgstr "Enqueued"
 
-#: home/models.py:37
-msgid "Текст преимущества"
-msgstr "Feature text"
+#: cms/wagtail_hooks/tasks.py:178
+msgid "Scheduled for"
+msgstr "Scheduled for"
 
-#: home/models.py:38 home/models.py:39
-msgid "Преимущества"
-msgstr "Features"
+#: cms/wagtail_hooks/tasks.py:179 cms/wagtail_hooks/tasks.py:223
+msgid "Started"
+msgstr "Started"
 
-#: home/models.py:42
-msgid "Заголовок формы"
-msgstr "Form title"
+#: cms/wagtail_hooks/tasks.py:180 cms/wagtail_hooks/tasks.py:224
+msgid "Finished"
+msgstr "Finished"
 
-#: home/models.py:42
-msgid "Оставьте заявку"
-msgstr "Leave a request"
+#: cms/wagtail_hooks/tasks.py:181 cms/wagtail_hooks/tasks.py:225
+msgid "Duration"
+msgstr "Duration"
 
-#: home/models.py:43
-msgid "Подзаголовок формы"
-msgstr "Form subtitle"
+#: cms/wagtail_hooks/tasks.py:182
+msgid "Workers"
+msgstr "Workers"
 
-#: home/models.py:43
-msgid "Мы свяжемся с вами для уточнения деталей"
-msgstr "We will contact you for details"
+#: cms/wagtail_hooks/tasks.py:188
+msgid "Exception"
+msgstr "Exception"
 
-#: home/models.py:44
-msgid "Форма обратной связи"
-msgstr "Contact form"
+#: cms/wagtail_hooks/tasks.py:192
+msgid "Traceback"
+msgstr "Traceback"
 
-#: home/models.py:48
-msgid "Содержимое"
-msgstr "Content"
+#: cms/wagtail_hooks/tasks.py:220
+msgid "Status"
+msgstr "Status"
 
-#: home/models.py:51
-msgid "Значение (напр. 10+)"
-msgstr "Value (e.g. 10+)"
+#: settings/base.py:172
+msgid "Russian"
+msgstr "Russian"
 
-#: home/models.py:52
-msgid "Подпись (напр. лет опыта)"
-msgstr "Label (e.g. years of experience)"
+#: settings/base.py:173
+msgid "English"
+msgstr "English"
 
-#: home/models.py:53
-msgid "Показатели/Статистика"
-msgstr "Stats/Metrics"
+#~ msgid "Facebook"
+#~ msgstr "Facebook"
 
-#: home/models.py:56
-msgid "Основной текст"
-msgstr "Rich text"
+#~ msgid "Ссылка на Facebook"
+#~ msgstr "Facebook link"
 
-#: home/models.py:57
-msgid "Контент страницы"
-msgstr "Page content"
+#~ msgid "Instagram"
+#~ msgstr "Instagram"
 
-#: home/models.py:64
-msgid "Главная страница"
-msgstr "Home page"
+#~ msgid "Ссылка на Instagram"
+#~ msgstr "Instagram link"
 
-#: home/templates/home/blocks/contact_form.html:25
-msgid "+375..."
-msgstr "+375..."
+#~ msgid "YouTube"
+#~ msgstr "YouTube"
 
-#: home/templates/home/blocks/contact_form.html:30
-msgid "example@mail.com"
-msgstr "example@mail.com"
+#~ msgid "Telegram"
+#~ msgstr "Telegram"
 
-#: home/templates/home/blocks/contact_form.html:34
-msgid "Опишите вашу задачу..."
-msgstr "Describe your task..."
+#~ msgid "Ссылка на Telegram"
+#~ msgstr "Telegram link"
 
-#: home/templates/home/blocks/contact_form.html:38
-msgid "Отправить заявку"
-msgstr "Send request"
+#~ msgid "WhatsApp"
+#~ msgstr "WhatsApp"
 
-#: home/templates/home/blocks/services.html:14
-msgid "Нет фото"
-msgstr "No photo"
+#~ msgid "Ссылка на WhatsApp"
+#~ msgstr "WhatsApp link"
 
-#: home/templates/home/welcome_page.html:6
-msgid "Visit the Wagtail website"
-msgstr ""
+#~ msgid "Все права защищены."
+#~ msgstr "All rights reserved."
 
-#: home/templates/home/welcome_page.html:15
-msgid "Посмотреть заметки о релизе"
-msgstr "View release notes"
+#~ msgid "Услуги"
+#~ msgstr "Services"
 
-#: home/templates/home/welcome_page.html:27
-msgid "Добро пожаловать на ваш новый сайт Wagtail!"
-msgstr "Welcome to your new Wagtail site!"
+#~ msgid "Ваше имя"
+#~ msgstr "Your name"
 
-#: home/templates/home/welcome_page.html:28
-msgid ""
-"Пожалуйста, присоединяйтесь к нашему <a href=\"https://github.com/wagtail/"
-"wagtail/wiki/Slack\">сообществу в Slack</a>, или начните с одной из ссылок "
-"ниже."
-msgstr ""
-"Please join our <a href=\"https://github.com/wagtail/wagtail/wiki/"
-"Slack\">Slack community</a>, or start with one of the links below."
+#~ msgid "Номер телефона (например, +375...)"
+#~ msgstr "Phone number (e.g. +375...)"
 
-#: home/templates/home/welcome_page.html:35
-msgid "Документация Wagtail"
-msgstr "Wagtail documentation"
+#~ msgid "Ваш Email (необязательно)"
+#~ msgstr "Your Email (optional)"
 
-#: home/templates/home/welcome_page.html:36
-msgid "Темы, ссылки и руководства"
-msgstr "Topics, references and how-to guides"
+#~ msgid "Дополнительный комментарий"
+#~ msgstr "Additional comment"
 
-#: home/templates/home/welcome_page.html:42
-msgid "Обучающее руководство"
-msgstr "Tutorial"
+#~ msgid "Имя"
+#~ msgstr "Name"
 
-#: home/templates/home/welcome_page.html:43
-msgid "Создайте свой первый сайт на Wagtail"
-msgstr "Create your first Wagtail site"
+#~ msgid "Укажите номер с кодом страны (например, +375...)"
+#~ msgstr "Enter number with country code (e.g. +375...)"
 
-#: home/templates/home/welcome_page.html:49
-msgid "Панель управления"
-msgstr "Editor interface"
+#~ msgid "Ваш контактный email"
+#~ msgstr "Your contact email"
 
-#: home/templates/home/welcome_page.html:50
-msgid "Сначала создайте суперпользователя!"
-msgstr "Create a superuser first!"
+#~ msgid "Комментарий"
+#~ msgstr "Comment"
+
+#~ msgid "Информация о заявке"
+#~ msgstr "Request info"
+
+#~ msgid "Заявка на связь"
+#~ msgstr "Contact request"
+
+#~ msgid "Заявки на связь"
+#~ msgstr "Contact requests"
+
+#~ msgid "Заявки"
+#~ msgstr "Requests"
+
+#~ msgid "Оставьте заявку"
+#~ msgstr "Leave a request"
+
+#~ msgid "Подзаголовок формы"
+#~ msgstr "Form subtitle"
+
+#~ msgid "Мы свяжемся с вами для уточнения деталей"
+#~ msgstr "We will contact you for details"
+
+#~ msgid "Форма обратной связи"
+#~ msgstr "Contact form"
+
+#~ msgid "+375..."
+#~ msgstr "+375..."
+
+#~ msgid "example@mail.com"
+#~ msgstr "example@mail.com"
+
+#~ msgid "Опишите вашу задачу..."
+#~ msgstr "Describe your task..."
+
+#~ msgid "Посмотреть заметки о релизе"
+#~ msgstr "View release notes"
+
+#~ msgid "Добро пожаловать на ваш новый сайт Wagtail!"
+#~ msgstr "Welcome to your new Wagtail site!"
+
+#~ msgid ""
+#~ "Пожалуйста, присоединяйтесь к нашему <a "
+#~ "href=\"https://github.com/wagtail/wagtail/wiki/Slack\">сообществу в "
+#~ "Slack</a>, или начните с одной из ссылок ниже."
+#~ msgstr ""
+#~ "Please join our <a "
+#~ "href=\"https://github.com/wagtail/wagtail/wiki/Slack\">Slack community</a>, "
+#~ "or start with one of the links below."
+
+#~ msgid "Документация Wagtail"
+#~ msgstr "Wagtail documentation"
+
+#~ msgid "Обучающее руководство"
+#~ msgstr "Tutorial"
+
+#~ msgid "Создайте свой первый сайт на Wagtail"
+#~ msgstr "Create your first Wagtail site"
+
+#~ msgid "Сначала создайте суперпользователя!"
+#~ msgstr "Create a superuser first!"
 
 #~ msgid "Войти"
 #~ msgstr "Login"

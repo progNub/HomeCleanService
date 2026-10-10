@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 
+from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -168,10 +169,12 @@ USE_I18N = True
 WAGTAIL_I18N_ENABLED = True
 
 LANGUAGES = [
-    ("ru", "Russian"),
+    ("ru", _("Russian")),
+    ("en", _("English")),
 ]
 
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES
+WAGTAILADMIN_PERMITTED_LANGUAGES = LANGUAGES
 
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, "locale"),

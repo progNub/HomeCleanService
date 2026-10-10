@@ -5,8 +5,11 @@ from django.urls import NoReverseMatch, reverse
 from django.utils import timezone
 from django_tasks.base import TaskResultStatus
 from django_tasks_db.models import DBTaskResult
+from wagtail.users.models import UserProfile
 
 from cms.wagtail_hooks.tasks import task_results_viewset
+
+TELEGRAM_TASK_PATH = "cms.services.telegram.base._send_telegram_message_task"
 
 
 class TaskAdminTests(TestCase):
@@ -52,21 +55,68 @@ class TaskAdminTests(TestCase):
     def test_view_permission_allows_list_details_and_menu(self):
         self.editor.user_permissions.add(self.view_permission)
         self.client.force_login(self.editor)
-        self.assertContains(self.client.get(self.index_url), self.task.task_path)
+        self.assertContains(self.client.get(self.index_url), "Notification")
         self.assertContains(self.client.get(self.inspect_url), "DeliveryError: delivery failed")
         request = RequestFactory().get(self.index_url)
         request.user = get_user_model().objects.get(pk=self.editor.pk)
         self.assertTrue(task_results_viewset.get_menu_item().is_shown(request))
 
-    def test_details_escape_result_and_error_and_hide_arguments(self):
+    def test_details_show_generic_input_and_result_but_hide_sensitive_values(self):
         self.client.force_login(self.superuser)
         response = self.client.get(self.inspect_url)
+        self.assertContains(response, "args")
+        self.assertContains(response, "kwargs.text")
+        self.assertContains(response, "private-arguments")
+        self.assertContains(response, "message")
         self.assertContains(response, "&lt;script&gt;unsafe-result&lt;/script&gt;")
         self.assertContains(response, "&lt;script&gt;unsafe-traceback&lt;/script&gt;")
         self.assertNotContains(response, "<script>unsafe-")
         self.assertNotContains(response, "legacy-secret")
-        self.assertNotContains(response, "private-arguments")
+        self.assertContains(response, "task-inspector__redacted")
         self.assertContains(response, self.task.task_path)
+
+    def test_every_task_uses_the_same_generic_layout_without_exposing_tokens(self):
+        now = timezone.now()
+        task = DBTaskResult.objects.create(
+            task_path=TELEGRAM_TASK_PATH,
+            status=TaskResultStatus.SUCCESSFUL,
+            queue_name="notifications",
+            backend_name="default",
+            enqueued_at=now,
+            started_at=now - timezone.timedelta(seconds=2),
+            finished_at=now,
+            run_after=now,
+            args_kwargs={
+                "args": [],
+                "kwargs": {
+                    "token": "legacy-secret",
+                    "chat_id": "-100123456",
+                    "text": "<b>Новая заявка</b>\nИмя: <script>Иван</script>",
+                },
+            },
+            traceback="https://api.telegram.org/botlegacy-secret/sendMessage",
+        )
+        self.client.force_login(self.superuser)
+
+        index = self.client.get(self.index_url)
+        self.assertContains(index, "Send telegram message")
+        self.assertContains(index, "task-status--successful")
+        self.assertNotContains(index, "legacy-secret")
+        self.assertNotContains(index, "-100123456")
+
+        details = self.client.get(reverse("background-tasks:inspect", args=[task.pk]))
+        self.assertContains(details, "kwargs.chat_id")
+        self.assertContains(details, "kwargs.text")
+        self.assertContains(details, "Новая заявка")
+        self.assertContains(details, "Имя:")
+        self.assertContains(details, "Иван")
+        self.assertContains(details, "&lt;script&gt;Иван&lt;/script&gt;")
+        self.assertContains(details, "-100123456")
+        self.assertContains(details, "task-inspector__redacted")
+        self.assertNotContains(details, "legacy-secret")
+        self.assertContains(details, "api.telegram.org/bot")
+        self.assertContains(details, "/sendMessage")
+        self.assertContains(details, 'href="/static/cms/background-tasks.css"')
 
     def test_list_filters_search_ordering_and_pagination(self):
         self.client.force_login(self.superuser)
@@ -84,6 +134,19 @@ class TaskAdminTests(TestCase):
                 response = self.client.get(self.index_url, query)
                 self.assertEqual(list(response.context["object_list"]), [self.task])
         self.assertEqual(response.context["paginator"].per_page, 25)
+
+    def test_task_admin_uses_the_users_english_preference(self):
+        profile = UserProfile.get_for_user(self.superuser)
+        profile.preferred_language = "en"
+        profile.save(update_fields=["preferred_language"])
+        self.client.force_login(self.superuser)
+
+        response = self.client.get(self.inspect_url)
+
+        self.assertContains(response, "Background task")
+        self.assertContains(response, "Execution")
+        self.assertContains(response, "Input")
+        self.assertContains(response, "Result")
 
     def test_even_superusers_cannot_mutate_tasks(self):
         self.client.force_login(self.superuser)

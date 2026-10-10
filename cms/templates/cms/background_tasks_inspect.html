@@ -1,0 +1,65 @@
+{% extends "wagtailadmin/generic/inspect.html" %}
+{% load i18n l10n %}
+
+{% block fields_output %}
+    <div class="task-inspector">
+        <section class="task-inspector__section" aria-labelledby="task-execution-heading">
+            <div class="task-inspector__heading">
+                <h2 id="task-execution-heading">{% trans "Execution" %}</h2>
+                <span class="task-status task-status--{{ status_class }}">{{ status_label }}</span>
+            </div>
+            <dl class="task-inspector__rows">
+                {% for row in summary_rows %}
+                    <dt>{{ row.label }}</dt>
+                    <dd>
+                        {% if row.datetime %}
+                            {% if row.value %}{{ row.value|date:"DATETIME_FORMAT" }}{% else %}—{% endif %}
+                        {% elif row.code %}
+                            <code>{% if row.value is None %}—{% else %}{{ row.value }}{% endif %}</code>
+                        {% else %}
+                            {% if row.value is None %}—{% else %}{{ row.value|localize }}{% endif %}
+                        {% endif %}
+                    </dd>
+                {% endfor %}
+            </dl>
+        </section>
+
+        <section class="task-inspector__section" aria-labelledby="task-input-heading">
+            <div class="task-inspector__heading">
+                <h2 id="task-input-heading">{% trans "Input" %}</h2>
+            </div>
+            <dl class="task-inspector__rows task-inspector__rows--data">
+                {% for row in input_rows %}
+                    <dt><code>{{ row.key }}</code></dt>
+                    <dd{% if row.redacted %} class="task-inspector__redacted"{% endif %}>{{ row.value }}</dd>
+                {% endfor %}
+            </dl>
+        </section>
+
+        <section class="task-inspector__section" aria-labelledby="task-result-heading">
+            <div class="task-inspector__heading">
+                <h2 id="task-result-heading">{% trans "Result" %}</h2>
+            </div>
+            <dl class="task-inspector__rows task-inspector__rows--data">
+                {% for row in result_rows %}
+                    <dt><code>{{ row.key }}</code></dt>
+                    <dd{% if row.redacted %} class="task-inspector__redacted"{% endif %}>{{ row.value }}</dd>
+                {% endfor %}
+            </dl>
+        </section>
+
+        {% if has_error %}
+            <section class="task-inspector__section task-inspector__section--error" aria-labelledby="task-error-heading">
+                <div class="task-inspector__heading">
+                    <h2 id="task-error-heading">{% trans "Error" %}</h2>
+                </div>
+                <dl class="task-inspector__rows task-inspector__rows--data">
+                    {% for row in error_rows %}
+                        <dt><code>{{ row.key }}</code></dt>
+                        <dd>{{ row.value }}</dd>
+                    {% endfor %}
+                </dl>
+            </section>
+        {% endif %}
+    </div>
+{% endblock %}
