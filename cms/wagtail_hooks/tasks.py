@@ -2,8 +2,10 @@
 
 import re
 
+import django_filters
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.forms import Select
 from django.templatetags.static import static
 from django.urls import path, reverse
 from django.utils import timezone
@@ -12,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from django_tasks.base import TaskResultStatus
 from django_tasks_db.models import DBTaskResult
 from wagtail import hooks
+from wagtail.admin.filters import WagtailFilterSet
 from wagtail.admin.ui.tables import Column, TitleColumn
 from wagtail.admin.views.generic import InspectView
 from wagtail.admin.views.generic.models import IndexView
@@ -146,6 +149,25 @@ class TaskResultPermissionPolicy(ModelPermissionPolicy):
         return super().users_with_any_permission(["view"])
 
 
+class TaskResultFilterSet(WagtailFilterSet):
+    queue_name = django_filters.ChoiceFilter(label=_("Queue"), choices=(), widget=Select)
+
+    class Meta:
+        model = DBTaskResult
+        fields = ("status", "queue_name")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        queue_names = (
+            DBTaskResult.objects.order_by()
+            .values_list("queue_name", flat=True)
+            .exclude(queue_name="")
+            .distinct()
+            .order_by("queue_name")
+        )
+        self.filters["queue_name"].field.choices = [(name, name) for name in queue_names]
+
+
 class TaskResultIndexView(IndexView):
     page_title = _("Background tasks")
 
@@ -215,16 +237,17 @@ class TaskResultViewSet(ModelViewSet):
             "task_title",
             label=_("Task"),
             accessor=_task_title,
+            sort_key="task_path",
             get_url=lambda task_result: reverse("background-tasks:inspect", args=[task_result.pk]),
         ),
-        Column("task_status", label=_("Status"), accessor=_status_badge),
-        Column("queue", label=_("Queue"), accessor=_queue_name),
-        Column("enqueued_at", label=_("Enqueued"), accessor="enqueued_at"),
-        Column("started_at", label=_("Started"), accessor="started_at"),
-        Column("finished_at", label=_("Finished"), accessor="finished_at"),
+        Column("task_status", label=_("Status"), accessor=_status_badge, sort_key="status"),
+        Column("queue", label=_("Queue"), accessor=_queue_name, sort_key="queue_name"),
+        Column("enqueued_at", label=_("Enqueued"), accessor="enqueued_at", sort_key="enqueued_at"),
+        Column("started_at", label=_("Started"), accessor="started_at", sort_key="started_at"),
+        Column("finished_at", label=_("Finished"), accessor="finished_at", sort_key="finished_at"),
         Column("duration", label=_("Duration"), accessor=_duration),
     )
-    list_filter = ("status", "queue_name")
+    filterset_class = TaskResultFilterSet
     search_fields = ("task_path",)
     search_backend_name = None
     ordering = ("-enqueued_at", "-id")
