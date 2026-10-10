@@ -45,7 +45,17 @@ class PageTests(TestCase):
         submission = page.get_submission_class().objects.get(page=page)
         self.assertNotIn("_contact_website", submission.form_data)
         self.assertIn("no-store", response["Cache-Control"])
+        self.assertContains(response, "data-lead-submitted")
+        self.assertContains(response, "/static/cms/js/lead-analytics.js")
         notification.assert_called_once_with(submission)
+
+    def test_lead_form_marks_real_engagement_for_analytics(self):
+        page = self.home.add_child(instance=FormPage(title="Request", slug="request"))
+
+        response = self.client.get(page.get_url())
+
+        self.assertContains(response, "data-lead-form")
+        self.assertContains(response, "/static/cms/js/lead-analytics.js")
 
     def test_related_portfolio_works_are_stable_and_bounded(self):
         index = self.home.add_child(instance=PortfolioIndexPage(title="Works", slug="works"))
