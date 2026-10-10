@@ -7,6 +7,9 @@ cd "$ROOT"
 ENV_FILE=${HOMESERVICE_ENV_FILE:-$ROOT/.env}
 export HOMESERVICE_ENV_FILE="$ENV_FILE"
 PROJECT=${COMPOSE_PROJECT_NAME:-homeservice-prod}
+if [[ -z "${APP_IMAGE:-}" && -s "$ROOT/deploy/.release/current-image" ]]; then
+    export APP_IMAGE=$(<"$ROOT/deploy/.release/current-image")
+fi
 MODE=${1:-renew}
 case "$MODE" in init|renew|dry-run) ;; *) echo 'Usage: cert-manage.sh [init|renew|dry-run]' >&2; exit 2;; esac
 mkdir -p "$ROOT/.runtime"

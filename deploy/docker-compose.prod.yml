@@ -64,6 +64,7 @@ services:
     networks: [homeservice_network]
 
   dozzle:
+    profiles: [tools]
     networks: [homeservice_network]
 
   umami:

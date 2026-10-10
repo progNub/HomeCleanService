@@ -26,6 +26,7 @@ class OperationsTests(unittest.TestCase):
         docker = self.root / "bin/docker"
         docker.write_text(
             "#!/bin/bash\n"
+            '[[ -z "${EXPECT_APP_IMAGE:-}" || "${APP_IMAGE:-}" == "$EXPECT_APP_IMAGE" ]] || exit 88\n'
             'printf "%s\\n" "$*" >> "$DOCKER_LOG"\n'
             'case "$*" in\n'
             '  *pg_dump*) [[ "${FAIL_DUMP:-0}" != 1 ]] || exit 1; printf "PGDMPfixture";;\n'
@@ -63,6 +64,21 @@ class OperationsTests(unittest.TestCase):
         self.assertTrue((bundle / "umami.dump").is_file())
         result = subprocess.run(["sha256sum", "-c", "SHA256SUMS"], cwd=bundle, capture_output=True)
         self.assertEqual(result.returncode, 0)
+
+    def test_maintenance_reuses_last_release_image_but_explicit_override_wins(self):
+        state = self.root / "deploy/.release"
+        state.mkdir()
+        (state / "current-image").write_text("registry.example.test/app:last-release\n")
+        for image in ("", "registry.example.test/app:explicit"):
+            with self.subTest(explicit=bool(image)):
+                env = {"APP_IMAGE": image, "EXPECT_APP_IMAGE": image or "registry.example.test/app:last-release"}
+                backup = self.run_script("scripts/backup.sh", "--local", **env)
+                self.assertEqual(backup.returncode, 0, backup.stderr)
+                bundle = next((self.root / "backups").glob("homeservice-*"))
+                restore = self.run_script("scripts/restore.sh", "--backup", bundle, "--database", "restore_test", **env)
+                self.assertEqual(restore.returncode, 0, restore.stderr)
+                renewal = self.run_script("certbot/cert-manage.sh", "renew", **env)
+                self.assertEqual(renewal.returncode, 0, renewal.stderr)
 
     def test_scheduled_backup_requires_encrypted_offsite(self):
         result = self.run_script("scripts/backup.sh")

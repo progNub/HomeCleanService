@@ -52,9 +52,12 @@ class ComposeTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         return json.loads(result.stdout)
 
-    def test_dev_starts_only_database_and_redis_without_production_secrets(self):
+    def test_dev_starts_all_five_services_without_production_secrets(self):
         config = self.config("dev", secrets=False, all_profiles=False)
-        self.assertEqual(set(config["services"]), {"db", "redis"})
+        self.assertEqual(set(config["services"]), {"db", "redis", "worker", "umami", "dozzle"})
+        self.assertFalse(any(service.get("profiles") for service in config["services"].values()))
+        self.assertEqual(config["services"]["worker"]["build"]["target"], "development")
+        self.assertEqual(config["services"]["worker"]["environment"]["DJANGO_SETTINGS_MODULE"], "settings.dev_worker")
         self.assertEqual(config["name"], "homeservice-dev")
         self.assertEqual(config["services"]["db"]["environment"]["POSTGRES_PASSWORD"], "homeservice_pass")
 
@@ -152,3 +155,18 @@ class ComposeTests(unittest.TestCase):
         result = subprocess.run(["make", "-n", "prod-build"], cwd=ROOT, capture_output=True, text=True, check=True)
         self.assertIn("docker build --build-arg RELEASE_REVISION=", result.stdout)
         self.assertNotIn("docker compose", result.stdout)
+
+    def test_make_maintenance_reuses_recorded_image_and_preserves_explicit_override(self):
+        shutil.copy(ROOT / "Makefile", self.root / "Makefile")
+        state = self.root / "deploy/.release"
+        state.mkdir()
+        (state / "current-image").write_text("homeservice:recorded\n")
+        (self.root / "probe.mk").write_text('include Makefile\nprobe:\n\t@echo "$${APP_IMAGE}"\n')
+        for supplied, expected in ((None, "homeservice:recorded"), ("homeservice:explicit", "homeservice:explicit")):
+            env = self.env.copy()
+            if supplied:
+                env["APP_IMAGE"] = supplied
+            result = subprocess.run(
+                ["make", "-f", "probe.mk", "probe"], cwd=self.root, env=env, capture_output=True, text=True, check=True
+            )
+            self.assertEqual(result.stdout.strip(), expected)

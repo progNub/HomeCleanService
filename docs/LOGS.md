@@ -35,17 +35,20 @@ on a multi-user setup. It writes a password hash with file mode 0600; Git ignore
 the file. Interactive input avoids shell history, but generation passes the
 password to a local Docker process, so run it on a trusted host.
 
-For production, with the image configured in .env or exported:
+For production (the last successful release image is reused automatically):
 
 ```bash
 make prod-tools
 ```
 
-For development:
+For development, Dozzle starts with the other four services:
 
 ```bash
-docker compose -p homeservice-dev -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --profile tools up -d dozzle
+make dev-start
 ```
+
+The development Django server runs on the host, so its logs appear in the
+`make run` terminal, not Dozzle. The worker's logs do appear in Dozzle.
 
 Restart only Dozzle after changing credentials:
 

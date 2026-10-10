@@ -24,8 +24,7 @@ The supplied Nginx configuration and certificate lineage target
 homecleanservice.by, www.homecleanservice.by and stats.homecleanservice.by.
 For another domain, change Nginx and certificate scripts together; SITE_URL alone
 does not reconfigure them. Point every requested certificate name to this host and
-expose ports 80/443. The old logs.* host now returns 404; omit it from
-CERTBOT_DOMAINS when no longer used.
+expose ports 80/443. Include logs.homecleanservice.by for the authenticated log viewer.
 
 Create bind-mounted media/ and staticfiles/ directories before deploying. They
 must be writable by container UID/GID 1000. On an existing installation, inspect
@@ -36,17 +35,18 @@ backup of uploads first. For a fresh checkout:
 sudo install -d -o 1000 -g 1000 -m 0755 media staticfiles
 ```
 
-Set the image explicitly for the following operations:
+For the first installation, set the image explicitly for the following operations:
 
 ```bash
 export APP_IMAGE=ghcr.io/OWNER/REPOSITORY@sha256:IMAGE_DIGEST
 ```
 
 Use the actual lower-case registry path and full digest from the successful build.
-Also record the digest as APP_IMAGE in server .env, so scheduled/manual Compose
-commands can resolve it. release.sh requires the exported value; it deliberately
-does not execute .env as a shell script. For another env file, export its absolute
-path as HOMESERVICE_ENV_FILE.
+After a successful release, Makefile and backup/restore/certificate scripts reuse
+`deploy/.release/current-image`, unless APP_IMAGE is explicitly set. CI supplies
+the image for new releases. Direct Docker Compose commands still require the image
+in their environment or `.env`; no script executes `.env` as shell code. For another
+env file, export its absolute path as HOMESERVICE_ENV_FILE.
 
 Start just infrastructure to discover its network:
 

@@ -15,10 +15,10 @@ services:
       - "127.0.0.1:6380:6379"
 
   worker:
-    profiles: [worker]
     build:
       context: ..
       dockerfile: Dockerfile
+      target: development
     container_name: homeservice_worker_dev
     restart: unless-stopped
     volumes:
@@ -29,6 +29,7 @@ services:
       - ../.env
     environment:
       - DJANGO_SETTINGS_MODULE=settings.dev_worker
+      - DJANGO_LOAD_DOTENV=0
       - DB_HOST=db
       - DB_PORT=5432
     depends_on:
@@ -36,7 +37,6 @@ services:
       db: {condition: service_healthy}
 
   umami:
-    profiles: [analytics]
     container_name: homeservice_umami_dev
     environment:
       - DATABASE_URL=postgresql://${DB_USER:-homeservice_user}:${DB_PASSWORD:-homeservice_pass}@db:5432/umami

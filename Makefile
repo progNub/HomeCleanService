@@ -8,6 +8,10 @@ endef
 # Default values for local environment (can be overridden by environment variables)
 PROJECT_DEV ?= homeservice-dev
 PROJECT_PROD ?= homeservice-prod
+# Reuse the last successful image for maintenance; an explicit value wins.
+ifneq ($(wildcard deploy/.release/current-image),)
+export APP_IMAGE ?= $(strip $(file <deploy/.release/current-image))
+endif
 DB_NAME ?= homeservice
 DB_USER ?= homeservice_user
 
@@ -30,10 +34,24 @@ DOCKER_EXEC = $(COMPOSE_PROD) exec web
 
 # Default target: show help
 help:
+	@echo "Everyday commands:"
+	@echo "  make dev-run     - Start all 5 development containers, then Django locally"
+	@echo "  make dev-start   - Start DB, Redis, worker, Umami and Dozzle in background"
+	@echo "  make run         - Run Django locally (if containers are already running)"
+	@echo "  make dev-up      - Start the same 5 containers and follow their logs"
+	@echo "  make dev-logs    - Follow container logs; Django logs stay in make run"
+	@echo "  make dev-down    - Stop local containers; keep data"
+	@echo "  make assets      - Rebuild frontend assets"
+	@echo "  make test        - Run isolated checks without sending notifications"
+	@echo "  Production release: run the manual GitHub Actions workflow on master"
+	@echo "  make help-all    - Installation, backup, certificates and advanced commands"
+
+help-all:
 	@echo "Available commands:"
 	@echo "  Development (Infrastructure in Docker + App locally):"
-	@echo "    make dev-up            - Start DB/Redis and follow logs"
-	@echo "    make dev-start         - Start DB/Redis in background"
+	@echo "    make dev-up            - Start all 5 development containers and follow logs"
+	@echo "    make dev-start         - Start all 5 development containers in background"
+	@echo "    make dev-run           - Start development containers, then run Django locally"
 	@echo "    make dev-down          - Stop development infrastructure"
 	@echo "    make dev-logs          - Follow development infrastructure logs"
 	@echo "    make run               - Run Django development server locally"
@@ -85,12 +103,15 @@ help:
 # ==============================================================================
 
 dev-up: dev-start
-	@echo "Waiting for containers to initialize..."
-	@sleep 2
 	$(MAKE) dev-logs
 
 dev-start:
-	$(COMPOSE_DEV) up -d
+	@test -s deploy/dozzle/users.yml || (echo 'Set up the log viewer once: see docs/LOGS.md (make dozzle-gen-pass). No default password is generated.'; exit 1)
+	$(COMPOSE_DEV) up -d --build --wait --wait-timeout 120
+	@echo "Ready: 5 containers. Django: make run -> http://localhost:8000; logs: http://localhost:8081; analytics: http://localhost:3000"
+
+dev-run: dev-start
+	$(MAKE) run
 
 dev-down:
 	$(COMPOSE_DEV) down --remove-orphans
@@ -224,7 +245,7 @@ db-init-umami:
 	@echo "Initializing Umami database in Dev container..."
 	$(COMPOSE_DEV) exec db /docker-entrypoint-initdb.d/init-db.sh
 
-.PHONY: assets test check cert-init cert-dry-run prod-init prod-smoke prod-rollback prod-backup-local prod-tools
+.PHONY: assets test check cert-init cert-dry-run prod-init prod-smoke prod-rollback prod-backup-local prod-tools dev-run help-all
 assets:
 	npm ci
 	npm run build

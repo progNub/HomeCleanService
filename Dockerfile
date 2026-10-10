@@ -14,6 +14,14 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project --no-cache
 
+# The local worker shares development settings/dependencies with the host.
+# No Node, frontend build or production collectstatic is needed for this target.
+FROM python-deps AS development
+RUN uv sync --frozen --no-install-project --no-cache \
+    && useradd --uid 1000 --create-home wagtail
+ENV PATH="/opt/venv/bin:$PATH" PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
+USER wagtail
+
 FROM python:3.12.12-slim-bookworm
 ARG RELEASE_REVISION=development
 LABEL org.opencontainers.image.revision=$RELEASE_REVISION
