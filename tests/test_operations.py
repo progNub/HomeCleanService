@@ -205,6 +205,31 @@ class OperationsTests(unittest.TestCase):
         self.assertEqual(active.readlink(), previous)
         self.assertNotIn("reload", self.log.read_text())
 
+    def test_nginx_preflight_checks_without_starting_or_reloading(self):
+        tls = self.root / "letsencrypt/live/homecleanservice.by"
+        tls.mkdir(parents=True)
+        (tls / "fullchain.pem").write_text("certificate fixture")
+        (tls / "privkey.pem").write_text("key fixture")
+        runtime = self.root / "run"
+        runtime.mkdir()
+        entrypoint = self.root / "deploy/nginx-entrypoint.sh"
+        entrypoint.write_text(
+            (ROOT / "deploy/nginx/entrypoint/entrypoint.sh")
+            .read_text()
+            .replace("/etc/letsencrypt", str(self.root / "letsencrypt"))
+            .replace("/run/homeservice-tls", str(runtime / "homeservice-tls"))
+        )
+        nginx = self.root / "bin/nginx"
+        nginx.write_text('#!/bin/bash\nprintf "%s\\n" "$*" >> "$DOCKER_LOG"\n[[ "${FAIL_NGINX_CHECK:-0}" != 1 ]]\n')
+        nginx.chmod(0o755)
+        for fail in ("0", "1"):
+            with self.subTest(fail=fail):
+                if self.log.exists():
+                    self.log.unlink()
+                result = self.run_script("nginx-entrypoint.sh", "--check-config", FAIL_NGINX_CHECK=fail)
+                self.assertEqual(result.returncode == 0, fail == "0", result.stderr)
+                self.assertEqual(self.log.read_text(), "-t\n")
+
 
 if __name__ == "__main__":
     unittest.main()

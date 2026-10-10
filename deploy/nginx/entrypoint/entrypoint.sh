@@ -26,7 +26,10 @@ if ! nginx -t; then
     [[ -z "$PREVIOUS" ]] || ln -sfn "$PREVIOUS" "$ACTIVE"
     exit 1
 fi
-if [[ "${1:-}" == --refresh-certificates ]]; then
+if [[ "${1:-}" == --check-config ]]; then
+    # A fresh one-off container validates this release's mounted files and exits.
+    exit 0
+elif [[ "${1:-}" == --refresh-certificates ]]; then
     nginx -s reload
 else
     exec nginx -g 'daemon off;'

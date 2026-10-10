@@ -140,9 +140,19 @@ make prod-start
 The script locks releases, checks image revision, configuration, database/Redis
 readiness and directory ownership. It stops web/worker, creates a local
 DB/media snapshot, runs migrations, copies precompiled assets and clears cache.
-Web/worker start again; Nginx reloads its upstream and external HTTPS checks verify
+Web/worker start again; Nginx is recreated and external HTTPS checks verify
 readiness/revision, homepage and assets. prod-up does the same then follows logs.
 Expect a short maintenance window; Nginx may return 502 while web is stopped.
+
+Nginx configuration and entrypoint files come from the checked-out release.
+Before stopping writers, a fresh one-off Nginx container validates these files
+with `--check-config` without publishing ports or reloading the running proxy.
+After web/Umami startup, the release validates again, then force-recreates only
+Nginx so replaced bind-mounted files, image and service settings are picked up.
+This causes a brief interruption of HTTP/HTTPS connections on every release.
+Bootstrap skips the first check because upstreams do not exist yet. A failed
+initial config check leaves running services untouched; a later failure stops
+the release but does not automatically roll back already applied migrations.
 
 The snapshot is local unless offsite backup variables are configured. Set
 BACKUP_GPG_RECIPIENT and BACKUP_REMOTE_DIR in the process/service environment for

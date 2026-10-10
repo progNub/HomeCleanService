@@ -31,6 +31,11 @@ if [[ "$MODE" == rollback && "${ROLLBACK_DB_COMPATIBLE:-0}" != 1 ]]; then
     echo 'Rollback needs ROLLBACK_DB_COMPATIBLE=1 after verifying schema compatibility; it never reverses migrations.' >&2
     exit 1
 fi
+if [[ "$MODE" != init ]]; then
+    # A fresh mount sees files replaced by Git; the running proxy may not.
+    # Existing upstreams must resolve here. Bootstrap validates after startup.
+    "${COMPOSE[@]}" run --rm --no-deps nginx --check-config
+fi
 "${COMPOSE[@]}" up -d --wait --wait-timeout 120 db redis
 # Verify the image and shared-directory ownership before stopping live writers.
 "${COMPOSE[@]}" run --rm --no-deps --entrypoint python release manage.py check --deploy --fail-level WARNING
@@ -68,10 +73,13 @@ fi
 if [[ -s "$ROOT/deploy/dozzle/users.yml" ]]; then
     "${COMPOSE[@]}" --profile tools up -d --no-deps dozzle
 fi
-"${COMPOSE[@]}" up -d umami nginx
-# Docker DNS can retain the old web address until Nginx reloads.
+"${COMPOSE[@]}" up -d umami
+# Check with the new upstreams before replacing the public-facing proxy.
+"${COMPOSE[@]}" run --rm --no-deps nginx --check-config
+# Reload alone can retain stale single-file bind mounts after git checkout.
+# Recreate only the proxy to pick up its config, entrypoint, image and upstreams.
+"${COMPOSE[@]}" up -d --no-deps --force-recreate --wait --wait-timeout 60 nginx
 "${COMPOSE[@]}" exec -T nginx nginx -t
-"${COMPOSE[@]}" exec -T nginx nginx -s reload
 if [[ "$MODE" != init ]]; then
     EXPECTED_REVISION="$IMAGE_REVISION" bash "$ROOT/deploy/scripts/smoke.sh"
     if [[ -s "$ROOT/deploy/dozzle/users.yml" ]]; then
