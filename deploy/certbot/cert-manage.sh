@@ -24,7 +24,7 @@ dotenv() {
 }
 DOMAIN=homecleanservice.by
 SSL=(docker compose --env-file "$ENV_FILE" -p "$PROJECT" -f "$ROOT/deploy/certbot/docker-compose.yml")
-PROD=(docker compose --env-file "$ENV_FILE" -p "$PROJECT" -f "$ROOT/deploy/docker-compose.yml")
+PROD=(docker compose --env-file "$ENV_FILE" -p "$PROJECT" -f "$ROOT/deploy/docker-compose.yml" -f "$ROOT/deploy/docker-compose.prod.yml")
 case "$MODE" in
     init)
         EMAIL=${CERTBOT_EMAIL:-$(dotenv CERTBOT_EMAIL)}

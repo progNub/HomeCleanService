@@ -30,6 +30,27 @@ when testing queued notifications:
 .venv/bin/python manage.py db_worker --queue-name default,notifications
 ```
 
+### Compose layout
+
+- `deploy/docker-compose.yml`: shared PostgreSQL, Redis, Umami and Dozzle definitions,
+  pinned image versions, health checks and bounded container logs. Not a standalone environment.
+- `deploy/docker-compose.dev.yml`: development overrides (loopback ports, optional
+  worker/analytics/tools). Django still runs on the host with `make run`.
+- `deploy/docker-compose.prod.yml`: production overrides and application services,
+  Nginx/TLS, mandatory secrets and an already-built `APP_IMAGE`.
+
+Makefile commands combine the base with exactly one environment file, in that order.
+Direct Compose commands must do the same using two `-f` options. Development and
+production retain their existing project, network and physical volume names;
+development volume aliases explicitly retain the old `_dev` suffixes.
+
+`make prod-build` builds `homeservice:local` directly from the Dockerfile with the
+current revision label; it does not start containers or deploy. The former
+`docker-compose.build.yml` only added this build instruction and is no longer needed.
+CI still builds and tests the release image, and production deploys its immutable digest.
+`deploy/certbot/docker-compose.yml` remains a separate one-off operations configuration
+using the existing production certificate volumes; it is not a fourth runtime environment.
+
 For a new empty database, `.venv/bin/python manage.py init_site` explicitly seeds
 sample pages/settings. Review its content and optional `SUPERUSER_*` variables
 first. It never runs automatically at application startup.

@@ -29,7 +29,7 @@ exec 9>"$BACKUP_DIR/.backup.lock"
 flock -n 9 || { echo 'Backup already running.' >&2; exit 1; }
 WORK=$(mktemp -d "$BACKUP_DIR/.incomplete-XXXXXXXX")
 trap 'echo "Backup incomplete; diagnostic files retained in $WORK" >&2' ERR
-COMPOSE=(docker compose --env-file "$ENV_FILE" -p "$PROJECT" -f "$ROOT/deploy/docker-compose.yml")
+COMPOSE=(docker compose --env-file "$ENV_FILE" -p "$PROJECT" -f "$ROOT/deploy/docker-compose.yml" -f "$ROOT/deploy/docker-compose.prod.yml")
 "${COMPOSE[@]}" exec -T db sh -ec 'exec pg_dump --format=custom --no-owner --no-acl -U "$POSTGRES_USER" "$POSTGRES_DB"' >"$WORK/db.dump"
 FILES=(db.dump media.tar.gz)
 if [[ "${BACKUP_UMAMI:-1}" == 1 ]]; then

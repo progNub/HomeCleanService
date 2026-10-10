@@ -28,7 +28,7 @@ if [[ -n "$MEDIA_TARGET" ]]; then
     [[ ! -e "$MEDIA_TARGET" || ( -d "$MEDIA_TARGET" && -z "$(ls -A "$MEDIA_TARGET")" ) ]] || { echo 'Media destination must be absent or empty.' >&2; exit 1; }
     tar -tzf "$BUNDLE/media.tar.gz" | awk '/^\// || /(^|\/)\.\.(\/|$)/ { bad=1 } END { exit bad }'
 fi
-COMPOSE=(docker compose --env-file "$ENV_FILE" -p "$PROJECT" -f "$ROOT/deploy/docker-compose.yml")
+COMPOSE=(docker compose --env-file "$ENV_FILE" -p "$PROJECT" -f "$ROOT/deploy/docker-compose.yml" -f "$ROOT/deploy/docker-compose.prod.yml")
 # createdb fails if the name already exists; never use --clean or dropdb.
 "${COMPOSE[@]}" exec -T db sh -ec 'exec createdb -U "$POSTGRES_USER" "$1"' sh "$DATABASE"
 if ! "${COMPOSE[@]}" exec -T db sh -ec 'exec pg_restore --exit-on-error --single-transaction --no-owner --no-acl -U "$POSTGRES_USER" -d "$1"' sh "$DATABASE" <"$BUNDLE/$DUMP"; then

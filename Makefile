@@ -12,9 +12,10 @@ DB_NAME ?= homeservice
 DB_USER ?= homeservice_user
 
 # Docker Compose commands
-COMPOSE_DEV = docker compose -p $(PROJECT_DEV) -f deploy/docker-compose.dev.yml
+COMPOSE_BASE = -f deploy/docker-compose.yml
+COMPOSE_DEV = docker compose -p $(PROJECT_DEV) $(COMPOSE_BASE) -f deploy/docker-compose.dev.yml
 HOMESERVICE_ENV_FILE ?= $(CURDIR)/.env
-COMPOSE_PROD = docker compose --env-file $(HOMESERVICE_ENV_FILE) -p $(PROJECT_PROD) -f deploy/docker-compose.yml
+COMPOSE_PROD = docker compose --env-file $(HOMESERVICE_ENV_FILE) -p $(PROJECT_PROD) $(COMPOSE_BASE) -f deploy/docker-compose.prod.yml
 COMPOSE_SSL = docker compose -p $(PROJECT_PROD) -f deploy/certbot/docker-compose.yml
 
 # Python and Local Virtual Environment
@@ -138,7 +139,7 @@ prod-logs-dozzle:
 	$(COMPOSE_PROD) logs -f dozzle
 
 prod-build:
-	APP_IMAGE=homeservice:local RELEASE_REVISION=$$(git rev-parse HEAD) $(COMPOSE_PROD) -f deploy/docker-compose.build.yml build web
+	docker build --build-arg RELEASE_REVISION=$$(git rev-parse HEAD) --tag homeservice:local --file Dockerfile .
 
 prod-migrate:
 	$(COMPOSE_PROD) run --rm release

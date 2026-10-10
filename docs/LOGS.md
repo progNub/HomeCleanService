@@ -44,13 +44,13 @@ make prod-tools
 For development:
 
 ```bash
-docker compose -p homeservice-dev -f deploy/docker-compose.dev.yml --profile tools up -d dozzle
+docker compose -p homeservice-dev -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --profile tools up -d dozzle
 ```
 
 Restart only Dozzle after changing credentials:
 
 ```bash
-docker compose --env-file .env -p homeservice-prod -f deploy/docker-compose.yml restart dozzle
+docker compose --env-file .env -p homeservice-prod -f deploy/docker-compose.yml -f deploy/docker-compose.prod.yml restart dozzle
 ```
 
 ## Optional access over SSH

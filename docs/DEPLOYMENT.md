@@ -51,7 +51,7 @@ path as HOMESERVICE_ENV_FILE.
 Start just infrastructure to discover its network:
 
 ```bash
-docker compose --env-file .env -p homeservice-prod -f deploy/docker-compose.yml up -d --wait db redis
+docker compose --env-file .env -p homeservice-prod -f deploy/docker-compose.yml -f deploy/docker-compose.prod.yml up -d --wait db redis
 docker network inspect homeservice_prod_network --format '{{range .IPAM.Config}}{{println .Subnet}}{{end}}'
 ```
 
@@ -67,7 +67,7 @@ org.opencontainers.image.revision label must match checkout HEAD.
 
 ```bash
 make prod-init
-docker compose --env-file .env -p homeservice-prod -f deploy/docker-compose.yml exec web python manage.py init_site
+docker compose --env-file .env -p homeservice-prod -f deploy/docker-compose.yml -f deploy/docker-compose.prod.yml exec web python manage.py init_site
 make prod-superuser
 make cert-init
 make cert-dry-run

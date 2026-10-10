@@ -18,7 +18,7 @@ STATE="$ROOT/deploy/.release"
 mkdir -p "$STATE"
 exec 9>"$STATE/release.lock"
 flock -n 9 || { echo 'Another release is running.' >&2; exit 1; }
-COMPOSE=(docker compose --env-file "$ENV_FILE" -p "$PROJECT" -f "$ROOT/deploy/docker-compose.yml")
+COMPOSE=(docker compose --env-file "$ENV_FILE" -p "$PROJECT" -f "$ROOT/deploy/docker-compose.yml" -f "$ROOT/deploy/docker-compose.prod.yml")
 "${COMPOSE[@]}" config --quiet
 docker image inspect "$APP_IMAGE" >/dev/null 2>&1 || docker pull "$APP_IMAGE"
 IMAGE_REVISION=$(docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$APP_IMAGE")
