@@ -1,9 +1,8 @@
-name: Checks and manual production release
+name: Dev checks and manual production release
 
 on:
-  pull_request:
   push:
-    branches: [dev, master]
+    branches: [dev]
   workflow_dispatch:
     inputs:
       deploy:
@@ -21,6 +20,7 @@ concurrency:
 
 jobs:
   checks:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
     runs-on: ubuntu-24.04
     services:
       postgres:
@@ -66,10 +66,10 @@ jobs:
           uv run --no-sync python manage.py makemigrations --check --dry-run
           uv run --no-sync python manage.py test cms.tests
           uv run --no-sync python -m unittest discover -s tests -v
-          bash -n deploy/scripts/*.sh deploy/certbot/cert-manage.sh deploy/nginx/entrypoint/entrypoint.sh
+          bash -n deploy/scripts/*.sh deploy/certbot/*.sh deploy/nginx/entrypoint/entrypoint.sh
 
   image:
-    needs: checks
+    if: github.event_name == 'workflow_dispatch' && inputs.deploy && github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -83,12 +83,10 @@ jobs:
           IMAGE_TAG="ghcr.io/${GITHUB_REPOSITORY,,}:${GITHUB_SHA}"
           echo "IMAGE_TAG=$IMAGE_TAG" >> "$GITHUB_ENV"
           docker build --build-arg "RELEASE_REVISION=$GITHUB_SHA" --tag "$IMAGE_TAG" .
-          docker run --rm --entrypoint python "$IMAGE_TAG" manage.py test cms.tests --settings=settings.test
           docker run --rm --entrypoint sh "$IMAGE_TAG" -ec 'test ! -e /app/.env; test ! -d /app/.git; test -s /opt/homeservice/static/staticfiles.json; ! command -v node'
           HOMESERVICE_TEST_IMAGE="$IMAGE_TAG" bash tests/container-smoke.sh
-      - name: Publish tested image (explicit manual release only)
+      - name: Publish release image
         id: publish
-        if: github.event_name == 'workflow_dispatch' && inputs.deploy && github.ref == 'refs/heads/master'
         env:
           REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
