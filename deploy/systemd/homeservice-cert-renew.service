@@ -7,5 +7,5 @@ After=docker.service network-online.target
 Type=oneshot
 WorkingDirectory=/opt/homeservice
 EnvironmentFile=/etc/homeservice/operations.env
-ExecStart=/usr/bin/bash /opt/homeservice/deploy/certbot/cert-manage.sh renew
+ExecStart=/usr/bin/bash /opt/homeservice/deploy/certbot/cert-task-runner.sh renew
 UMask=0077

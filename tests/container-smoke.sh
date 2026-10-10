@@ -83,6 +83,11 @@ docker run --rm --network "$NETWORK" "${APP_ENV[@]}" "${MOUNTS[@]}" \
 docker run -d --name "$WEB" --network "$NETWORK" --network-alias web --network-alias umami \
     "${APP_ENV[@]}" "${MOUNTS[@]}" "$HOMESERVICE_TEST_IMAGE" >/dev/null
 CONTAINERS+=("$WEB")
+# The preflight must exit successfully, not start a long-running proxy or bind
+# public ports. Use a fresh container just like the production release does.
+docker run --rm --network "$NETWORK" \
+    --mount "type=volume,source=$MEDIA,target=/app/media,readonly" \
+    --mount "type=volume,source=$STATIC,target=/app/staticfiles,readonly" "$NGINX_IMAGE" --check-config
 docker run -d --name "$NGINX" --network "$NETWORK" \
     --mount "type=volume,source=$MEDIA,target=/app/media,readonly" \
     --mount "type=volume,source=$STATIC,target=/app/staticfiles,readonly" "$NGINX_IMAGE" >/dev/null

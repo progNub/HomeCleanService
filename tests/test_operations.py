@@ -19,15 +19,23 @@ class OperationsTests(unittest.TestCase):
             (self.root / name).mkdir(parents=True)
         for name in ("backup.sh", "restore.sh"):
             shutil.copy(ROOT / "deploy/scripts" / name, self.root / "deploy/scripts" / name)
-        shutil.copy(ROOT / "deploy/certbot/cert-manage.sh", self.root / "deploy/certbot")
+        for name in ("cert-manage.sh", "cert-task-runner.sh"):
+            shutil.copy(ROOT / "deploy/certbot" / name, self.root / "deploy/certbot" / name)
+        release_state = self.root / "deploy/.release"
+        release_state.mkdir()
+        (release_state / "current-image").write_text("registry.example.test/app:current\n")
         (self.root / ".env").write_text("CERTBOT_EMAIL=ops@example.test\n")
         (self.root / "media/photo.txt").write_text("fixture media")
         self.log = self.root / "docker.log"
         docker = self.root / "bin/docker"
         docker.write_text(
             "#!/bin/bash\n"
+            '[[ -z "${EXPECT_APP_IMAGE:-}" || "${APP_IMAGE:-}" == "$EXPECT_APP_IMAGE" ]] || exit 88\n'
             'printf "%s\\n" "$*" >> "$DOCKER_LOG"\n'
             'case "$*" in\n'
+            '  *"ps --status running --services"*) printf "web\\n";;\n'
+            '  *"certificate_task enqueue"*) printf "00000000-0000-0000-0000-000000000001\\n";;\n'
+            '  *"certificate_task finish"*) cat >"$TASK_OUTPUT";;\n'
             '  *pg_dump*) [[ "${FAIL_DUMP:-0}" != 1 ]] || exit 1; printf "PGDMPfixture";;\n'
             '  *createdb*) [[ "${DB_EXISTS:-0}" != 1 ]] || exit 1;;\n'
             '  *pg_restore*) cat >/dev/null; [[ "${FAIL_RESTORE:-0}" != 1 ]] || exit 1;;\n'
@@ -39,7 +47,12 @@ class OperationsTests(unittest.TestCase):
         self.env = os.environ.copy()
         for name in ("BACKUP_GPG_RECIPIENT", "BACKUP_REMOTE_DIR", "HOMESERVICE_ENV_FILE", "MEDIA_DIR", "BACKUP_DIR"):
             self.env.pop(name, None)
-        self.env.update(PATH=f"{self.root / 'bin'}:{self.env['PATH']}", DOCKER_LOG=str(self.log))
+        self.task_output = self.root / "task-output.log"
+        self.env.update(
+            PATH=f"{self.root / 'bin'}:{self.env['PATH']}",
+            DOCKER_LOG=str(self.log),
+            TASK_OUTPUT=str(self.task_output),
+        )
 
     def run_script(self, name, *args, **env):
         return subprocess.run(
@@ -63,6 +76,21 @@ class OperationsTests(unittest.TestCase):
         self.assertTrue((bundle / "umami.dump").is_file())
         result = subprocess.run(["sha256sum", "-c", "SHA256SUMS"], cwd=bundle, capture_output=True)
         self.assertEqual(result.returncode, 0)
+
+    def test_maintenance_reuses_last_release_image_but_explicit_override_wins(self):
+        state = self.root / "deploy/.release"
+        state.mkdir(exist_ok=True)
+        (state / "current-image").write_text("registry.example.test/app:last-release\n")
+        for image in ("", "registry.example.test/app:explicit"):
+            with self.subTest(explicit=bool(image)):
+                env = {"APP_IMAGE": image, "EXPECT_APP_IMAGE": image or "registry.example.test/app:last-release"}
+                backup = self.run_script("scripts/backup.sh", "--local", **env)
+                self.assertEqual(backup.returncode, 0, backup.stderr)
+                bundle = next((self.root / "backups").glob("homeservice-*"))
+                restore = self.run_script("scripts/restore.sh", "--backup", bundle, "--database", "restore_test", **env)
+                self.assertEqual(restore.returncode, 0, restore.stderr)
+                renewal = self.run_script("certbot/cert-manage.sh", "renew", **env)
+                self.assertEqual(renewal.returncode, 0, renewal.stderr)
 
     def test_scheduled_backup_requires_encrypted_offsite(self):
         result = self.run_script("scripts/backup.sh")
@@ -180,6 +208,23 @@ class OperationsTests(unittest.TestCase):
         self.assertIn("--dry-run", self.log.read_text())
         self.assertNotIn("--refresh-certificates", self.log.read_text())
 
+    def test_tracked_certificate_runner_records_success(self):
+        result = self.run_script("certbot/cert-task-runner.sh", "renew")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        commands = self.log.read_text()
+        self.assertIn("certificate_task enqueue --mode renew", commands)
+        self.assertIn("certificate_task claim", commands)
+        self.assertIn("certificate_task finish", commands)
+        self.assertIn("--status successful", commands)
+        self.assertIn("Certificate operation completed: renew", self.task_output.read_text())
+
+    def test_tracked_certificate_runner_records_failure(self):
+        result = self.run_script("certbot/cert-task-runner.sh", "renew", FAIL_RENEW="1")
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("--status failed", self.log.read_text())
+
     def test_nginx_rejects_bad_config_before_reload_and_restores_symlink(self):
         tls = self.root / "letsencrypt/live/homecleanservice.by"
         tls.mkdir(parents=True)
@@ -204,6 +249,31 @@ class OperationsTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertEqual(active.readlink(), previous)
         self.assertNotIn("reload", self.log.read_text())
+
+    def test_nginx_preflight_checks_without_starting_or_reloading(self):
+        tls = self.root / "letsencrypt/live/homecleanservice.by"
+        tls.mkdir(parents=True)
+        (tls / "fullchain.pem").write_text("certificate fixture")
+        (tls / "privkey.pem").write_text("key fixture")
+        runtime = self.root / "run"
+        runtime.mkdir()
+        entrypoint = self.root / "deploy/nginx-entrypoint.sh"
+        entrypoint.write_text(
+            (ROOT / "deploy/nginx/entrypoint/entrypoint.sh")
+            .read_text()
+            .replace("/etc/letsencrypt", str(self.root / "letsencrypt"))
+            .replace("/run/homeservice-tls", str(runtime / "homeservice-tls"))
+        )
+        nginx = self.root / "bin/nginx"
+        nginx.write_text('#!/bin/bash\nprintf "%s\\n" "$*" >> "$DOCKER_LOG"\n[[ "${FAIL_NGINX_CHECK:-0}" != 1 ]]\n')
+        nginx.chmod(0o755)
+        for fail in ("0", "1"):
+            with self.subTest(fail=fail):
+                if self.log.exists():
+                    self.log.unlink()
+                result = self.run_script("nginx-entrypoint.sh", "--check-config", FAIL_NGINX_CHECK=fail)
+                self.assertEqual(result.returncode == 0, fail == "0", result.stderr)
+                self.assertEqual(self.log.read_text(), "-t\n")
 
 
 if __name__ == "__main__":

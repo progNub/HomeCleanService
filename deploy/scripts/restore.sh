@@ -7,6 +7,9 @@ cd "$ROOT"
 ENV_FILE=${HOMESERVICE_ENV_FILE:-$ROOT/.env}
 export HOMESERVICE_ENV_FILE="$ENV_FILE"
 PROJECT=${COMPOSE_PROJECT_NAME:-homeservice-prod}
+if [[ -z "${APP_IMAGE:-}" && -s "$ROOT/deploy/.release/current-image" ]]; then
+    export APP_IMAGE=$(<"$ROOT/deploy/.release/current-image")
+fi
 BUNDLE= DATABASE= MEDIA_TARGET= DUMP=db.dump
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -28,7 +31,7 @@ if [[ -n "$MEDIA_TARGET" ]]; then
     [[ ! -e "$MEDIA_TARGET" || ( -d "$MEDIA_TARGET" && -z "$(ls -A "$MEDIA_TARGET")" ) ]] || { echo 'Media destination must be absent or empty.' >&2; exit 1; }
     tar -tzf "$BUNDLE/media.tar.gz" | awk '/^\// || /(^|\/)\.\.(\/|$)/ { bad=1 } END { exit bad }'
 fi
-COMPOSE=(docker compose --env-file "$ENV_FILE" -p "$PROJECT" -f "$ROOT/deploy/docker-compose.yml")
+COMPOSE=(docker compose --env-file "$ENV_FILE" -p "$PROJECT" -f "$ROOT/deploy/docker-compose.yml" -f "$ROOT/deploy/docker-compose.prod.yml")
 # createdb fails if the name already exists; never use --clean or dropdb.
 "${COMPOSE[@]}" exec -T db sh -ec 'exec createdb -U "$POSTGRES_USER" "$1"' sh "$DATABASE"
 if ! "${COMPOSE[@]}" exec -T db sh -ec 'exec pg_restore --exit-on-error --single-transaction --no-owner --no-acl -U "$POSTGRES_USER" -d "$1"' sh "$DATABASE" <"$BUNDLE/$DUMP"; then

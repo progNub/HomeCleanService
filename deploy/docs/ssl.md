@@ -24,6 +24,18 @@ test and does not reload Nginx. Normal renewal:
 bash deploy/certbot/cert-manage.sh renew
 ```
 
+For normal manual and scheduled checks, use the tracked runner instead:
+
+```bash
+bash deploy/certbot/cert-task-runner.sh renew
+bash deploy/certbot/cert-task-runner.sh dry-run
+```
+
+It creates a task in the `maintenance` queue, marks it as running, executes the
+host-only certificate command, and stores the safe command output or failure in
+the task result. The regular Django worker deliberately does not consume this
+queue and receives neither the Docker socket nor certificate volume access.
+
 Scripts discover the checkout root, use `.runtime/cert.lock` to avoid overlapping
 runs and default to project `homeservice-prod`. For another installation export
 `COMPOSE_PROJECT_NAME` and an absolute `HOMESERVICE_ENV_FILE`. Keep the same project
@@ -62,6 +74,7 @@ HOMESERVICE_ENV_FILE=/opt/homeservice/.env
 After a successful manual `dry-run`, install the certificate service/timer into
 `/etc/systemd/system`, run `systemctl daemon-reload`, then enable
 `homeservice-cert-renew.timer`. It runs twice daily with random delay and catches
-missed runs after reboot. Monitor service failures and certificate expiry through
-your existing monitoring; a timer alone does not notify an operator. Inspect
-`journalctl -u homeservice-cert-renew.service` and `systemctl list-timers`.
+missed runs after reboot. Each execution is visible under **Background tasks** in
+Wagtail; system-level failures before the task can be created remain available in
+`journalctl -u homeservice-cert-renew.service`. Also inspect
+`systemctl list-timers` when diagnosing the schedule.

@@ -1,9 +1,6 @@
-"""Docker development worker: production dependencies, local service config."""
+"""Same development settings/database as the website, reached inside Docker."""
 
-from .base import *
+from .dev import *
 
-SECRET_KEY = ENV_DJANGO_SECRET_KEY or "django-insecure-local-worker-only"
-DEBUG = False
-SECURE_SSL_REDIRECT = False
-WAGTAIL_CACHE = False
-CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
+# Keep local.py's database name/media, but use the container network address.
+DATABASES["default"].update(HOST=ENV_DB_HOST, PORT=ENV_DB_PORT)

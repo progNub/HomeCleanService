@@ -8,13 +8,18 @@ endef
 # Default values for local environment (can be overridden by environment variables)
 PROJECT_DEV ?= homeservice-dev
 PROJECT_PROD ?= homeservice-prod
+# Reuse the last successful image for maintenance; an explicit value wins.
+ifneq ($(wildcard deploy/.release/current-image),)
+export APP_IMAGE ?= $(strip $(file <deploy/.release/current-image))
+endif
 DB_NAME ?= homeservice
 DB_USER ?= homeservice_user
 
 # Docker Compose commands
-COMPOSE_DEV = docker compose -p $(PROJECT_DEV) -f deploy/docker-compose.dev.yml
+COMPOSE_BASE = -f deploy/docker-compose.yml
+COMPOSE_DEV = docker compose -p $(PROJECT_DEV) $(COMPOSE_BASE) -f deploy/docker-compose.dev.yml
 HOMESERVICE_ENV_FILE ?= $(CURDIR)/.env
-COMPOSE_PROD = docker compose --env-file $(HOMESERVICE_ENV_FILE) -p $(PROJECT_PROD) -f deploy/docker-compose.yml
+COMPOSE_PROD = docker compose --env-file $(HOMESERVICE_ENV_FILE) -p $(PROJECT_PROD) $(COMPOSE_BASE) -f deploy/docker-compose.prod.yml
 COMPOSE_SSL = docker compose -p $(PROJECT_PROD) -f deploy/certbot/docker-compose.yml
 
 # Python and Local Virtual Environment
@@ -29,10 +34,24 @@ DOCKER_EXEC = $(COMPOSE_PROD) exec web
 
 # Default target: show help
 help:
+	@echo "Everyday commands:"
+	@echo "  make dev-run     - Start all 5 development containers, then Django locally"
+	@echo "  make dev-start   - Start DB, Redis, worker, Umami and Dozzle in background"
+	@echo "  make run         - Run Django locally (if containers are already running)"
+	@echo "  make dev-up      - Start the same 5 containers and follow their logs"
+	@echo "  make dev-logs    - Follow container logs; Django logs stay in make run"
+	@echo "  make dev-down    - Stop local containers; keep data"
+	@echo "  make assets      - Rebuild frontend assets"
+	@echo "  make test        - Run isolated checks without sending notifications"
+	@echo "  Production release: run the manual GitHub Actions workflow on master"
+	@echo "  make help-all    - Installation, backup, certificates and advanced commands"
+
+help-all:
 	@echo "Available commands:"
 	@echo "  Development (Infrastructure in Docker + App locally):"
-	@echo "    make dev-up            - Start DB/Redis and follow logs"
-	@echo "    make dev-start         - Start DB/Redis in background"
+	@echo "    make dev-up            - Start all 5 development containers and follow logs"
+	@echo "    make dev-start         - Start all 5 development containers in background"
+	@echo "    make dev-run           - Start development containers, then run Django locally"
 	@echo "    make dev-down          - Stop development infrastructure"
 	@echo "    make dev-logs          - Follow development infrastructure logs"
 	@echo "    make run               - Run Django development server locally"
@@ -50,7 +69,7 @@ help:
 	@echo "    make prod-logs         - Follow all production logs"
 	@echo "    make prod-logs-web     - Follow only web container logs"
 	@echo "    make prod-logs-dozzle   - Follow only Dozzle logs"
-	@echo "    make prod-tools        - Start private loopback Dozzle with existing credentials"
+	@echo "    make prod-tools        - Start authenticated Dozzle behind logs HTTPS endpoint"
 	@echo "    make dozzle-gen-pass   - Write users.yml; set DOZZLE_USER and explicit DOZZLE_PASS"
 	@echo "    make prod-build        - Build homeservice:local for explicit local testing"
 	@echo "    make prod-migrate      - Manually run release migrations/assets job; stop writers first"
@@ -84,12 +103,15 @@ help:
 # ==============================================================================
 
 dev-up: dev-start
-	@echo "Waiting for containers to initialize..."
-	@sleep 2
 	$(MAKE) dev-logs
 
 dev-start:
-	$(COMPOSE_DEV) up -d
+	@test -s deploy/dozzle/users.yml || (echo 'Set up the log viewer once: see docs/LOGS.md (make dozzle-gen-pass). No default password is generated.'; exit 1)
+	$(COMPOSE_DEV) up -d --build --wait --wait-timeout 120
+	@echo "Ready: 5 containers. Django: make run -> http://localhost:8000; logs: http://localhost:8081; analytics: http://localhost:3000"
+
+dev-run: dev-start
+	$(MAKE) run
 
 dev-down:
 	$(COMPOSE_DEV) down --remove-orphans
@@ -138,7 +160,7 @@ prod-logs-dozzle:
 	$(COMPOSE_PROD) logs -f dozzle
 
 prod-build:
-	APP_IMAGE=homeservice:local RELEASE_REVISION=$$(git rev-parse HEAD) $(COMPOSE_PROD) -f deploy/docker-compose.build.yml build web
+	docker build --build-arg RELEASE_REVISION=$$(git rev-parse HEAD) --tag homeservice:local --file Dockerfile .
 
 prod-migrate:
 	$(COMPOSE_PROD) run --rm release
@@ -176,13 +198,13 @@ prod-db-backup:
 # ==============================================================================
 
 cert:
-	@COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/certbot/cert-manage.sh renew
+	@COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/certbot/cert-task-runner.sh renew
 
 cert-init:
 	@COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/certbot/cert-manage.sh init
 
 cert-dry-run:
-	@COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/certbot/cert-manage.sh dry-run
+	@COMPOSE_PROJECT_NAME=$(PROJECT_PROD) HOMESERVICE_ENV_FILE=$(HOMESERVICE_ENV_FILE) bash deploy/certbot/cert-task-runner.sh dry-run
 
 # ==============================================================================
 # LOG MANAGEMENT & SECURITY (DOZZLE)
@@ -223,7 +245,7 @@ db-init-umami:
 	@echo "Initializing Umami database in Dev container..."
 	$(COMPOSE_DEV) exec db /docker-entrypoint-initdb.d/init-db.sh
 
-.PHONY: assets test check cert-init cert-dry-run prod-init prod-smoke prod-rollback prod-backup-local prod-tools
+.PHONY: assets test check cert-init cert-dry-run prod-init prod-smoke prod-rollback prod-backup-local prod-tools dev-run help-all
 assets:
 	npm ci
 	npm run build

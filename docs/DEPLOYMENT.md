@@ -24,8 +24,7 @@ The supplied Nginx configuration and certificate lineage target
 homecleanservice.by, www.homecleanservice.by and stats.homecleanservice.by.
 For another domain, change Nginx and certificate scripts together; SITE_URL alone
 does not reconfigure them. Point every requested certificate name to this host and
-expose ports 80/443. The old logs.* host now returns 404; omit it from
-CERTBOT_DOMAINS when no longer used.
+expose ports 80/443. Include logs.homecleanservice.by for the authenticated log viewer.
 
 Create bind-mounted media/ and staticfiles/ directories before deploying. They
 must be writable by container UID/GID 1000. On an existing installation, inspect
@@ -36,22 +35,23 @@ backup of uploads first. For a fresh checkout:
 sudo install -d -o 1000 -g 1000 -m 0755 media staticfiles
 ```
 
-Set the image explicitly for the following operations:
+For the first installation, set the image explicitly for the following operations:
 
 ```bash
 export APP_IMAGE=ghcr.io/OWNER/REPOSITORY@sha256:IMAGE_DIGEST
 ```
 
 Use the actual lower-case registry path and full digest from the successful build.
-Also record the digest as APP_IMAGE in server .env, so scheduled/manual Compose
-commands can resolve it. release.sh requires the exported value; it deliberately
-does not execute .env as a shell script. For another env file, export its absolute
-path as HOMESERVICE_ENV_FILE.
+After a successful release, Makefile and backup/restore/certificate scripts reuse
+`deploy/.release/current-image`, unless APP_IMAGE is explicitly set. CI supplies
+the image for new releases. Direct Docker Compose commands still require the image
+in their environment or `.env`; no script executes `.env` as shell code. For another
+env file, export its absolute path as HOMESERVICE_ENV_FILE.
 
 Start just infrastructure to discover its network:
 
 ```bash
-docker compose --env-file .env -p homeservice-prod -f deploy/docker-compose.yml up -d --wait db redis
+docker compose --env-file .env -p homeservice-prod -f deploy/docker-compose.yml -f deploy/docker-compose.prod.yml up -d --wait db redis
 docker network inspect homeservice_prod_network --format '{{range .IPAM.Config}}{{println .Subnet}}{{end}}'
 ```
 
@@ -67,7 +67,7 @@ org.opencontainers.image.revision label must match checkout HEAD.
 
 ```bash
 make prod-init
-docker compose --env-file .env -p homeservice-prod -f deploy/docker-compose.yml exec web python manage.py init_site
+docker compose --env-file .env -p homeservice-prod -f deploy/docker-compose.yml -f deploy/docker-compose.prod.yml exec web python manage.py init_site
 make prod-superuser
 make cert-init
 make cert-dry-run
@@ -140,9 +140,19 @@ make prod-start
 The script locks releases, checks image revision, configuration, database/Redis
 readiness and directory ownership. It stops web/worker, creates a local
 DB/media snapshot, runs migrations, copies precompiled assets and clears cache.
-Web/worker start again; Nginx reloads its upstream and external HTTPS checks verify
+Web/worker start again; Nginx is recreated and external HTTPS checks verify
 readiness/revision, homepage and assets. prod-up does the same then follows logs.
 Expect a short maintenance window; Nginx may return 502 while web is stopped.
+
+Nginx configuration and entrypoint files come from the checked-out release.
+Before stopping writers, a fresh one-off Nginx container validates these files
+with `--check-config` without publishing ports or reloading the running proxy.
+After web/Umami startup, the release validates again, then force-recreates only
+Nginx so replaced bind-mounted files, image and service settings are picked up.
+This causes a brief interruption of HTTP/HTTPS connections on every release.
+Bootstrap skips the first check because upstreams do not exist yet. A failed
+initial config check leaves running services untouched; a later failure stops
+the release but does not automatically roll back already applied migrations.
 
 The snapshot is local unless offsite backup variables are configured. Set
 BACKUP_GPG_RECIPIENT and BACKUP_REMOTE_DIR in the process/service environment for
@@ -187,7 +197,9 @@ env/permissions; normal release smoke requires trusted HTTPS.
 Install backup/certificate timers only after manual tests and adjusting paths in
 deploy/systemd/. No timers are installed automatically. Monitor failed jobs,
 certificate expiry, backup age and disk space; periodically restore a backup.
-Dozzle is optional and private: [SSH access instructions](LOGS.md).
+Dozzle uses an authenticated HTTPS endpoint: [log access instructions](LOGS.md).
+Releases start/update it when deploy/dozzle/users.yml exists, then verify that
+the login page works and anonymous log streaming returns 401.
 
 The main site's CSP enforces basic framing/object restrictions; its detailed
 resource policy is Report-Only while CMS analytics and Wagtail flows are checked.

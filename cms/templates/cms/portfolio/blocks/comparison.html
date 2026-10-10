@@ -1,5 +1,5 @@
 {% extends "blocks/base_block_wrapper.html" %}
-{% load wagtailimages_tags wagtailcore_tags %}
+{% load i18n wagtailimages_tags wagtailcore_tags %}
 
 {% block block_content %}
     {% if self.caption %}
@@ -14,13 +14,13 @@
         <div class="col-md-6">
             <div class="position-relative overflow-hidden rounded shadow-sm border h-100">
                 {% image self.image_before fill-800x600 format-webp class="img-fluid w-100 h-100 object-fit-cover" %}
-                <span class="badge bg-dark position-absolute top-0 start-0 m-3 opacity-75">До</span>
+                <span class="badge bg-dark position-absolute top-0 start-0 m-3 opacity-75">{% trans "До" %}</span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="position-relative overflow-hidden rounded shadow-sm border h-100">
                 {% image self.image_after fill-800x600 format-webp class="img-fluid w-100 h-100 object-fit-cover" %}
-                <span class="badge bg-primary position-absolute top-0 start-0 m-3 opacity-75">После</span>
+                <span class="badge bg-primary position-absolute top-0 start-0 m-3 opacity-75">{% trans "После" %}</span>
             </div>
         </div>
     </div>

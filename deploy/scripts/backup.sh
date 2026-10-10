@@ -7,6 +7,9 @@ cd "$ROOT"
 ENV_FILE=${HOMESERVICE_ENV_FILE:-$ROOT/.env}
 export HOMESERVICE_ENV_FILE="$ENV_FILE"
 PROJECT=${COMPOSE_PROJECT_NAME:-homeservice-prod}
+if [[ -z "${APP_IMAGE:-}" && -s "$ROOT/deploy/.release/current-image" ]]; then
+    export APP_IMAGE=$(<"$ROOT/deploy/.release/current-image")
+fi
 BACKUP_DIR=${BACKUP_DIR:-$ROOT/backups}
 MEDIA_DIR=${MEDIA_DIR:-$ROOT/media}
 LOCAL=0
@@ -29,7 +32,7 @@ exec 9>"$BACKUP_DIR/.backup.lock"
 flock -n 9 || { echo 'Backup already running.' >&2; exit 1; }
 WORK=$(mktemp -d "$BACKUP_DIR/.incomplete-XXXXXXXX")
 trap 'echo "Backup incomplete; diagnostic files retained in $WORK" >&2' ERR
-COMPOSE=(docker compose --env-file "$ENV_FILE" -p "$PROJECT" -f "$ROOT/deploy/docker-compose.yml")
+COMPOSE=(docker compose --env-file "$ENV_FILE" -p "$PROJECT" -f "$ROOT/deploy/docker-compose.yml" -f "$ROOT/deploy/docker-compose.prod.yml")
 "${COMPOSE[@]}" exec -T db sh -ec 'exec pg_dump --format=custom --no-owner --no-acl -U "$POSTGRES_USER" "$POSTGRES_DB"' >"$WORK/db.dump"
 FILES=(db.dump media.tar.gz)
 if [[ "${BACKUP_UMAMI:-1}" == 1 ]]; then
