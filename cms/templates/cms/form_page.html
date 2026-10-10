@@ -17,7 +17,7 @@
                                 {% endif %}
                             </div>
 
-                            <form action="{% pageurl page %}" method="POST" id="request-form">
+                            <form action="{% pageurl page %}" method="POST" id="request-form" data-lead-form>
                                 {% csrf_token %}
                                 {% bootstrap_form_errors form type='non_fields' %}
                                 {% for field in form %}
@@ -39,3 +39,7 @@
         </div>
     </section>
 {% endblock content %}
+
+{% block extra_js %}
+    <script src="{% static 'cms/js/lead-analytics.js' %}" defer></script>
+{% endblock %}

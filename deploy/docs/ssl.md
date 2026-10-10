@@ -60,21 +60,32 @@ directory to a timestamped recovery location inside the volume before retrying
 repair them from the backup or select their correct metadata manually. Never
 delete a lineage to resolve an issuance error.
 
-## Optional schedule
+## Automatic renewal schedule
 
-The files in `deploy/systemd/` are templates, not automatically installed.
-Adjust `/opt/homeservice` in the services to the deployment checkout and create
-root-owned `/etc/homeservice/operations.env` with mode `0600`:
+First verify renewal without changing the live certificate:
 
-```dotenv
-COMPOSE_PROJECT_NAME=homeservice-prod
-HOMESERVICE_ENV_FILE=/opt/homeservice/.env
+```bash
+make cert-dry-run
 ```
 
-After a successful manual `dry-run`, install the certificate service/timer into
-`/etc/systemd/system`, run `systemctl daemon-reload`, then enable
-`homeservice-cert-renew.timer`. It runs twice daily with random delay and catches
-missed runs after reboot. Each execution is visible under **Background tasks** in
-Wagtail; system-level failures before the task can be created remain available in
-`journalctl -u homeservice-cert-renew.service`. Also inspect
-`systemctl list-timers` when diagnosing the schedule.
+Then install the system service and timer from the deployment checkout:
+
+```bash
+sudo bash deploy/systemd/install-cert-renew-timer.sh
+```
+
+The installer detects the current checkout path, creates the root-owned
+`/etc/homeservice/operations.env`, installs the unit files and enables the timer.
+It runs twice daily with a random delay and catches a missed run after reboot.
+Each execution is visible under **Background tasks** in Wagtail.
+
+Use these commands to inspect it later:
+
+```bash
+systemctl list-timers homeservice-cert-renew.timer
+sudo systemctl status homeservice-cert-renew.timer
+sudo journalctl -u homeservice-cert-renew.service
+```
+
+Failures that happen before a Django task can be created are available only in
+the system journal.

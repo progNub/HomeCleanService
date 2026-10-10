@@ -133,7 +133,33 @@ class TaskAdminTests(TestCase):
             with self.subTest(query=query):
                 response = self.client.get(self.index_url, query)
                 self.assertEqual(list(response.context["object_list"]), [self.task])
+        response = self.client.get(self.index_url, {"ordering": "task_path"})
+        self.assertEqual(list(response.context["object_list"]), [newer, self.task])
+        response = self.client.get(self.index_url, {"ordering": "-task_path"})
+        self.assertEqual(list(response.context["object_list"]), [self.task, newer])
         self.assertEqual(response.context["paginator"].per_page, 25)
+
+    def test_queue_filter_is_a_select_with_existing_queues(self):
+        DBTaskResult.objects.create(
+            task_path="other.maintenance_task",
+            status=TaskResultStatus.SUCCESSFUL,
+            queue_name="maintenance",
+            backend_name="default",
+            run_after=timezone.now(),
+            args_kwargs={"args": [], "kwargs": {}},
+        )
+        self.client.force_login(self.superuser)
+
+        response = self.client.get(self.index_url)
+
+        field = response.context["filters"].form.fields["queue_name"]
+        self.assertEqual(field.widget.input_type, "select")
+        self.assertEqual(
+            [value for value, _label in field.choices],
+            ["", "maintenance", "notifications"],
+        )
+        self.assertContains(response, 'name="queue_name"')
+        self.assertContains(response, '<option value="maintenance">maintenance</option>', html=True)
 
     def test_task_admin_uses_the_users_english_preference(self):
         profile = UserProfile.get_for_user(self.superuser)

@@ -4,7 +4,7 @@
 {% block body_class %}template-form-landing{% endblock %}
 
 {% block content %}
-    <section class="py-5 min-vh-100 d-flex align-items-center bg-body-secondary">
+    <section class="py-5 min-vh-100 d-flex align-items-center bg-body-secondary" data-lead-submitted>
         <div class="container py-5 text-center">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
@@ -33,3 +33,7 @@
         </div>
     </section>
 {% endblock content %}
+
+{% block extra_js %}
+    <script src="{% static 'cms/js/lead-analytics.js' %}" defer></script>
+{% endblock %}

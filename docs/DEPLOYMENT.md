@@ -100,12 +100,14 @@ before retrying. Preserve real or uncertain lineages; see
 
 ## CI and registry setup
 
-The workflow runs checks for pull requests and pushes to dev/master. Checks cover
-PostgreSQL tests, Python style, npm assets and the production image. An isolated
-container smoke also checks migrations, Nginx bootstrap HTTPS, DB/Redis readiness,
-public HTML and static assets without real credentials or external providers. Publishing
-to GHCR and SSH deployment require an explicit workflow_dispatch run on master
-with deploy=true; ordinary pushes and PR checks do not publish or deploy.
+The workflow runs the full checks once for pushes to `dev`. Checks cover
+PostgreSQL tests, Python style, npm assets and operational scripts. Merging into
+`master` does not start another workflow. An explicit `workflow_dispatch` run on
+`master` with `deploy=true` builds and publishes the release image, verifies its
+bundled runtime, and runs an isolated container smoke for migrations, Nginx
+bootstrap HTTPS, DB/Redis readiness, public HTML and static assets without real
+credentials or external providers. It then performs the production backup and
+deployment. Ordinary pushes never publish or deploy.
 Enable Actions package-write permissions for that manual run. For a
 private package, provision registry login on the server under the deployment
 account with pull-only read:packages access. Keep credentials outside Git and
@@ -116,8 +118,9 @@ Set repository variable DEPLOY_PATH to the absolute server checkout path (for
 example /home/deploy/HomeCleanService, not a tilde-relative path). Configure the
 production GitHub environment; optional required reviewers are an operator choice.
 
-After provisioning these settings, open the workflow's Run workflow action,
-select master and enable the deploy input for an intended production release.
+After merging the checked `dev` revision, open the workflow's Run workflow
+action, select `master` and enable the deploy input for an intended production
+release. The manual run does not repeat the full dev test suite.
 
 The deployment fetches master, checks the tracked tree is clean, checks out the
 exact workflow commit in detached mode, and passes APP_IMAGE digest plus
